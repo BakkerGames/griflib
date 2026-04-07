@@ -300,4 +300,34 @@ public class MoreTests
         var result = Process(grod, script);
         Assert.That(result, Is.EqualTo(answer));
     }
+
+    [Test]
+    public void TestDateTime()
+    {
+        Grod grod = new("testGrod");
+        var script = @"@write(@datetime(""MM-dd-yyyy HH:mm:ss""))";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
+            Assert.That(result[0].Value, Has.Length.EqualTo(19));
+            Assert.That(result[0].ExtraValue, Has.Length.EqualTo(6));
+        }
+    }
+
+    [Test]
+    public void TestDateTimeUTC()
+    {
+        Grod grod = new("testGrod");
+        var script = @"@write(@datetime(""MM-dd-yyyy HH:mm:ss"",utc))";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
+            Assert.That(result[0].Value, Has.Length.EqualTo(19));
+            Assert.That(result[0].ExtraValue, Is.EqualTo("UTC"));
+        }
+    }
 }

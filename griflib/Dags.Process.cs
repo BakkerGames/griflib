@@ -218,6 +218,34 @@ public partial class Dags
                     }
                     result.Add(new GrifMessage(MessageType.Internal, TRUE));
                     break;
+                case DATETIME_TOKEN:
+                    CheckParmeterCountBetween(p, 1, 2);
+                    try
+                    {
+                        if (p.Count == 2)
+                        {
+                            if (p[1].Value.Equals("UTC", OIC))
+                            {
+                                var dt = DateTime.UtcNow.ToString(p[0].Value);
+                                result.Add(new GrifMessage(MessageType.Internal, dt, "UTC"));
+                            }
+                            else
+                            {
+                                throw new SystemException($"Unknown time zone parameter {p[1].Value}");
+                            }
+                        }
+                        else
+                        {
+                            var dt = DateTime.Now.ToString(p[0].Value);
+                            var tz = TimeZoneInfo.Local.DisplayName[4..10]; // "-05:00"
+                            result.Add(new GrifMessage(MessageType.Internal, dt, tz));
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        throw new SystemException($"Error converting date format {p[0].Value}");
+                    }
+                    break;
                 case DEBUG_TOKEN:
                     CheckParameterCount(p, 1);
                     if (IsTrue(grod.Get(DEBUG_FLAG, true)))
@@ -874,7 +902,7 @@ public partial class Dags
                     foreach (var item in p) // concatenate all parameters
                     {
                         value = GetValue(grod, item.Value);
-                        result.Add(new GrifMessage(MessageType.Text, value));
+                        result.Add(new GrifMessage(MessageType.Text, value, item.ExtraValue));
                     }
                     break;
                 case WRITELINE_TOKEN:
@@ -882,7 +910,7 @@ public partial class Dags
                     foreach (var item in p) // concatenate all parameters
                     {
                         value = GetValue(grod, item.Value);
-                        result.Add(new GrifMessage(MessageType.Text, value));
+                        result.Add(new GrifMessage(MessageType.Text, value, item.ExtraValue));
                     }
                     result.Add(new GrifMessage(MessageType.Text, NL_CHAR));
                     break;
