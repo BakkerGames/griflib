@@ -18,6 +18,7 @@ public partial class Dags
     public const string CONCAT_TOKEN = "@concat(";
     public const string CONTAINS_TOKEN = "@contains(";
     public const string CONTAINSLIST_TOKEN = "@containslist(";
+    public const string DATETIME_TOKEN = "@datetime(";
     public const string DEBUG_TOKEN = "@debug(";
     public const string DIVTO_TOKEN = "@divto(";
     public const string DIV_TOKEN = "@div(";
