@@ -215,7 +215,7 @@ public static class IO
                 {
                     if (value == "")
                     {
-                        value = "\"\"";
+                        value = EMPTY_STRING;
                     }
                     else
                     {
@@ -553,13 +553,18 @@ public static class IO
         }
         var valueTemp = value.ToString().Trim();
         // change leading and trailing "\s" to spaces
-        if (valueTemp.StartsWith("\\s"))
+        if (valueTemp.StartsWith(SPACE_CHAR))
         {
             valueTemp = ' ' + valueTemp[2..];
         }
-        if (valueTemp.EndsWith("\\s"))
+        if (valueTemp.EndsWith(SPACE_CHAR))
         {
             valueTemp = valueTemp[..^2] + ' ';
+        }
+        // handle empty string
+        if (valueTemp == EMPTY_STRING)
+        {
+            valueTemp = "";
         }
         return (key.ToString(), valueTemp);
     }
