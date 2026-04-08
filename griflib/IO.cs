@@ -227,9 +227,9 @@ public static class IO
                         {
                             value = value[..^1] + SPACE_CHAR;
                         }
-                        writer.Write(Encoding.UTF8.GetBytes($"\t{value}"));
-                        writer.Write(NL_BYTES);
                     }
+                    writer.Write(Encoding.UTF8.GetBytes($"\t{value}"));
+                    writer.Write(NL_BYTES);
                 }
             }
         }
