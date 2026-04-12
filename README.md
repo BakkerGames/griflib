@@ -25,3 +25,4 @@ GrifLib can be integrated into other applications to provide game support such a
 - IFGame provides Input and Output event stacks for external handling
 - Improved IFParser with better adjective and preposition support
 - @datetime() for getting local or UTC dates and/or times
+- Colorized scripts when supported by calling application
