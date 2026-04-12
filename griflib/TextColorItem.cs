@@ -14,6 +14,7 @@ public enum TextColorEnum
     QuoteColor = 6,
     ParameterColor = 7,
     CommentColor = 8,
+    SpecialCharColor = 9,
 }
 
 /// <summary>
