@@ -12,7 +12,7 @@ public partial class Dags
     {
         if (!script.TrimStart().StartsWith(SCRIPT_CHAR))
         {
-            return [new TextColorItem(script, TextColorEnum.Default)];
+            return ColorizeText(script, TextColorEnum.Default);
         }
         ScriptObj scriptObj = CreateScript(script);
         return ColorizeScript(scriptObj);
@@ -134,6 +134,37 @@ public partial class Dags
         return listResult;
     }
 
+    public static List<TextColorItem> ColorizeText(string value, TextColorEnum defaultColor)
+    {
+        List<TextColorItem> listResult = [];
+        StringBuilder result = new();
+
+        int i = 0;
+        while (i < value.Length)
+        {
+            char c = value[i++];
+            if (c == '\\')
+            {
+                if (result.Length > 0)
+                {
+                    listResult.Add(new TextColorItem(result.ToString(), defaultColor));
+                    result.Clear();
+                }
+                listResult.Add(new TextColorItem($"\\{value[i++]}", TextColorEnum.SpecialCharColor));
+            }
+            else
+            {
+                result.Append(c);
+            }
+        }
+        if (result.Length > 0)
+        {
+            listResult.Add(new TextColorItem(result.ToString(), defaultColor));
+        }
+
+        return listResult;
+    }
+
     /// <summary>
     /// Colorize the script tokens.
     /// </summary>
@@ -201,7 +232,7 @@ public partial class Dags
         }
         else if (s.StartsWith('"') && s.EndsWith('"'))
         {
-            result.Add(new TextColorItem(s, TextColorEnum.QuoteColor));
+            result.AddRange(ColorizeText(s, TextColorEnum.QuoteColor));
         }
         else if (s.StartsWith(LOCAL_CHAR) || s.StartsWith(PARAM_CHAR))
         {
