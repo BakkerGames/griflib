@@ -219,11 +219,19 @@ public static class IO
                     }
                     else
                     {
-                        if (value.StartsWith(' '))
+                        if (value.StartsWith('\t'))
+                        {
+                            value = TAB_CHAR + value[1..];
+                        }
+                        else if (char.IsWhiteSpace(value[0]))
                         {
                             value = SPACE_CHAR + value[1..];
                         }
-                        if (value.EndsWith(' '))
+                        if (value.EndsWith('\t'))
+                        {
+                            value = value[..^1] + TAB_CHAR;
+                        }
+                        else if (char.IsWhiteSpace(value[^1]))
                         {
                             value = value[..^1] + SPACE_CHAR;
                         }
@@ -537,13 +545,13 @@ public static class IO
             while (index < content.Length && content[index++] != '\n')
             { }
         }
-        while (index < content.Length && (content[index] == '\t' || content[index] == ' '))
+        while (index < content.Length && char.IsWhiteSpace(content[index]))
         {
-            while (index < content.Length && (content[index] == '\t' || content[index] == ' '))
+            while (index < content.Length && char.IsWhiteSpace(content[index]))
             {
                 index++;
             }
-            // skip comment lines starting with spaces or tabs and "//"
+            // skip comment lines starting with whitespace and then "//"
             if (index < content.Length - 1 && content[index] == '/' && content[index + 1] == '/')
             {
                 while (index < content.Length && content[index++] != '\n')
