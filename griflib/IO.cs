@@ -543,6 +543,13 @@ public static class IO
             {
                 index++;
             }
+            // skip comment lines starting with spaces or tabs and "//"
+            if (index < content.Length - 1 && content[index] == '/' && content[index + 1] == '/')
+            {
+                while (index < content.Length && content[index++] != '\n')
+                { }
+                continue;
+            }
             if (needSpace)
             {
                 value.Append(' ');
