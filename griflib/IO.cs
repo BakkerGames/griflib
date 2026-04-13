@@ -531,6 +531,12 @@ public static class IO
         {
             index++;
         }
+        // skip comment lines starting with "//"
+        while (index < content.Length - 1 && content[index] == '/' && content[index + 1] == '/')
+        {
+            while (index < content.Length && content[index++] != '\n')
+            { }
+        }
         while (index < content.Length && (content[index] == '\t' || content[index] == ' '))
         {
             while (index < content.Length && (content[index] == '\t' || content[index] == ' '))
@@ -549,24 +555,26 @@ public static class IO
             {
                 index++;
             }
+            // skip comment lines starting with "//"
+            while (index < content.Length - 1 && content[index] == '/' && content[index + 1] == '/')
+            {
+                while (index < content.Length && content[index++] != '\n')
+                { }
+            }
             needSpace = true;
         }
         var valueTemp = value.ToString().Trim();
-        // change leading and trailing "\s" to spaces
-        if (valueTemp.StartsWith(SPACE_CHAR))
+        // change "\s" to space
+        if (valueTemp.Contains(SPACE_CHAR))
         {
-            valueTemp = ' ' + valueTemp[2..];
-        }
-        if (valueTemp.EndsWith(SPACE_CHAR))
-        {
-            valueTemp = valueTemp[..^2] + ' ';
+            valueTemp = valueTemp.Replace(SPACE_CHAR, " ");
         }
         // handle empty string
         if (valueTemp == EMPTY_STRING)
         {
             valueTemp = "";
         }
-        return (key.ToString(), valueTemp);
+        return (key.ToString().Trim(), valueTemp);
     }
 
     /// <summary>
