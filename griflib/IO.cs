@@ -269,11 +269,11 @@ public static class IO
         {
             while (endPos > startPos)
             {
-                if (text[endPos] == ' ')
+                if (char.IsWhiteSpace(text[endPos]))
                 {
                     result.Add(text[startPos..endPos].TrimEnd());
                     startPos = endPos + 1;
-                    while (startPos < text.Length && text[startPos] == ' ')
+                    while (startPos < text.Length && char.IsWhiteSpace(text[startPos]))
                     {
                         startPos++; // skip extra spaces
                     }
