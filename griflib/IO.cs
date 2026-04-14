@@ -219,19 +219,19 @@ public static class IO
                     }
                     else
                     {
-                        if (value.StartsWith('\t'))
+                        if (value[0] == '\t')
                         {
                             value = TAB_CHAR + value[1..];
                         }
-                        else if (char.IsWhiteSpace(value[0]))
+                        else if (value[0] == ' ')
                         {
                             value = SPACE_CHAR + value[1..];
                         }
-                        if (value.EndsWith('\t'))
+                        if (value[^1] == '\t')
                         {
                             value = value[..^1] + TAB_CHAR;
                         }
-                        else if (char.IsWhiteSpace(value[^1]))
+                        else if (value[^1] == ' ')
                         {
                             value = value[..^1] + SPACE_CHAR;
                         }
@@ -269,11 +269,11 @@ public static class IO
         {
             while (endPos > startPos)
             {
-                if (char.IsWhiteSpace(text[endPos]))
+                if (text[endPos] == ' ' || text[endPos] == '\t')
                 {
                     result.Add(text[startPos..endPos].TrimEnd());
                     startPos = endPos + 1;
-                    while (startPos < text.Length && char.IsWhiteSpace(text[startPos]))
+                    while (startPos < text.Length && (text[startPos] == ' ' || text[startPos] == '\t'))
                     {
                         startPos++; // skip extra spaces
                     }
@@ -545,9 +545,9 @@ public static class IO
             while (index < content.Length && content[index++] != '\n')
             { }
         }
-        while (index < content.Length && char.IsWhiteSpace(content[index]))
+        while (index < content.Length && (content[index] == ' ' || content[index] == '\t'))
         {
-            while (index < content.Length && char.IsWhiteSpace(content[index]))
+            while (index < content.Length && (content[index] == ' ' || content[index] == '\t'))
             {
                 index++;
             }
