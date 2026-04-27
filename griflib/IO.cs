@@ -56,27 +56,26 @@ public static class IO
             }
             return baseGrod;
         }
-        if (!Path.HasExtension(filename))
-        {
-            filename += DATA_EXTENSION;
-        }
         if (!File.Exists(filename))
         {
-            throw new FileNotFoundException("The specified file does not exist.", filename);
+            if (File.Exists(filename + STACK_EXTENSION))
+            {
+                filename += STACK_EXTENSION;
+            }
+            else if (File.Exists(filename + DATA_EXTENSION))
+            {
+                filename += DATA_EXTENSION;
+            }
+            else
+            {
+                throw new FileNotFoundException("The specified file does not exist.", filename);
+            }
         }
-        if (Path.GetExtension(filename).Equals(DATA_EXTENSION, OIC) ||
-            Path.GetExtension(filename).Equals(SAVE_EXTENSION, OIC))
-        {
-            return OpenGrifFile(filename);
-        }
-        else if (Path.GetExtension(filename).Equals(STACK_EXTENSION, OIC))
+        if (Path.GetExtension(filename).Equals(STACK_EXTENSION, OIC))
         {
             return OpenGrifStack(filename);
         }
-        else
-        {
-            throw new NotSupportedException("Unsupported file format.");
-        }
+        return OpenGrifFile(filename);
     }
 
     /// <summary>
