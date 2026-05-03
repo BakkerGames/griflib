@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using static GrifLib.Common;
 using static GrifLib.Dags;
 
@@ -288,6 +289,28 @@ public static class IO
         }
         return result;
     }
+
+    #region Internal routines
+
+    internal static Stream? GetResourceStream(string resourceName)
+    {
+        try
+        {
+            var _assembly = Assembly.GetExecutingAssembly();
+            if (_assembly != null)
+            {
+                var stream = _assembly?.GetManifestResourceStream(resourceName);
+                return stream;
+            }
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
 
     #region Private
 

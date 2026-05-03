@@ -1,5 +1,4 @@
-﻿using System.Text;
-using static GrifLib.Common;
+﻿using static GrifLib.Common;
 
 namespace GrifLib;
 
@@ -358,9 +357,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     }
 
     /// <summary>
-    /// Validates that the specified key does not contain invalid characters or whitespace.
-    /// Only special characters used by the DAGS language are excluded. All others are valid.
-    /// Keys starting with '@' may have one set of parenthesis and commas within.
+    /// Validates that the specified key is not null, empty, only whitespace, or start/end with whitespace.
     /// </summary>
     private static void ValidateKey(string key)
     {
@@ -368,78 +365,10 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
         {
             throw new ArgumentException("Key cannot be null, empty, or only whitespace.", nameof(key));
         }
-        var isScriptKey = key[0] == SCRIPT_CHAR;
-        var leftParenCount = 0;
-        var rightParenCount = 0;
-        for (int i = 0; i < key.Length; i++)
+        if (key != key.Trim())
         {
-            var c = key[i];
-            if (char.IsControl(c))
-            {
-                throw new ArgumentException($"Key cannot contain control characters: {EncodeKey(key)}");
-            }
-            if (char.IsWhiteSpace(c))
-            {
-                throw new ArgumentException($"Key cannot contain whitespace characters: {EncodeKey(key)}");
-            }
-            if (c == PARAM_CHAR || c == '"' || c == '\\')
-            {
-                throw new ArgumentException($"Key cannot contain special characters: {EncodeKey(key)}");
-            }
-            if (!isScriptKey && (c == '(' || c == ')' || c == ','))
-            {
-                throw new ArgumentException($"Key cannot contain punctuation characters: {EncodeKey(key)}");
-            }
-            if (i != 0 && c == SCRIPT_CHAR)
-            {
-                throw new ArgumentException($"Key cannot contain '{SCRIPT_CHAR}' except at the start: {EncodeKey(key)}");
-            }
-            if (isScriptKey)
-            {
-                if (c == '(')
-                {
-                    leftParenCount++;
-                    if (leftParenCount != 1)
-                    {
-                        throw new ArgumentException($"Key has mismatched parenthesis: {EncodeKey(key)}");
-                    }
-                }
-                else if (c == ')')
-                {
-                    rightParenCount++;
-                    if (rightParenCount != 1)
-                    {
-                        throw new ArgumentException($"Key has mismatched parenthesis: {EncodeKey(key)}");
-                    }
-                }
-                else if (c == ',' && (leftParenCount != 1 || rightParenCount != 0))
-                {
-                    throw new ArgumentException($"Key contains commas outside parenthesis: {EncodeKey(key)}");
-                }
-            }
+            throw new ArgumentException("Key cannot start or end with whitespace.", nameof(key));
         }
-        if (isScriptKey && leftParenCount != rightParenCount)
-        {
-            throw new ArgumentException($"Key has mismatched parenthesis: {EncodeKey(key)}");
-        }
-    }
-
-    private static string EncodeKey(string key)
-    {
-        var result = new StringBuilder();
-        foreach (char c in key)
-        {
-            if (c > 32 && c < 127)
-            {
-                result.Append(c);
-            }
-            else
-            {
-                result.Append("\\u");
-                result.Append($"{(int)c:x4}");
-            }
-        }
-        return result.ToString();
     }
 
     #endregion

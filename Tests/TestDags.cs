@@ -766,4 +766,27 @@ public class TestDags
         var result = Process(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Hello") }));
     }
+
+    [Test]
+    public void TestHelp()
+    {
+        var grod = Dags.Help();
+        Assert.That(grod, Is.Not.Null);
+        Assert.That(grod.Items(true, true), Is.Not.Empty);
+    }
+
+    [Test]
+    public void TestHelpSearchTerm()
+    {
+        var grod = Dags.Help("value");
+        Assert.That(grod, Is.Not.Null);
+        Assert.That(grod.Items(true, true), Is.Not.Empty);
+    }
+
+    [Test]
+    public void TestHelpSearchNotFound()
+    {
+        var grod = Dags.Help("ZZZZZZZZ");
+        Assert.That(grod?.Count(true) ?? 0, Is.Zero);
+    }
 }
