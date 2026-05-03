@@ -7,7 +7,7 @@
 @addto(key,x)
 	Adds the value of x to the value in key and saves back to key.
 @and
-	Used in @if and @while to combine conditions. Stops if false.
+	In @if or @while, returns false if the previous condition was false. Otherwise checks the next condition.
 @bitwiseand(x,y)
 	Returns a bitwise AND of x and y.
 @bitwiseor(x,y)
@@ -60,22 +60,24 @@
 	Executes the value as a script. Must surround value with quotes.
 @exists(key)
 	Returns true/false if key exists and value is not null or an empty string.
-@flipbit(
-	todo
-@foreachkey(
-	todo
-@foreachlist(
-	todo
-@format(
-	todo
+@flipbit(x,b)
+	Sets bit b in x to the opposite 0/1, with b = 0 to 30.
+@foreachkey(x,prefix,[suffix])
+	Gets a list of keys with the specified prefix and optional suffix. Executes the @foreachkey loop, replacing "$x" with the part of the key after removing prefix and optional suffix.
+@foreachlist(x,listname)
+	Executes the @foreachlist loop. For each item in listname, replace "$x" with the value from the list.
+@format(pattern,x0,x1,...)
+	Replace the pattern values "{0}", "{1}", ... with the value x0, x1, ...
 @for(x,start,end)
-	Runs the @for loop, replacing $x inside with values from start to end inclusive.
-@fromhex(
-	todo
+	Runs the @for loop, replacing "$x" inside with values from start to end inclusive as increasing integers.
+@frombinary(x)
+	Converts the binary string x to an integer. @frombinary(11111111) = 255.
+@fromhex(x)
+	Converts the hex string x to an integer. @fromhex(FF) = 255.
 @getarray(
 	todo
-@getbit(
-	todo
+@getbit(x,b)
+	Returns bit b in x, with b = 0 to 30.
 @getchar(
 	todo
 @getinchannel
@@ -122,10 +124,10 @@
 	todo
 @le(
 	todo
-@listlength(
-	todo
+@listlength(key)
+	Returns the number of items in list "key".
 @lower(
-	todo
+	Converts all the alphabetic characters in string x to lowercase.
 @lt(
 	todo
 @max(
@@ -151,9 +153,9 @@
 @nl
 	Add a newline character to the result.
 @not
-	todo
+	In @if or @while, negates the following condition.
 @or
-	todo
+	In @if or @while, returns true if the previous condition was true. Otherwise checks the next condition.
 @rand(
 	todo
 @removeatlist(
@@ -164,12 +166,12 @@
 	Exit the current script immediately, returning any results.
 @rnd(
 	todo
-@script(
-	todo
+@script(key)
+	Runs the script with the key "key".
 @setarray(
 	todo
-@setbit(
-	todo
+@setbit(x,b)
+	Sets bit b in x to 1, with b = 0 to 30.
 @setchar(
 	todo
 @setextra(
@@ -178,28 +180,26 @@
 	todo
 @setoutchannel(
 	todo
-@set(
-	todo
+@set(key,x)
+	Sets the value for key to x.
 @substring(
 	todo
 @subto(
 	todo
-@sub(
-	todo
-@swap(
-	todo
+@sub(x,y)
+	Subtracts y from x.
+@swap(key1,key2)
+	Swaps the values between key1 and key2.
 @then
-	todo
-@tobinary(
-	todo
-@tohex(
-	todo
-@tointeger(
-	todo
-@trim(
-	todo
-@upper(
-	todo
+	Ends the condition checking for @if and @elseif sections. If the conditions were true, executes the next block. Otherwise skips to the next @elseif or @else block, or skips past the @endif.
+@tobinary(x)
+	Converts the integer x to a binary string. @tobinary(255) = 11111111.
+@tohex(x)
+	Converts the integer x to a hex string. @tohex(255) = FF.
+@trim(x)
+	Trims any whitespace from the beginning and ending of string x.
+@upper(x)
+	Converts all the alphabetic characters in string x to uppercase.
 @while
 	todo
 @writeline(

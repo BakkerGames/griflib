@@ -38,6 +38,7 @@ public partial class Dags
     public const string FOREACHLIST_TOKEN = "@foreachlist(";
     public const string FORMAT_TOKEN = "@format(";
     public const string FOR_TOKEN = "@for(";
+    public const string FROMBINARY_TOKEN = "@frombinary(";
     public const string FROMHEX_TOKEN = "@fromhex(";
     public const string GETARRAY_TOKEN = "@getarray(";
     public const string GETBIT_TOKEN = "@getbit(";
@@ -100,7 +101,6 @@ public partial class Dags
     public const string THEN_TOKEN = "@then";
     public const string TOBINARY_TOKEN = "@tobinary(";
     public const string TOHEX_TOKEN = "@tohex(";
-    public const string TOINTEGER_TOKEN = "@tointeger(";
     public const string TRIM_TOKEN = "@trim(";
     public const string UPPER_TOKEN = "@upper(";
     public const string WHILE_TOKEN = "@while";
