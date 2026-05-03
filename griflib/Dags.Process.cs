@@ -359,11 +359,23 @@ public partial class Dags
                     }
                     result.Add(new GrifMessage(MessageType.Internal, value));
                     break;
+                case FROMBINARY_TOKEN:
+                    CheckParameterCount(p, 1);
+                    try
+                    {
+                    long1 = Convert.ToInt64(p[0].Value, 2);
+                    result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
+                    break;
+                    }
+                    catch (Exception)
+                    {
+                        throw new SystemException($"{token}{p[0].Value}): Invalid binary string");
+                    }
                 case FROMHEX_TOKEN:
                     CheckParameterCount(p, 1);
                     try
                     {
-                        long1 = Convert.ToInt32(p[0].Value, 16);
+                        long1 = Convert.ToInt64(p[0].Value, 16);
                         value = long1.ToString();
                         result.Add(new GrifMessage(MessageType.Internal, value));
                     }
@@ -873,7 +885,7 @@ public partial class Dags
                     break;
                 case TOINTEGER_TOKEN:
                     CheckParameterCount(p, 1);
-                    long1 = Convert.ToInt32(p[0].Value, 2);
+                    long1 = Convert.ToInt64(p[0].Value, 2);
                     result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
                     break;
                 case TRIM_TOKEN:
