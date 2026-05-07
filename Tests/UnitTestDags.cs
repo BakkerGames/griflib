@@ -833,7 +833,7 @@ public class UnitTestDags
     [Test]
     public void Test_ToInteger()
     {
-        result = Process(grod, $"{TOINTEGER_TOKEN}111)");
+        result = Process(grod, $"{FROMBINARY_TOKEN}111)");
         Assert.That(Squash(result), Is.EqualTo("7"));
     }
 

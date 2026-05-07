@@ -363,9 +363,9 @@ public partial class Dags
                     CheckParameterCount(p, 1);
                     try
                     {
-                    long1 = Convert.ToInt64(p[0].Value, 2);
-                    result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
-                    break;
+                        long1 = Convert.ToInt64(p[0].Value, 2);
+                        result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
+                        break;
                     }
                     catch (Exception)
                     {
@@ -882,11 +882,6 @@ public partial class Dags
                     CheckParameterCount(p, 1);
                     long1 = GetNumberValue(p[0].Value);
                     result.Add(new GrifMessage(MessageType.Internal, long1.ToString("X")));
-                    break;
-                case TOINTEGER_TOKEN:
-                    CheckParameterCount(p, 1);
-                    long1 = Convert.ToInt64(p[0].Value, 2);
-                    result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
                     break;
                 case TRIM_TOKEN:
                     CheckParameterCount(p, 1);
