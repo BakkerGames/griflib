@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using static GrifLib.Common;
 
 namespace GrifLib;
@@ -226,7 +227,7 @@ public partial class Dags
                         {
                             if (p[1].Value.Equals("UTC", OIC))
                             {
-                                var dt = DateTime.UtcNow.ToString(p[0].Value);
+                                var dt = DateTime.UtcNow.ToString(p[0].Value, CultureInfo.InvariantCulture);
                                 result.Add(new GrifMessage(MessageType.Internal, dt, "UTC"));
                             }
                             else
@@ -236,7 +237,7 @@ public partial class Dags
                         }
                         else
                         {
-                            var dt = DateTime.Now.ToString(p[0].Value);
+                            var dt = DateTime.Now.ToString(p[0].Value, CultureInfo.InvariantCulture);
                             var tz = TimeZoneInfo.Local.DisplayName[4..10]; // "-05:00"
                             result.Add(new GrifMessage(MessageType.Internal, dt, tz));
                         }
