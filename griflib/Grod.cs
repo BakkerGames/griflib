@@ -359,15 +359,24 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     /// <summary>
     /// Validates that the specified key is not null, empty, only whitespace, or start/end with whitespace.
     /// </summary>
-    private static void ValidateKey(string key)
+    public static void ValidateKey(string key)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Key cannot be null, empty, or only whitespace.", nameof(key));
+            throw new ArgumentException("Keys cannot be null, empty, or only whitespace.", nameof(key));
         }
         if (key != key.Trim())
         {
-            throw new ArgumentException("Key cannot start or end with whitespace.", nameof(key));
+            throw new ArgumentException($"Keys cannot start or end with whitespace: '{key}'", nameof(key));
+        }
+        foreach (char c in key)
+        {
+            switch (c)
+            {
+                case '"':
+                case '\\':
+                    throw new ArgumentException($"Keys cannot contain the character {c}: {key}", nameof(key));
+            }
         }
     }
 
