@@ -104,6 +104,7 @@ public static class IFParser
         string? verbWord;
         string? direction = null;
         string? directionWord = null;
+        string? directionCommand = null;
         string? noun = null;
         string? nounWord = null;
         string? adjectiveList = null;
@@ -129,6 +130,11 @@ public static class IFParser
         if (words.Count > 0)
         {
             (direction, directionWord) = GetMatchingWord(_directions, ref words);
+            if (direction != null)
+            {
+                var key = $"{DIRECTION_PREFIX}{direction}.command";
+                directionCommand = grod.Get(key, true) ?? direction;
+            }
         }
         if (words.Count > 0)
         {
@@ -170,12 +176,12 @@ public static class IFParser
         string command;
         if (verb != null && direction != null)
         {
-            command = $"{COMMAND_PREFIX}{verb}.{direction}";
+            command = $"{COMMAND_PREFIX}{verb}.{directionCommand}";
         }
         else if (direction != null)
         {
-            command = $"{COMMAND_PREFIX}{direction}";
-            verb = direction;
+            command = $"{COMMAND_PREFIX}{directionCommand}";
+            verb = directionCommand;
             verbWord = directionWord;
             direction = null;
             directionWord = null;
