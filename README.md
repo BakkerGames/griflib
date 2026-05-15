@@ -28,7 +28,7 @@ GrifLib can be integrated into other applications to provide game support such a
 - Improved IFParser with better adjective and preposition support
 - @datetime() for getting local or UTC dates and/or times
 - Colorized scripts when supported by calling application
-- Built-in searchable help library
+- Built-in searchable help library (in progress)
 
 ## Names
 
