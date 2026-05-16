@@ -22,6 +22,8 @@ public class IFGame
     private Grod _overlayGrod = new();
     private string _saveBasePath = "";
     private string? _referenceBasePath;
+    private int awaitAnswer = 0;
+    private int awaitEnter = 0;
 
     /// <summary>
     /// Occurs when an input action is performed, such as a key press or mouse event.
@@ -110,12 +112,12 @@ public class IFGame
     /// <summary>
     /// Processes and outputs the introductory message or script for the overlay.
     /// </summary>
-    public async Task Intro()
+    public void Intro()
     {
-        var intro = await Task.Run(() => _overlayGrod.Get(INTRO, true));
+        var intro = _overlayGrod.Get(INTRO, true);
         if (IsScript(intro))
         {
-            var introItems = await Task.Run(() => Process(_overlayGrod, intro));
+            var introItems = Process(_overlayGrod, intro);
             foreach (var item in introItems)
             {
                 OutputMessages.Enqueue(item);
@@ -129,6 +131,11 @@ public class IFGame
         {
             var outputMessage = OutputMessages.Dequeue();
             ProcessOutputMessage(outputMessage);
+        }
+        if (GameOver) return;
+        if (InputEvent != null)
+        {
+            InputEvent?.Invoke(this);
         }
     }
 
@@ -201,6 +208,31 @@ public class IFGame
         return afterPrompt;
     }
 
+    public void GameStep()
+    {
+        if (GameOver) return;
+        if (InputMessages.Count == 0) return;
+        var inputMessage = InputMessages.Dequeue();
+        ProcessInputMessage(inputMessage);
+        while (OutputMessages.Count > 0)
+        {
+            var outputMessage = OutputMessages.Dequeue();
+            ProcessOutputMessage(outputMessage);
+        }
+        if (GameOver) return;
+        AdvanceGameState();
+        while (OutputMessages.Count > 0)
+        {
+            var outputMessage = OutputMessages.Dequeue();
+            ProcessOutputMessage(outputMessage);
+        }
+        if (GameOver) return;
+        if (InputEvent != null)
+        {
+            InputEvent?.Invoke(this);
+        }
+    }
+
     #region Private routines
 
     /// <summary>
@@ -208,8 +240,19 @@ public class IFGame
     /// </summary>
     private void ProcessInputMessage(GrifMessage inputMessage)
     {
-        var inputItems = ParseInput(_overlayGrod, inputMessage.Value);
-        foreach (var item in inputItems ?? [])
+        if (awaitEnter > 0)
+        {
+            awaitEnter--;
+            return;
+        }
+        if (awaitAnswer > 0)
+        {
+            awaitAnswer--;
+            _overlayGrod.Set(INCHANNEL, inputMessage.Value);
+            return;
+        }
+        var results = ParseInput(_overlayGrod, inputMessage.Value);
+        foreach (var item in results ?? [])
         {
             OutputMessages.Enqueue(item);
         }
@@ -346,31 +389,22 @@ public class IFGame
             _overlayGrod.Changed = false;
             return;
         }
-        if (message.Value.Equals(OUTCHANNEL_ASK, OIC))
-        {
-            if (InputEvent != null && InputMessages.Count == 0)
-            {
-                InputEvent?.Invoke(this);
-            }
-            while (InputMessages.Count == 0)
-            {
-                Thread.Sleep(100);
-            }
-            var inputMessage = InputMessages.Dequeue();
-            _overlayGrod.Set(INCHANNEL, inputMessage.Value);
-            return;
-        }
         if (message.Value.Equals(OUTCHANNEL_ENTER, OIC))
         {
-            if (InputEvent != null && InputMessages.Count == 0)
+            if (InputEvent != null)
             {
                 InputEvent?.Invoke(this);
             }
-            while (InputMessages.Count == 0)
+            awaitEnter++;
+            return;
+        }
+        if (message.Value.Equals(OUTCHANNEL_ASK, OIC))
+        {
+            if (InputEvent != null)
             {
-                Thread.Sleep(100);
+                InputEvent?.Invoke(this);
             }
-            _ = InputMessages.Dequeue();
+            awaitAnswer++;
             return;
         }
         if (message.Value.Equals(OUTCHANNEL_ADD_EXTRA, OIC))
