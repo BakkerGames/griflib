@@ -95,13 +95,14 @@ public static class IFParser
     }
 
     /// <summary>
-    /// Parses a user input string and generates a list of messages representing the interpreted command and its components.
+    /// Parses a user input string and generates a list of messages representing the
+    /// interpreted command and its components.
     /// </summary>
     public static List<GrifMessage>? ParseInput(Grod grod, string input)
     {
         var result = new List<GrifMessage>();
-        string? verb;
-        string? verbWord;
+        string? verb = null;
+        string? verbWord = null;
         string? direction = null;
         string? directionWord = null;
         string? directionCommand = null;
@@ -125,21 +126,25 @@ public static class IFParser
         {
             return null;
         }
-        // handle "west", "go west", "west go"
-        (verb, verbWord) = GetMatchingWord(_verbs, ref words);
+        // handle directions first, as they are the most common commands
+        (direction, directionWord) = GetMatchingWord(_directions, ref words);
+        if (direction != null)
+        {
+            // some directions may need translation into command keys
+            var key = $"{DIRECTION_PREFIX}{direction}.command";
+            directionCommand = grod.Get(key, true) ?? direction;
+        }
+        // check for verbs
         if (words.Count > 0)
         {
-            (direction, directionWord) = GetMatchingWord(_directions, ref words);
-            if (direction != null)
-            {
-                var key = $"{DIRECTION_PREFIX}{direction}.command";
-                directionCommand = grod.Get(key, true) ?? direction;
-            }
+            (verb, verbWord) = GetMatchingWord(_verbs, ref words);
         }
+        // check for nouns
         if (words.Count > 0)
         {
             (noun, nounWord, adjectiveList) = GetNoun(_nouns, ref words);
         }
+        // check for prepositions and indirect objects
         if (words.Count > 0)
         {
             (preposition, prepositionWord) = GetMatchingFirstWord(_prepositions, ref words);
