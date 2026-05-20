@@ -145,24 +145,6 @@ public class IFGame
     }
 
     /// <summary>
-    /// Run the main game loop in another thread
-    /// 1) Wait for input to be ready
-    /// 2) Run one game step
-    /// </summary>
-    public async Task GameLoop()
-    {
-        while (true)
-        {
-            while (!GameOver && InputMessages.Count == 0)
-            {
-                await Task.Delay(100);
-            }
-            if (GameOver) return;
-            GameStep();
-        }
-    }
-
-    /// <summary>
     /// Runs one game step:
     /// 1) Process input
     /// 2) Advance the game state
