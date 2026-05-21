@@ -76,4 +76,6 @@ public static partial class Common
     public const string NOUNITEM_PREFIX = "nounitem.";
     public const string PREPOSITION_PREFIX = "preposition.";
     public const string VERB_PREFIX = "verb.";
+
+    public const string DIRECTION_COMMAND_SUFFIX = ".command";
 }

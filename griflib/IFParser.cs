@@ -69,7 +69,7 @@ public static class IFParser
             .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
             .Select(x => new ParserItem(x.Key[NOUNITEM_PREFIX.Length..], SplitList(x.Value)))];
         _directions = [.. grod.Items(DIRECTION_PREFIX, true, true)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
+            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL && !x.Key.EndsWith(DIRECTION_COMMAND_SUFFIX, OIC))
             .Select(x => new ParserItem(x.Key[DIRECTION_PREFIX.Length..], SplitList(x.Value)))];
         _prepositions = [.. grod.Items(PREPOSITION_PREFIX, true, true)
             .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
@@ -131,7 +131,7 @@ public static class IFParser
         if (direction != null)
         {
             // some directions may need translation into command keys
-            var key = $"{DIRECTION_PREFIX}{direction}.command";
+            var key = $"{DIRECTION_PREFIX}{direction}{DIRECTION_COMMAND_SUFFIX}";
             directionCommand = grod.Get(key, true) ?? direction;
         }
         // check for verbs
