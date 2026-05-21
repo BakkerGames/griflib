@@ -313,7 +313,7 @@ public partial class Dags
                     result.Add(new GrifMessage(MessageType.Internal, TrueFalse(!IsNullOrEmpty(value))));
                     break;
                 case ISFALSE_TOKEN:
-                case ISFALSE2_TOKEN:
+                case FALSE_TOKEN:
                     CheckParameterCount(p, 1);
                     try
                     {
@@ -729,7 +729,7 @@ public partial class Dags
                     SetGlobalOrLocal(grod, script, p[0].Value, long1.ToString());
                     break;
                 case ISNULL_TOKEN:
-                case ISNULL2_TOKEN:
+                case NULL_TOKEN:
                     CheckParameterCount(p, 1);
                     result.Add(new GrifMessage(MessageType.Internal, TrueFalse(IsNullOrEmpty(p[0].Value))));
                     break;
@@ -889,7 +889,7 @@ public partial class Dags
                     result.Add(new GrifMessage(MessageType.Internal, p[0].Value.Trim()));
                     break;
                 case ISTRUE_TOKEN:
-                case ISTRUE2_TOKEN:
+                case TRUE_TOKEN:
                     CheckParameterCount(p, 1);
                     try
                     {
