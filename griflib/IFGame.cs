@@ -262,7 +262,7 @@ public class IFGame
                 OutputEvent?.Invoke(this, message);
                 break;
             default:
-                OutputEvent?.Invoke(this, new GrifMessage(MessageType.Text, $"Unsupported output message type: {message.Type}", message.Value + message.ExtraValue));
+                OutputEvent?.Invoke(this, new GrifMessage(MessageType.Text, $"Unsupported output message type: {message.Type}\\n", message.Value + message.ExtraValue));
                 break;
         }
         return false;

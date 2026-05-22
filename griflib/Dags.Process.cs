@@ -13,6 +13,7 @@ public partial class Dags
     {
         List<GrifMessage> result = [];
         string? value;
+        string? value1;
         long long1, long2;
         int int1;
         long longAnswer;
@@ -249,11 +250,7 @@ public partial class Dags
                     break;
                 case DEBUG_TOKEN:
                     CheckParameterCount(p, 1);
-                    if (IsTrue(grod.Get(DEBUG_FLAG, true)))
-                    {
-                        result.Add(new GrifMessage(MessageType.Text, p[0].Value));
-                        result.Add(new GrifMessage(MessageType.Text, NL_CHAR));
-                    }
+                    AddDebugMessage(grod, result, p[0].Value);
                     break;
                 case DIV_TOKEN:
                     CheckParameterCount(p, 2);
@@ -871,7 +868,8 @@ public partial class Dags
                 case SWAP_TOKEN:
                     CheckParameterCount(p, 2);
                     value = GetGlobalOrLocal(grod, script, p[0].Value, true);
-                    SetGlobalOrLocal(grod, script, p[0].Value, GetGlobalOrLocal(grod, script, p[1].Value, true));
+                    value1 = GetGlobalOrLocal(grod, script, p[1].Value, true);
+                    SetGlobalOrLocal(grod, script, p[0].Value, value1);
                     SetGlobalOrLocal(grod, script, p[1].Value, value);
                     break;
                 case TOBINARY_TOKEN:

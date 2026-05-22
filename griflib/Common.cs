@@ -5,7 +5,7 @@ public static partial class Common
     /// <summary>
     /// Gets the current version of the library.
     /// </summary>
-    public static string Version { get { return "2.2026.5.21"; } }
+    public static string Version { get { return "2.2026.5.22"; } }
 
     /// <summary>
     /// String comparison: OrdinalIgnoreCase
@@ -76,6 +76,7 @@ public static partial class Common
     public const string NOUNITEM_PREFIX = "nounitem.";
     public const string PREPOSITION_PREFIX = "preposition.";
     public const string VERB_PREFIX = "verb.";
+    public const string INPUT_PREFIX = "input.";
 
     public const string DIRECTION_COMMAND_SUFFIX = ".command";
 }
