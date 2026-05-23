@@ -154,7 +154,7 @@ public static class IFParser
             }
             else
             {
-                result.Add(new GrifMessage(MessageType.Text, string.Format(DONT_UNDERSTAND_TEXT, inputText)));
+                DontUnderstandMsg(grod, result, DONT_UNDERSTAND_TEXT, inputText);
                 return result;
             }
         }
@@ -174,7 +174,7 @@ public static class IFParser
             }
             else
             {
-                result.Add(new GrifMessage(MessageType.Text, string.Format(DONT_UNDERSTAND_TEXT, inputText)));
+                DontUnderstandMsg(grod, result, DONT_UNDERSTAND_TEXT, inputText);
                 return result;
             }
         }
@@ -248,13 +248,13 @@ public static class IFParser
             }
             else
             {
-                result.Add(new GrifMessage(MessageType.Text, string.Format(DONT_UNDERSTAND_TEXT, inputText)));
+                DontUnderstandMsg(grod, result, DONT_UNDERSTAND_TEXT, inputText);
                 return result;
             }
         }
         if (grod.Get(command, true) == null)
         {
-            result.Add(new GrifMessage(MessageType.Text, string.Format(DONT_UNDERSTAND_TEXT, inputText)));
+            DontUnderstandMsg(grod, result, DONT_UNDERSTAND_TEXT, inputText);
             return result;
         }
         result.Add(new GrifMessage(MessageType.Script, $"{SET_TOKEN}{INPUT_PREFIX}full,\"{inputText}\")"));
@@ -451,6 +451,19 @@ public static class IFParser
                     break;
                 }
             }
+        }
+    }
+
+    private static void DontUnderstandMsg(Grod grod, List<GrifMessage> result, string message, string inputText)
+    {
+        if (IsScript(message))
+        {
+            var processed = Dags.Process(grod, message);
+            result.AddRange(processed);
+        }
+        else
+        {
+            result.Add(new GrifMessage(MessageType.Text, string.Format(message, inputText)));
         }
     }
 
