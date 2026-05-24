@@ -681,28 +681,6 @@ public partial class Dags
     }
 
     /// <summary>
-    /// Get the string value from a Grod, processing scripts as needed.
-    /// </summary>
-    private static string GetValue(Grod grod, string? value)
-    {
-        if (IsNull(value))
-        {
-            return "";
-        }
-        if (!IsScript(value))
-        {
-            return value ?? "";
-        }
-        var resultItems = Process(grod, value);
-        if (resultItems.Count == 1 &&
-            (resultItems[0].Type == MessageType.Text || resultItems[0].Type == MessageType.Internal))
-        {
-            return GetValue(grod, resultItems[0].Value);
-        }
-        throw new SystemException("Expected a single text result.");
-    }
-
-    /// <summary>
     /// Get user-defined function values.
     /// </summary>
     private static List<GrifMessage> GetUserDefinedFunctionValues(Grod grod, ScriptObj script, string token, List<GrifMessage> p)

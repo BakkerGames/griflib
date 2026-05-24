@@ -40,7 +40,6 @@ public static class IFParser
 {
     private static bool _initialized = false;
     private static long _maxWordLen = 0;
-    private static string DONT_UNDERSTAND_TEXT = "";
     private static List<ParserItem> _verbs = [];
     private static List<ParserItem> _nouns = [];
     private static List<ParserItem> _nounitems = [];
@@ -90,8 +89,6 @@ public static class IFParser
             TrimSynonyms(ref _adjectives);
             TrimSynonyms(ref _articles);
         }
-        DONT_UNDERSTAND_TEXT = (grod.Get(DONT_UNDERSTAND, true) ??
-            $"I don't understand \"{{0}}\".") + NL_CHAR;
     }
 
     /// <summary>
@@ -154,7 +151,7 @@ public static class IFParser
             }
             else
             {
-                DontUnderstandMsg(grod, result, DONT_UNDERSTAND_TEXT, inputText);
+                result.AddRange(DontUnderstandMsg(grod, inputText));
                 return result;
             }
         }
@@ -174,7 +171,7 @@ public static class IFParser
             }
             else
             {
-                DontUnderstandMsg(grod, result, DONT_UNDERSTAND_TEXT, inputText);
+                result.AddRange(DontUnderstandMsg(grod, inputText));
                 return result;
             }
         }
@@ -248,13 +245,13 @@ public static class IFParser
             }
             else
             {
-                DontUnderstandMsg(grod, result, DONT_UNDERSTAND_TEXT, inputText);
+                result.AddRange(DontUnderstandMsg(grod, inputText));
                 return result;
             }
         }
         if (grod.Get(command, true) == null)
         {
-            DontUnderstandMsg(grod, result, DONT_UNDERSTAND_TEXT, inputText);
+            result.AddRange(DontUnderstandMsg(grod, inputText));
             return result;
         }
         result.Add(new GrifMessage(MessageType.Script, $"{SET_TOKEN}{INPUT_PREFIX}full,\"{inputText}\")"));
@@ -454,17 +451,12 @@ public static class IFParser
         }
     }
 
-    private static void DontUnderstandMsg(Grod grod, List<GrifMessage> result, string message, string inputText)
+    /// <summary>
+    /// Get "don't understand" message. Can't be static as it might change (see Adventure).
+    /// </summary>
+    private static List<GrifMessage> DontUnderstandMsg(Grod grod, string inputText)
     {
-        if (IsScript(message))
-        {
-            var processed = Dags.Process(grod, message);
-            result.AddRange(processed);
-        }
-        else
-        {
-            result.Add(new GrifMessage(MessageType.Text, string.Format(message, inputText)));
-        }
+        return Dags.GetValue(grod, DONT_UNDERSTAND, $"I don't understand \"{inputText}\".");
     }
 
     #endregion
