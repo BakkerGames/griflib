@@ -456,7 +456,18 @@ public static class IFParser
     /// </summary>
     private static List<GrifMessage> DontUnderstandMsg(Grod grod, string inputText)
     {
-        return Dags.GetValue(grod, DONT_UNDERSTAND, $"I don't understand \"{inputText}\".");
+        var message = grod.Get(DONT_UNDERSTAND, true);
+        if (string.IsNullOrEmpty(message))
+        {
+            message = $"I don't understand \"{inputText}\".";
+        }
+        message = string.Format(message, inputText);
+        if (IsScript(message))
+        {
+            var result = Process(grod, message);
+            return result;
+        }
+        return [new GrifMessage(MessageType.Text, message)];
     }
 
     #endregion

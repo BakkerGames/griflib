@@ -464,7 +464,8 @@ public partial class Dags
                     break;
                 case GETVALUE_TOKEN:
                     CheckParameterCount(p, 1);
-                    result.AddRange(Process(grod, GetGlobalOrLocal(grod, script, p[0].Value, true)));
+                    value = GetValue(grod, GetGlobalOrLocal(grod, script, p[0].Value, true));
+                    result.Add(new GrifMessage(MessageType.Internal, value));
                     break;
                 case GOLABEL_TOKEN:
                     CheckParameterCount(p, 1);
@@ -906,22 +907,16 @@ public partial class Dags
                     CheckParameterAtLeastOne(p);
                     foreach (var item in p) // concatenate all parameters
                     {
-                        var tempList = Process(grod, item.Value);
-                        foreach (var item2 in tempList)
-                        {
-                            result.Add(new GrifMessage(MessageType.Text, item2.Value, item2.ExtraValue);
-                        }
+                        value = GetValue(grod, item.Value);
+                        result.Add(new GrifMessage(MessageType.Text, value, item.ExtraValue));
                     }
                     break;
                 case WRITELINE_TOKEN:
                     CheckParameterAtLeastOne(p);
                     foreach (var item in p) // concatenate all parameters
                     {
-                        var tempList = Process(grod, item.Value);
-                        foreach (var item2 in tempList)
-                        {
-                            result.Add(new GrifMessage(MessageType.Text, item2.Value, item2.ExtraValue);
-                        }
+                        value = GetValue(grod, item.Value);
+                        result.Add(new GrifMessage(MessageType.Text, value, item.ExtraValue));
                     }
                     result.Add(new GrifMessage(MessageType.Text, NL_CHAR));
                     break;

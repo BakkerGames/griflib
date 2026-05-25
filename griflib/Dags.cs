@@ -73,20 +73,4 @@ public partial class Dags
         }
         return result;
     }
-
-    /// <summary>
-    /// Get a string value or the results from a script.
-    /// </summary>
-    public static List<GrifMessage> GetValue(Grod grod, string key, string defaultValue = "")
-    {
-        var value = grod.Get(key, true);
-        if (!IsScript(value))
-        {
-            return [new GrifMessage(MessageType.Text, value ?? defaultValue)];
-        }
-        else
-        {
-            return Process(grod, value);
-        }
-    }
 }
