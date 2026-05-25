@@ -1051,5 +1051,14 @@ public partial class Dags
         return IsTrue(answer[0].Value);
     }
 
+    private static void AddDebugMessage(Grod grod, List<GrifMessage> result, string message)
+    {
+        if (IsTrue(grod.Get(DEBUG_FLAG, true)))
+        {
+            result.Add(new GrifMessage(MessageType.Text, message));
+            result.Add(new GrifMessage(MessageType.Text, NL_CHAR));
+        }
+    }
+
     #endregion
 }

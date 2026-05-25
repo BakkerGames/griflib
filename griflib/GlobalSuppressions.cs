@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE0270:Use coalesce expression")]
+[assembly: SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value")]

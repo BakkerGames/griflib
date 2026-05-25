@@ -22,6 +22,8 @@ public class IFGame
     private Grod _overlayGrod = new();
     private string _saveBasePath = "";
     private string? _referenceBasePath;
+    private int awaitAnswer = 0;
+    private int awaitEnter = 0;
 
     /// <summary>
     /// Occurs when an input action is performed, such as a key press or mouse event.
@@ -108,14 +110,15 @@ public class IFGame
     }
 
     /// <summary>
-    /// Processes and outputs the introductory message or script for the overlay.
+    /// Runs the script "system.intro" or all background tasks. Signals for the first input.
     /// </summary>
-    public async Task Intro()
+    public void Intro()
     {
-        var intro = await Task.Run(() => _overlayGrod.Get(INTRO, true));
-        if (IsScript(intro))
+        var intro = _overlayGrod.Get(INTRO, true);
+        if (!string.IsNullOrEmpty(intro))
         {
-            var introItems = await Task.Run(() => Process(_overlayGrod, intro));
+            // intro is a script or a message
+            var introItems = Process(_overlayGrod, intro);
             foreach (var item in introItems)
             {
                 OutputMessages.Enqueue(item);
@@ -123,49 +126,58 @@ public class IFGame
         }
         else
         {
-            OutputMessages.Enqueue(new GrifMessage(MessageType.Text, intro ?? ""));
+            // intro is handled by background scripts
+            AdvanceGameState();
         }
         while (OutputMessages.Count > 0)
         {
             var outputMessage = OutputMessages.Dequeue();
-            ProcessOutputMessage(outputMessage);
+            if (ProcessOutputMessage(outputMessage))
+            {
+                return;
+            }
+        }
+        if (GameOver) return;
+        if (InputEvent != null)
+        {
+            InputEvent?.Invoke(this);
         }
     }
 
     /// <summary>
-    /// Runs the main asynchronous game loop, processing input and output messages and advancing the game state until the game is over.
+    /// Runs one game step:
+    /// 1) Process input
+    /// 2) Advance the game state
+    /// 3) Signal ready for another input
     /// </summary>
-    public async Task GameLoop()
+    public void GameStep()
     {
-        while (true)
+        bool waitForAnswer = false;
+        if (GameOver) return;
+        if (InputMessages.Count == 0) return;
+        var inputMessage = InputMessages.Dequeue();
+        ProcessInputMessage(inputMessage);
+        while (!waitForAnswer && OutputMessages.Count > 0)
         {
-            if (GameOver)
-            {
-                break;
-            }
+            var outputMessage = OutputMessages.Dequeue();
+            waitForAnswer = ProcessOutputMessage(outputMessage);
+        }
+        if (GameOver) return;
+        if (!waitForAnswer)
+        {
             AdvanceGameState();
-            while (!GameOver && OutputMessages.Count > 0)
+            while (!waitForAnswer && OutputMessages.Count > 0)
             {
                 var outputMessage = OutputMessages.Dequeue();
-                ProcessOutputMessage(outputMessage);
+                waitForAnswer = ProcessOutputMessage(outputMessage);
             }
-            if (!GameOver && InputEvent != null && InputMessages.Count == 0)
+        }
+        if (!waitForAnswer)
+        {
+            if (GameOver) return;
+            if (InputEvent != null)
             {
                 InputEvent?.Invoke(this);
-            }
-            while (!GameOver && InputMessages.Count == 0)
-            {
-                await Task.Delay(100);
-            }
-            if (!GameOver && InputMessages.Count > 0)
-            {
-                var inputMessage = InputMessages.Dequeue();
-                ProcessInputMessage(inputMessage);
-            }
-            while (!GameOver && OutputMessages.Count > 0)
-            {
-                var outputMessage = OutputMessages.Dequeue();
-                ProcessOutputMessage(outputMessage);
             }
         }
     }
@@ -208,8 +220,19 @@ public class IFGame
     /// </summary>
     private void ProcessInputMessage(GrifMessage inputMessage)
     {
-        var inputItems = ParseInput(_overlayGrod, inputMessage.Value);
-        foreach (var item in inputItems ?? [])
+        if (awaitEnter > 0)
+        {
+            awaitEnter--;
+            return;
+        }
+        if (awaitAnswer > 0)
+        {
+            awaitAnswer--;
+            _overlayGrod.Set(INCHANNEL, inputMessage.Value);
+            return;
+        }
+        var results = ParseInput(_overlayGrod, inputMessage.Value);
+        foreach (var item in results ?? [])
         {
             OutputMessages.Enqueue(item);
         }
@@ -217,8 +240,9 @@ public class IFGame
 
     /// <summary>
     /// Processes an output message and dispatches it to the appropriate handler based on its type.
+    /// Returns true if an answer is requested.
     /// </summary>
-    private void ProcessOutputMessage(GrifMessage message)
+    private bool ProcessOutputMessage(GrifMessage message)
     {
         switch (message.Type)
         {
@@ -226,8 +250,7 @@ public class IFGame
                 OutputEvent?.Invoke(this, message);
                 break;
             case MessageType.OutChannel:
-                HandleOutChannel(message);
-                break;
+                return HandleOutChannel(message);
             case MessageType.Script:
                 var outputItems = ProcessItems(_overlayGrod, [message]);
                 foreach (var item in outputItems)
@@ -239,9 +262,10 @@ public class IFGame
                 OutputEvent?.Invoke(this, message);
                 break;
             default:
-                OutputEvent?.Invoke(this, new GrifMessage(MessageType.Text, $"Unsupported output message type: {message.Type}", message.Value + message.ExtraValue));
+                OutputEvent?.Invoke(this, new GrifMessage(MessageType.Text, $"Unsupported output message type: {message.Type}\\n", message.Value + message.ExtraValue));
                 break;
         }
+        return false;
     }
 
     /// <summary>
@@ -263,21 +287,22 @@ public class IFGame
 
     /// <summary>
     /// Handles an outbound channel message by performing the corresponding action.
+    /// Returns true if an answer is requested.
     /// </summary>
-    private void HandleOutChannel(GrifMessage message)
+    private bool HandleOutChannel(GrifMessage message)
     {
         bool exists;
         if (message.Value.Equals(OUTCHANNEL_GAMEOVER, OIC))
         {
             GameOver = true;
-            return;
+            return false;
         }
         if (message.Value.Equals(OUTCHANNEL_EXISTS_SAVE, OIC))
         {
             var savefile = Path.Combine(_saveBasePath, SAVE_FILENAME + SAVE_EXTENSION);
             exists = File.Exists(savefile);
             _overlayGrod.Set(INCHANNEL, exists ? "true" : "false");
-            return;
+            return false;
         }
         if (message.Value.Equals(OUTCHANNEL_EXISTS_SAVE_NAME, OIC))
         {
@@ -288,7 +313,7 @@ public class IFGame
             var savefile = Path.Combine(_saveBasePath, message.ExtraValue + SAVE_EXTENSION);
             exists = File.Exists(savefile);
             _overlayGrod.Set(INCHANNEL, exists ? "true" : "false");
-            return;
+            return false;
         }
         if (message.Value.Equals(OUTCHANNEL_SAVE, OIC))
         {
@@ -296,7 +321,7 @@ public class IFGame
             var itemList = _overlayGrod.Items(false, true);
             WriteGrif(savefile, itemList, true);
             _overlayGrod.Changed = false;
-            return;
+            return false;
         }
         if (message.Value.Equals(OUTCHANNEL_SAVE_NAME, OIC))
         {
@@ -308,7 +333,7 @@ public class IFGame
             var itemList = _overlayGrod.Items(false, true);
             WriteGrif(savefile, itemList, true);
             _overlayGrod.Changed = false;
-            return;
+            return false;
         }
         if (message.Value.Equals(OUTCHANNEL_RESTORE, OIC))
         {
@@ -321,7 +346,7 @@ public class IFGame
             _overlayGrod.Clear(false); // clear only the user data
             _overlayGrod.AddItems(itemList);
             _overlayGrod.Changed = false;
-            return;
+            return false;
         }
         if (message.Value.Equals(OUTCHANNEL_RESTORE_NAME, OIC))
         {
@@ -338,40 +363,31 @@ public class IFGame
             _overlayGrod.Clear(false); // clear only the user data
             _overlayGrod.AddItems(itemList);
             _overlayGrod.Changed = false;
-            return;
+            return false;
         }
         if (message.Value.Equals(OUTCHANNEL_RESTART, OIC))
         {
             _overlayGrod.Clear(false); // clear only the user data
             _overlayGrod.Changed = false;
-            return;
-        }
-        if (message.Value.Equals(OUTCHANNEL_ASK, OIC))
-        {
-            if (InputEvent != null && InputMessages.Count == 0)
-            {
-                InputEvent?.Invoke(this);
-            }
-            while (InputMessages.Count == 0)
-            {
-                Thread.Sleep(100);
-            }
-            var inputMessage = InputMessages.Dequeue();
-            _overlayGrod.Set(INCHANNEL, inputMessage.Value);
-            return;
+            return false;
         }
         if (message.Value.Equals(OUTCHANNEL_ENTER, OIC))
         {
-            if (InputEvent != null && InputMessages.Count == 0)
+            awaitEnter++;
+            if (InputEvent != null)
             {
                 InputEvent?.Invoke(this);
             }
-            while (InputMessages.Count == 0)
+            return true;
+        }
+        if (message.Value.Equals(OUTCHANNEL_ASK, OIC))
+        {
+            awaitAnswer++;
+            if (InputEvent != null)
             {
-                Thread.Sleep(100);
+                InputEvent?.Invoke(this);
             }
-            _ = InputMessages.Dequeue();
-            return;
+            return true;
         }
         if (message.Value.Equals(OUTCHANNEL_ADD_EXTRA, OIC))
         {
@@ -441,10 +457,11 @@ public class IFGame
             {
                 OutputMessages.Enqueue(outputItem);
             }
-            return;
+            return false;
         }
         // Sent unknown outchannel message to calling program
         OutputEvent?.Invoke(this, message);
+        return false;
     }
 
     #endregion

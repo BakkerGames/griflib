@@ -16,8 +16,8 @@ public partial class Dags
     public const string CLEARLIST_TOKEN = "@clearlist(";
     public const string COMMENT_TOKEN = "@comment(";
     public const string CONCAT_TOKEN = "@concat(";
-    public const string CONTAINS_TOKEN = "@contains(";
     public const string CONTAINSLIST_TOKEN = "@containslist(";
+    public const string CONTAINS_TOKEN = "@contains(";
     public const string DATETIME_TOKEN = "@datetime(";
     public const string DEBUG_TOKEN = "@debug(";
     public const string DIVTO_TOKEN = "@divto(";
@@ -33,6 +33,7 @@ public partial class Dags
     public const string EQ_TOKEN = "@eq(";
     public const string EXEC_TOKEN = "@exec(";
     public const string EXISTS_TOKEN = "@exists(";
+    public const string FALSE_TOKEN = "@false(";
     public const string FLIPBIT_TOKEN = "@flipbit(";
     public const string FOREACHKEY_TOKEN = "@foreachkey(";
     public const string FOREACHLIST_TOKEN = "@foreachlist(";
@@ -54,13 +55,10 @@ public partial class Dags
     public const string INLIST_TOKEN = "@inlist(";
     public const string INSERTATLIST_TOKEN = "@insertatlist(";
     public const string ISBOOL_TOKEN = "@isbool(";
-    public const string ISFALSE2_TOKEN = "@false(";
     public const string ISFALSE_TOKEN = "@isfalse(";
-    public const string ISNULL2_TOKEN = "@null(";
     public const string ISNULL_TOKEN = "@isnull(";
     public const string ISNUMBER_TOKEN = "@isnumber(";
     public const string ISSCRIPT_TOKEN = "@isscript(";
-    public const string ISTRUE2_TOKEN = "@true(";
     public const string ISTRUE_TOKEN = "@istrue(";
     public const string LABEL_TOKEN = "@label(";
     public const string LEN_TOKEN = "@len(";
@@ -80,6 +78,7 @@ public partial class Dags
     public const string NE_TOKEN = "@ne(";
     public const string NL_TOKEN = "@nl";
     public const string NOT_TOKEN = "@not";
+    public const string NULL_TOKEN = "@null(";
     public const string OR_TOKEN = "@or";
     public const string RAND_TOKEN = "@rand(";
     public const string REMOVEATLIST_TOKEN = "@removeatlist(";
@@ -102,6 +101,7 @@ public partial class Dags
     public const string TOBINARY_TOKEN = "@tobinary(";
     public const string TOHEX_TOKEN = "@tohex(";
     public const string TRIM_TOKEN = "@trim(";
+    public const string TRUE_TOKEN = "@true(";
     public const string UPPER_TOKEN = "@upper(";
     public const string WHILE_TOKEN = "@while";
     public const string WRITELINE_TOKEN = "@writeline(";
