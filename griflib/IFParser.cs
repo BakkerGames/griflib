@@ -68,7 +68,8 @@ public static class IFParser
             .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
             .Select(x => new ParserItem(x.Key[NOUNITEM_PREFIX.Length..], SplitList(x.Value)))];
         _directions = [.. grod.Items(DIRECTION_PREFIX, true, true)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL && !x.Key.EndsWith(DIRECTION_COMMAND_SUFFIX, OIC))
+            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL 
+                && x.Key.IndexOf('.', DIRECTION_PREFIX.Length) < 0)
             .Select(x => new ParserItem(x.Key[DIRECTION_PREFIX.Length..], SplitList(x.Value)))];
         _prepositions = [.. grod.Items(PREPOSITION_PREFIX, true, true)
             .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
@@ -467,7 +468,7 @@ public static class IFParser
             var result = Process(grod, message);
             return result;
         }
-        return [new GrifMessage(MessageType.Text, message)];
+        return [new GrifMessage(MessageType.Text, message + NL_CHAR)];
     }
 
     #endregion
