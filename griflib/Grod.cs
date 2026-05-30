@@ -154,7 +154,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
 
     /// <summary>
     /// Removes the entry with the specified key from the current collection. Optionally removes the entry from parent
-    /// collections if recursive removal is requested.
+    /// collections recursively.
     /// </summary>
     public void Remove(string key, bool recursive)
     {
@@ -181,8 +181,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     }
 
     /// <summary>
-    /// Determines whether the collection contains the specified key, optionally searching parent collections
-    /// recursively.
+    /// Determines whether the collection contains the specified key, optionally searching parent collections recursively.
     /// </summary>
     public bool ContainsKey(string key, bool recursive)
     {
@@ -199,7 +198,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     }
 
     /// <summary>
-    /// Retrieves a list of all keys in the collection, optionally including keys from parent collections recursively and optionally sorted.
+    /// Retrieves a list of all keys in the collection, with options for recursion and sorting.
     /// </summary>
     public List<string> Keys(bool recursive, bool sorted)
     {
@@ -249,7 +248,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     }
 
     /// <summary>
-    /// Returns a list of all items in the collection, with options to include nested items and to sort the results.
+    /// Returns a list of all items in the collection, with options for recursion and sorting.
     /// </summary>
     public List<GrodItem> Items(bool recursive, bool sorted)
     {
@@ -269,6 +268,20 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     public List<GrodItem> Items(string prefix, bool recursive, bool sorted)
     {
         var keys = Keys(prefix, recursive, sorted);
+        List<GrodItem> items = [];
+        foreach (var key in keys)
+        {
+            var value = Get(key, recursive);
+            items.Add(new GrodItem(key, value));
+        }
+        return items;
+    }
+
+    /// <summary>
+    /// Retrieves a list of items from the list of keys, with option for recursion.
+    /// </summary>
+    public List<GrodItem> Items(List<string> keys, bool recursive)
+    {
         List<GrodItem> items = [];
         foreach (var key in keys)
         {
