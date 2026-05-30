@@ -238,6 +238,16 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     }
 
     /// <summary>
+    /// Retrieves a list of keys that begin with the specified prefix and have no sub-parts separated by '.'
+    /// </summary>
+    public List<string> MainKeys(string prefix, bool recursive, bool sorted)
+    {
+        var keys = Keys(prefix, recursive, sorted);
+        keys = [.. keys.Where(x => x.Length > prefix.Length && x.IndexOf('.', prefix.Length) < 0)];
+        return keys;
+    }
+
+    /// <summary>
     /// Returns a list of all items in the collection, with options for recursion and sorting.
     /// </summary>
     public List<GrodItem> Items(bool recursive, bool sorted)

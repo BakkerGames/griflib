@@ -195,6 +195,22 @@ public class UnitTestGrod
     }
 
     [Test]
+    public void Test_MainKeys()
+    {
+        Grod g = new("base");
+        g.Set("room.", "0");
+        g.Set("room.a", "1");
+        g.Set("room.a.exit.e", "2");
+        g.Set("room.b", "2");
+        g.Set("room.b.exit.w", "1");
+        g.Set("room.b.exit.e", "3");
+        g.Set("room.c", "3");
+        g.Set("room.c.exit.w", "2");
+        var answer = g.MainKeys("room.", true, true);
+        Assert.That(answer, Has.Count.EqualTo(3));
+    }
+
+    [Test]
     public void Test_RemoveKey()
     {
         Grod g = new("base");
