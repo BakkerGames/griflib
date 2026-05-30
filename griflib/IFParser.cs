@@ -67,8 +67,9 @@ public static class IFParser
         _nounitems = [.. grod.Items(NOUNITEM_PREFIX, true, true)
             .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
             .Select(x => new ParserItem(x.Key[NOUNITEM_PREFIX.Length..], SplitList(x.Value)))];
-        _directions = [.. grod.Items(DIRECTION_PREFIX, true, true)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL && !x.Key.EndsWith(DIRECTION_COMMAND_SUFFIX, OIC))
+        var dirKeys = grod.MainKeys(DIRECTION_PREFIX, true, true);
+        _directions = [.. grod.Items(dirKeys, true)
+            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
             .Select(x => new ParserItem(x.Key[DIRECTION_PREFIX.Length..], SplitList(x.Value)))];
         _prepositions = [.. grod.Items(PREPOSITION_PREFIX, true, true)
             .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
