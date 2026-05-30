@@ -463,6 +463,10 @@ public static class IFParser
             message = $"I don't understand \"{inputText}\".";
         }
         message = string.Format(message, inputText);
+        if (!message.EndsWith(NL_CHAR))
+        {
+            message += NL_CHAR;
+        }
         if (IsScript(message))
         {
             var result = Process(grod, message);
