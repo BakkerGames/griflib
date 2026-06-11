@@ -471,7 +471,9 @@ public partial class Dags
                     CheckParameterCount(p, 1);
                     for (int i = 0; i < script.Tokens.Length - 1; i++)
                     {
-                        if (script.Tokens[i] == LABEL_TOKEN && script.Tokens[i + 1] == p[0].Value && script.Tokens[i + 2] == ")")
+                        if (script.Tokens[i] == LABEL_TOKEN
+                            && script.Tokens[i + 1] == p[0].Value
+                            && script.Tokens[i + 2] == ")")
                         {
                             script.Index = i + 3;
                         }
@@ -729,6 +731,23 @@ public partial class Dags
                 case NULL_TOKEN:
                     CheckParameterCount(p, 1);
                     result.Add(new GrifMessage(MessageType.Internal, TrueFalse(IsNullOrEmpty(p[0].Value))));
+                    break;
+                case ONGOLABEL_TOKEN:
+                    CheckParameterAtLeastOne(p);
+                    int1 = (int)GetNumberValue(p[0].Value);
+                    if (int1 > 0 && int1 < p.Count) // else fall through
+                    {
+                        value = p[int1].Value;
+                        for (int i = 0; i < script.Tokens.Length - 1; i++)
+                        {
+                            if (script.Tokens[i] == LABEL_TOKEN
+                                && script.Tokens[i + 1] == value
+                                && script.Tokens[i + 2] == ")")
+                            {
+                                script.Index = i + 3;
+                            }
+                        }
+                    }
                     break;
                 case RAND_TOKEN:
                     CheckParameterCount(p, 1);

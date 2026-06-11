@@ -79,6 +79,7 @@ public partial class Dags
     public const string NL_TOKEN = "@nl";
     public const string NOT_TOKEN = "@not";
     public const string NULL_TOKEN = "@null(";
+    public const string ONGOLABEL_TOKEN = "@ongolabel(";
     public const string OR_TOKEN = "@or";
     public const string RAND_TOKEN = "@rand(";
     public const string REMOVEATLIST_TOKEN = "@removeatlist(";

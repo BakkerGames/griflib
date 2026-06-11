@@ -1,44 +1,44 @@
 // help.grif - GRIF format
 @abs(x)
-	Returns the absolute value of 'x'.\n\nReturns an error if 'x' is not numeric.
+	Returns the absolute value of "x". Returns an error if "x" is not numeric.
 @add(x,y)
-	Returns the value of integer 'x' + integer 'y'.\n\nReturns an error if either are not numeric.
+	Returns the value of integer "x" + integer "y". Returns an error if either are not numeric.
 @addlist(key,x)
-	Adds value 'x' to the end of list named 'key'.
+	Adds value "x" to the end of list named "key".
 @addto(key,x)
-	Adds the integer value of 'x' to the value in 'key' and saves back to 'key'.\n\nReturns an error if either are not numeric.
+	Adds the integer value of "x" to the value in "key" and saves back to "key". Returns an error if either are not numeric.
 @and
-	In @if or @while, this separates multiple conditions.\n\nIf the previous condition is false, it short-circuits and returns false. It does not check the rest of the conditions but jumps to the next @elseif, @else, or @endif. Otherwise it continues on and checks the next condition.
+	In @if or @while, this separates multiple conditions. If the previous condition is false, it short-circuits and returns false. It does not check the rest of the conditions but jumps to the next @elseif, @else, or @endif. Otherwise it continues on and checks the next condition.
 @bitwiseand(x,y)
-	Returns a bitwise AND of integer values 'x' and 'y'.\n\nFor example, @bitwiseand(7,2) = 2, since 7 = 111 binary and 2 = 010 binary and the result is 010 binary.\n\nReturns an error if either are not numeric or are less than zero.
+	Returns a bitwise AND of integer values "x" and "y". For example, @bitwiseand(7,2) = 2, since 7 = 111 binary and 2 = 010 binary and the result is 010 binary. Returns an error if either are not numeric or are less than zero.
 @bitwiseor(x,y)
-	Returns a bitwise OR of integer values 'x' and 'y'.\n\nFor example, @bitwiseor(7,2) = 7, since 7 = 111 binary and 2 = 010 binary and the result is 111 binary.\n\nReturns an error if either are not numeric or are less than zero.
+	Returns a bitwise OR of integer values "x" and "y". For example, @bitwiseor(7,2) = 7, since 7 = 111 binary and 2 = 010 binary and the result is 111 binary. Returns an error if either are not numeric or are less than zero.
 @bitwisexor(x,y)
-	Returns a bitwise XOR of integer values 'x' and 'y'.\n\nFor example, @bitwiseand(7,2) = 5, since 7 = 111 binary and 2 = 010 binary and the result is 101 binary.\n\nReturns an error if either are not numeric or are less than zero.
+	Returns a bitwise XOR of integer values "x" and "y". For example, @bitwiseand(7,2) = 5, since 7 = 111 binary and 2 = 010 binary and the result is 101 binary. Returns an error if either are not numeric or are less than zero.
 @cleararray(key)
-	Clears all values from the array named 'key'.
+	Clears all values from the array named "key".
 @clearbit(x,b)
-	Sets bit 'b' in integer value 'x' to 0, with b = 0 to 30. Lowest bit is on the right.\n\nReturns an error if either are not numeric, below zero, or 'b' is over 30.
+	Sets bit "b" in integer value "x" to 0, with b = 0 to 30. Lowest bit is on the right. Returns an error if either are not numeric, below zero, or "b" is over 30.
 @clearlist(key)
-	Clears all values from list named 'key'.
+	Clears all values from list named "key".
 @comment(value)
 	Used for comments in scripts. This is completely ignored. Surround 'value' with quotes.\s
 @concat(x,y,...)
 	Concatenates the values supplied and returns the result.
 @contains(x,y)
-	Returns true/false if string 'x' contains string 'y'. Case is ignored.
+	Returns true/false if string "x" contains string "y". Case is ignored.
 @containslist(key1,key2)
 	Returns true/false if list 'key1' contains all values in list 'key2'. Case is ignored.
 @datetime(format)
-	Returns the current local datetime using a valid .NET format pattern. Use quotes around the pattern. Timezone in returned in ExtraValue.\n\nFor example, @datetime("MM/dd/yyyy HH:mm") might return "01/17/2020 15:23", and the ExtraValue might be "-05:00" for US Eastern time zone.
+	Returns the current local datetime using a valid .NET format pattern. Use quotes around the pattern. Timezone in returned in ExtraValue. For example, @datetime("MM/dd/yyyy HH:mm") might return "01/17/2020 15:23", and the ExtraValue might be "-05:00" for US Eastern time zone.
 @datetime(format,utc)
-	Returns the current universal datetime using a valid .NET format pattern. Use quotes around the pattern. A timezone of "UTC" in returned in ExtraValue.\n\nFor example, @datetime("MM/dd/yyyy HH:mm") might return "01/17/2020 15:23". The ExtraValue will always be "UTC".
+	Returns the current universal datetime using a valid .NET format pattern. Use quotes around the pattern. A timezone of "UTC" in returned in ExtraValue. For example, @datetime("MM/dd/yyyy HH:mm") might return "01/17/2020 15:23". The ExtraValue will always be "UTC".
 @debug(value)
 	This command is enabled if the value in "system.debug" = "true". Otherwise it is ignored. It outputs the value plus a newline. Surround the value with quotes if it is a literal.
 @div(x,y)
-	Returns integer result of integer 'x' divided by integer 'y'.\n\nReturns an error if either are not numeric or 'y' equals zero.
+	Returns integer result of integer "x" divided by integer "y". Returns an error if either are not numeric or "y" equals zero.
 @divto(key,x)
-	Sets key to integer result of value in 'key' divided by 'x'.\n\nReturns an error if either are not numeric or 'x' equals zero.
+	Sets key to integer result of value in "key" divided by "x". Returns an error if either are not numeric or "x" equals zero.
 @do
 	In a @while loop, marks the end of conditions and starts the statement block.
 @else
@@ -56,15 +56,15 @@
 @endwhile
 	End of a @while loop.
 @eq(x,y)
-	Returns true/false if 'x' equals 'y'. Compares as numeric if possible. Otherwise it compares as strings ignoring case.
+	Returns true/false if "x" equals "y". Compares as numeric if possible. Otherwise it compares as strings ignoring case.
 @exec(value)
 	Executes the value as a script. Must surround the value with quotes to prevent it from being evaluated incorrectly.
 @exists(key)
-	Returns true/false if 'key' exists and value is not "null" or an empty string.
+	Returns true/false if "key" exists and value is not "null" or an empty string.
 @false(x)
-	Returns "true" if 'x' is falsey or "false" otherwise.\n\nFalsey values are "false", "f", "no", "n", "0", and "", ignoring case.\n\n"null" is neither truthy or falsey and will return "false". Any invalid value will return "false".\n\nThis is exactly the same as "@isfalse(x)".\n
+	Returns "true" if "x" is falsey or "false" otherwise. Falsey values are "false", "f", "no", "n", "0", and "", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@isfalse(x)". 
 @flipbit(x,b)
-	Sets bit 'b' in 'x' to the opposite 0/1, with b = 0 to 30. Lowest bit is on the right.\n\nReturns an error if either are not numeric, below zero, or 'b' is over 30.
+	Sets bit "b" in "x" to the opposite 0/1, with b = 0 to 30. Lowest bit is on the right. Returns an error if either are not numeric, below zero, or "b" is over 30.
 @for(x,start,end)
 	Runs the @for loop, replacing "$x" inside with values from start to end inclusive as increasing integers.
 @foreachkey(x,prefix,[suffix])
@@ -84,7 +84,7 @@
 @getarray(
 	todo
 @getbit(x,b)
-	Returns the bit 'b' in 'x', with b = 0 to 30. Lowest bit is on the right.\n\nReturns an error if either are not numeric, below zero, or 'b' is over 30.
+	Returns the bit "b" in "x", with b = 0 to 30. Lowest bit is on the right. Returns an error if either are not numeric, below zero, or "b" is over 30.
 @getchar(
 	todo
 @getinchannel
@@ -104,26 +104,26 @@
 @insertatlist(
 	todo
 @isbool(x)
-	Returns "true" if 'x' is truthy or falsey, or "false" otherwise.\n\nTruthy values are "true", "t", "yes", "y", "1", "-1", ignoring case.\nFalsey values are "false", "f", "no", "n", "0", and "", ignoring case.\n\n"null" is neither truthy or falsey and will return "false".
+	Returns "true" if "x" is truthy or falsey, or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. Falsey values are "false", "f", "no", "n", "0", and "", ignoring case. "null" is neither truthy or falsey and will return "false".
 @isfalse(x)
-	Returns "true" if 'x' is falsey or "false" otherwise.\n\nFalsey values are "false", "f", "no", "n", "0", and "", ignoring case.\n\n"null" is neither truthy or falsey and will return "false". Any invalid value will return "false".\n\nThis is exactly the same as "@false(x)".
+	Returns "true" if "x" is falsey or "false" otherwise. Falsey values are "false", "f", "no", "n", "0", and "", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@false(x)".
 @isnull(x)
-	todo
+	Returns "true" if "x" is null or an empty string, "false" otherwise. Identical to "@null(x)".
 @isnumber(
 	todo
-@isscript(
-	todo
+@isscript(key)
+	Returns "true" if the value for "key" is a script, i.e. starts with "@". Returns "false" otherwise.
 @istrue(x)
-	Returns "true" if 'x' is truthy or "false" otherwise.\n\nTruthy values are "true", "t", "yes", "y", "1", "-1", ignoring case.\n\n"null" is neither truthy or falsey and will return "false". Any invalid value will return "false".\n\nThis is exactly the same as "@true(x)".
-@label(
-	todo
+	Returns "true" if "x" is truthy or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@true(x)".
+@label(x)
+	A label named "x" within a script. This is the target of "@golabel(x)" or an "@ongolabel(value,..,x,...)" command and execution will start at the command after the label. If there is more than one label with the same name, the first one is always used.
 @le(
 	todo
 @len(
 	todo
 @listlength(key)
 	Returns the number of items in list "key".
-@lower(
+@lower(x)
 	Converts all the alphabetic characters in string x to lowercase.
 @lt(
 	todo
@@ -131,30 +131,32 @@
 	todo
 @min(
 	todo
-@mod(
-	todo
-@modto(
-	todo
-@msg(
-	todo
-@mul(
-	todo
-@multo(
-	todo
-@ne(
-	todo
-@neg(
-	todo
-@negto(
-	todo
+@mod(x,y)
+	Returns the numeric value of x modulus y. This is the remainder if x were to be divided by y. It is always a positive value from 0 to y-1.
+@modto(key,x)
+	Takes the numeric value from "key", calculates the modulus using "x", and stores the answer back to "key". It is always a positive value from 0 to x-1.
+@msg(key)
+	Displays the value at "key", followed by a newline.
+@mul(x,y)
+	Returns the numeric value of x times y.
+@multo(key,x)
+	Takes the numeric value from "key", multiplies it by "x", and stores the answer back into "key".
+@ne(x,y)
+	Returns "true" if x is not equal to y, or "false" otherwise. If x and y are numbers, compares as numbers. If not it compares as strings ignoring case.
+@neg(x)
+	Returns the negative of the numeric value x.
+@negto(key)
+	Takes the numeric value at "key", negates it, and stores it back to "key".
 @nl
 	Add a newline character to the result.
 @not
 	In @if or @while, negates the following condition.
-@null(
-	todo
+@null(x)
+	Returns "true" if "x" is null or an empty string, "false" otherwise. Identical to "@isnull(x)".
+@ongolabel(value,label1,label2...)
+	Goes to a specific label based on the value. If value=1, control is passed to @label(label1), value=2 to @label(label2), and so on. If the value is less than 1 or more than the number of labels, or if the label is not found, control just drops through to the next command.
 @or
-	In @if or @while, this separates multiple conditions.\n\nIf the previous condition is true, it short-circuits and returns true. It does not check the rest of the conditions but jumps to the @then. Otherwise it continues on and checks the next condition.
+	In @if or @while, this separates multiple conditions. If the previous condition is true, it short-circuits and returns true. It does not check the rest of the conditions but jumps to @then. Otherwise it continues on and checks the next condition.
 @rand(
 	todo
 @removeatlist(
@@ -166,13 +168,13 @@
 @rnd(
 	todo
 @script(key)
-	Runs the script with the key "key".
+	Runs the script stored at "key". If the value is not a script, it is output as text.
 @set(key,x)
-	Sets the value for key to x.
+	Sets the value for "key" to "x".
 @setarray(
 	todo
 @setbit(x,b)
-	Sets the bit 'b' in 'x' to 1, with b = 0 to 30. Lowest bit is on the right.\n\nReturns an error if either are not numeric, below zero, or 'b' is over 30.
+	Sets the bit "b" in "x" to 1, with b = 0 to 30. Lowest bit is on the right. Returns an error if either are not numeric, below zero, or "b" is over 30.
 @setchar(
 	todo
 @setextra(
@@ -182,7 +184,7 @@
 @setoutchannel(
 	todo
 @sub(x,y)
-	Subtracts y from x.
+	Subtracts y from x and returns the result.
 @substring(
 	todo
 @subto(
@@ -198,12 +200,12 @@
 @trim(x)
 	Trims any whitespace from the beginning and ending of string x.
 @true(x)
-	Returns "true" if 'x' is truthy or "false" otherwise.\n\nTruthy values are "true", "t", "yes", "y", "1", "-1", ignoring case.\n\n"null" is neither truthy or falsey and will return "false". Any invalid value will return "false".\n\nThis is exactly the same as "@istrue(x)".
+	Returns "true" if "x" is truthy or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@istrue(x)".
 @upper(x)
 	Converts all the alphabetic characters in string x to uppercase.
 @while
 	todo
-@write(
-	todo
-@writeline(
-	todo
+@write(value1,value2,...)
+	Writes out the concatination of value1+value2+...
+@writeline(value1,value2,...)
+	Writes out the concatination of value1+value2+..., with a newline at the end.
