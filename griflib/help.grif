@@ -77,8 +77,8 @@
 	Converts the binary string x to an integer. @frombinary(11111111) = 255.
 @fromhex(x)
 	Converts the hex string x to an integer. @fromhex(FF) = 255.
-@ge(
-	todo
+@ge(x,y)
+	Returns "true" if "x" is greater than or equal to "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "y" is null, the answer is "true" since null is less than all other values. If "x" is null and "y" is not null, the answer is "false".
 @get(key)
 	Gets the value for key.
 @getarray(
@@ -93,12 +93,12 @@
 	todo
 @getvalue(
 	todo
-@golabel(
-	todo
-@gt(
-	todo
+@golabel(x)
+	Jumps to @label(x). If there are multiple labels with the same names, it always jumps to the first one.
+@gt(x,y)
+	Returns "true" if "x" is greater than "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "x" is not null and "y" is null, the answer is "true" since null is less than all other values. If "x" is null the answer is "false".
 @if
-	todo
+	Begins an "@if" block. The full format of an "@if" block is: "@if <conditions> @then <statements> [@elseif <conditions> @then <statements> ...] [@else <statements>] @endif". There can be any number of @elseif sections. "<conditions>" consist of one or more values or functions which return truthy or falsey values. Multiple conditions are connected with "@and" or "@or", and may start with "@not" to reverse the value. "<statements>" are one or more "@" functions. "@if" may be nested within other "@if" <statement> blocks.
 @inlist(
 	todo
 @insertatlist(
