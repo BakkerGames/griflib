@@ -467,7 +467,7 @@ public partial class Dags
                     value = GetValue(grod, GetGlobalOrLocal(grod, script, p[0].Value, true));
                     result.Add(new GrifMessage(MessageType.Internal, value));
                     break;
-                case GOLABEL_TOKEN:
+                case GOTO_TOKEN:
                     CheckParameterCount(p, 1);
                     for (int i = 0; i < script.Tokens.Length - 1; i++)
                     {
@@ -732,7 +732,7 @@ public partial class Dags
                     CheckParameterCount(p, 1);
                     result.Add(new GrifMessage(MessageType.Internal, TrueFalse(IsNullOrEmpty(p[0].Value))));
                     break;
-                case ONGOLABEL_TOKEN:
+                case ONGOTO_TOKEN:
                     CheckParameterAtLeastOne(p);
                     int1 = (int)GetNumberValue(p[0].Value);
                     if (int1 > 0 && int1 < p.Count) // else fall through
