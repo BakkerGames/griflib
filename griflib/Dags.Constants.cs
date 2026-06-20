@@ -49,7 +49,7 @@ public partial class Dags
     public const string GETVALUE_TOKEN = "@getvalue(";
     public const string GET_TOKEN = "@get(";
     public const string GE_TOKEN = "@ge(";
-    public const string GOTO_TOKEN = "@goto(";
+    public const string GOLABEL_TOKEN = "@golabel(";
     public const string GT_TOKEN = "@gt(";
     public const string IF_TOKEN = "@if";
     public const string INLIST_TOKEN = "@inlist(";
@@ -79,7 +79,7 @@ public partial class Dags
     public const string NL_TOKEN = "@nl";
     public const string NOT_TOKEN = "@not";
     public const string NULL_TOKEN = "@null(";
-    public const string ONGOTO_TOKEN = "@ongoto(";
+    public const string ONGOLABEL_TOKEN = "@ongolabel(";
     public const string OR_TOKEN = "@or";
     public const string RAND_TOKEN = "@rand(";
     public const string REMOVEATLIST_TOKEN = "@removeatlist(";

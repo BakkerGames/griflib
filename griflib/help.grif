@@ -93,7 +93,7 @@
 	todo
 @getvalue(
 	todo
-@goto(x)
+@golabel(x)
 	Jumps to @label(x). If there are multiple labels with the same names, it always jumps to the first one.
 @gt(x,y)
 	Returns "true" if "x" is greater than "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "x" is not null and "y" is null, the answer is "true" since null is less than all other values. If "x" is null the answer is "false".
@@ -116,7 +116,7 @@
 @istrue(x)
 	Returns "true" if "x" is truthy or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@true(x)".
 @label(x)
-	A label named "x" within a script. This is the target of "@goto(x)" or an "@ongoto(value,..,x,...)" command and execution will start at the command after the label. If there is more than one label with the same name, the first one is always used.
+	A label named "x" within a script. This is the target of "@golabel(x)" or an "@ongolabel(value,..,x,...)" command and execution will continue with the command after the label. "x" must be a constant value, not a script. If there is more than one label with the same name, the first one is always used.
 @le(
 	todo
 @len(
@@ -153,7 +153,7 @@
 	In @if or @while, negates the following condition.
 @null(x)
 	Returns "true" if "x" is null or an empty string, "false" otherwise. Identical to "@isnull(x)".
-@ongoto(value,label1,label2...)
+@ongolabel(value,label1,label2...)
 	Goes to a specific label based on the value. If value=1, control is passed to @label(label1), value=2 to @label(label2), and so on. If the value is less than 1 or more than the number of labels, or if the label is not found, control just drops through to the next command.
 @or
 	In @if or @while, this separates multiple conditions. If the previous condition is true, it short-circuits and returns true. It does not check the rest of the conditions but jumps to @then. Otherwise it continues on and checks the next condition.
