@@ -508,16 +508,10 @@ public class TestDags
         grod.Set("counter", counterValue);
         string script = $"{ADDTO_TOKEN}counter,3) {GET_TOKEN}counter)";
         var result = Process(grod, script);
-        var expected0 = "Invalid number: five";
-        var expected1 = new GrifMessage(MessageType.Internal, counterValue);
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Not.Empty);
-        Assert.That(result, Has.Count.EqualTo(2));
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(result[0].Value, Does.Contain(expected0));
-            Assert.That(result[1], Is.EqualTo(expected1));
-        }
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.EqualTo(MessageType.Error));
     }
 
     [Test]

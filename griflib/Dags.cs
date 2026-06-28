@@ -49,6 +49,10 @@ public partial class Dags
                         {
                             result.AddRange(answer);
                         }
+                        if (result.Any(x => x.Type == MessageType.Error))
+                        {
+                            break;
+                        }
                         if (script.ReturnFlag)
                         {
                             break;

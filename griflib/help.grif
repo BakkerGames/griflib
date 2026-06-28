@@ -80,17 +80,17 @@
 @ge(x,y)
 	Returns "true" if "x" is greater than or equal to "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "y" is null, the answer is "true" since null is less than all other values. If "x" is null and "y" is not null, the answer is "false".
 @get(key)
-	Gets the value for key.
-@getarray(
-	todo
+	Gets the value for "key".
+@getarray(key,y,x)
+	Gets the value in array "key" at position "y,x". Arrays use "row,column" notation. Returns "null" if "y,x" is beyond the end of the array. Throws an error if "y" or "x" is negative.
 @getbit(x,b)
-	Returns the bit "b" in "x", with b = 0 to 30. Lowest bit is on the right. Returns an error if either are not numeric, below zero, or "b" is over 30.
+	Returns the bit "b" in "x", with b = 0 to 30. Lowest bit is on the right. Throws an error if either are not numeric, below zero, or "b" is over 30.
 @getchar(
 	todo
 @getinchannel
 	Get the value sent from calling program sent in \"#INCHANNEL;\".
-@getlist(
-	todo
+@getlist(key,x)
+	Gets the value in list "key" at position "x". Returns "null" if "x" is beyond the end of the list. Throws an error if "x" is negative.
 @getvalue(
 	todo
 @golabel(x)

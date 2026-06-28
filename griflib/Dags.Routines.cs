@@ -615,15 +615,36 @@ public partial class Dags
             }
             if (script.Index < script.Tokens.Length)
             {
-                if (script.Tokens[script.Index] == ")")
+                token = script.Tokens[script.Index];
+                if (token == ")")
                 {
                     break; // End of parameters
                 }
-                if (script.Tokens[script.Index] != ",")
+                if (token != ",")
                 {
                     throw new SystemException("Missing comma in parameters");
                 }
                 script.Index++; // Skip the comma
+                if (script.Index >= script.Tokens.Length)
+                {
+                    throw new SystemException("Missing closing parenthesis");
+                }
+                token = script.Tokens[script.Index];
+                while (script.Index < script.Tokens.Length && token == ",")
+                {
+                    parameters.Add(new GrifMessage(MessageType.Internal, ""));
+                    script.Index++;
+                    if (script.Index >= script.Tokens.Length)
+                    {
+                        throw new SystemException("Missing closing parenthesis");
+                    }
+                    token = script.Tokens[script.Index];
+                }
+                if (token == ")")
+                {
+                    parameters.Add(new GrifMessage(MessageType.Internal, ""));
+                    break; // End of parameters
+                }
             }
         }
         if (script.Index >= script.Tokens.Length || script.Tokens[script.Index] != ")")
@@ -772,14 +793,21 @@ public partial class Dags
             throw new SystemException("Key cannot be null or empty.");
         }
         value = FixListItemIn(value);
-        var existing = GetGlobalOrLocal(grod, script, key, true);
-        if (string.IsNullOrEmpty(existing) || IsNull(existing))
+        if (!grod.ContainsKey(key, true))
         {
             SetGlobalOrLocal(grod, script, key, value);
         }
         else
         {
-            SetGlobalOrLocal(grod, script, key, existing + "," + value);
+            var existing = GetGlobalOrLocal(grod, script, key, true);
+            if (IsNull(existing))
+            {
+                SetGlobalOrLocal(grod, script, key, value);
+            }
+            else
+            {
+                SetGlobalOrLocal(grod, script, key, existing + "," + value);
+            }
         }
     }
 
@@ -805,7 +833,7 @@ public partial class Dags
     private static string FixListItemIn(string? value)
     {
         if (string.IsNullOrEmpty(value))
-            return NULL;
+            return "";
         if (value.Contains(','))
             value = value.Replace(",", COMMA_CHAR);
         return value;
@@ -814,10 +842,10 @@ public partial class Dags
     /// <summary>
     /// Fix a list item for output by restoring commas and handling nulls.
     /// </summary>
-    private static string? FixListItemOut(string value)
+    private static string? FixListItemOut(string? value)
     {
-        if (value == NULL)
-            return null;
+        if (value == null || value.Equals(NULL, StringComparison.OrdinalIgnoreCase))
+            return "";
         if (value.Contains(COMMA_CHAR))
             value = value.Replace(COMMA_CHAR, ",");
         return value;
