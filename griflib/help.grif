@@ -116,7 +116,7 @@
 @istrue(x)
 	Returns "true" if "x" is truthy or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@true(x)".
 @label(x)
-	A label named "x" within a script. This is the target of "@golabel(x)" or an "@ongolabel(value,..,x,...)" command and execution will continue with the command after the label. "x" must be a constant value, not a script. If there is more than one label with the same name, the first one is always used.
+	A label named "x" within a script. This is the target of "@golabel(x)" or an "@ongolabel(value,..,x,...)" command. Execution will continue with the command after the label. "x" must be a constant value, not a script. If there is more than one label with the same name, the first one is always used.
 @le(
 	todo
 @len(
