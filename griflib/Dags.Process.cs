@@ -643,10 +643,6 @@ public partial class Dags
                     long1 = GetNumberValue(p[0].Value);
                     long2 = GetNumberValue(p[1].Value);
                     long1 %= long2;
-                    if (long1 < 0) // make positive
-                    {
-                        long1 += long2;
-                    }
                     result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
                     break;
                 case MODTO_TOKEN:
@@ -654,10 +650,6 @@ public partial class Dags
                     long1 = GetNumberValue(GetGlobalOrLocal(grod, script, p[0].Value, true));
                     long2 = GetNumberValue(p[1].Value);
                     long1 %= long2;
-                    if (long1 < 0) // make positive
-                    {
-                        long1 += long2;
-                    }
                     SetGlobalOrLocal(grod, script, p[0].Value, long1.ToString());
                     break;
                 case MSG_TOKEN:

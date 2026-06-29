@@ -1,12 +1,12 @@
 // help.grif - GRIF format
 @abs(x)
-	Returns the absolute value of "x". Returns an error if "x" is not numeric.
+	Returns the absolute value of "x". Returns 0 if "x" is "". Returns an error if "x" is not numeric or null.
 @add(x,y)
-	Returns the value of integer "x" + integer "y". Returns an error if either are not numeric.
+	Returns the value of integer "x" plus integer "y". If "x" or "y" is "", uses 0. Returns an error if either are not numeric or null.
 @addlist(key,x)
 	Adds value "x" to the end of list named "key".
 @addto(key,x)
-	Adds the integer value of "x" to the value in "key" and saves back to "key". Returns an error if either are not numeric.
+	Adds the integer value of "x" to the value in "key" and saves back to "key". If "x" is "" or value in "key" is "" or null, uses 0. Returns an error if either are not numeric or "x" is null.
 @and
 	In @if or @while, this separates multiple conditions. If the previous condition is false, it short-circuits and returns false. It does not check the rest of the conditions but jumps to the next @elseif, @else, or @endif. Otherwise it continues on and checks the next condition.
 @bitwiseand(x,y)
@@ -124,7 +124,7 @@
 @listlength(key)
 	Returns the number of items in list "key".
 @lower(x)
-	Converts all the alphabetic characters in string x to lowercase.
+	Converts all the alphabetic characters in string "x" to lowercase.
 @lt(
 	todo
 @max(
@@ -132,13 +132,13 @@
 @min(
 	todo
 @mod(x,y)
-	Returns the numeric value of x modulus y. This is the remainder if x were to be divided by y. It is always a positive value from 0 to y-1.
+	Returns the numeric value of "x" modulus "y". This is the remainder if "x" were to be divided by "y". If "x" is negative, the answer is negative.
 @modto(key,x)
-	Takes the numeric value from "key", calculates the modulus using "x", and stores the answer back to "key". It is always a positive value from 0 to x-1.
+	Takes the numeric value from "key", calculates the modulus using "x", and stores the answer back to "key". This is the remainder if the value in "key" were to be divided by "x".  If the value in "key" is negative, the answer is negative.
 @msg(key)
 	Displays the value at "key", followed by a newline.
 @mul(x,y)
-	Returns the numeric value of x times y.
+	Returns the value of integer "x" times integer "y". If "x" or "y" is "", uses 0. Returns an error if either are not numeric or null.
 @multo(key,x)
 	Takes the numeric value from "key", multiplies it by "x", and stores the answer back into "key".
 @ne(x,y)
@@ -184,7 +184,7 @@
 @setoutchannel(
 	todo
 @sub(x,y)
-	Subtracts y from x and returns the result.
+	Returns the value of integer "x" minus integer "y". If "x" or "y" is "", uses 0. Returns an error if either are not numeric or null.
 @substring(
 	todo
 @subto(

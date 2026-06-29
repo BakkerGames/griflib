@@ -603,6 +603,10 @@ public partial class Dags
                 // Handle nested script.Tokens
                 parameters.AddRange(ProcessOneCommand(grod, script));
             }
+            else if (token == ",")
+            {
+                parameters.Add(new GrifMessage(MessageType.Internal, ""));
+            }
             else
             {
                 parameters.Add(new GrifMessage(MessageType.Internal, TrimQuotes(token)));

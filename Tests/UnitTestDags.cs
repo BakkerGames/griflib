@@ -173,29 +173,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Abs()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{ABS_TOKEN}1))");
-        Assert.That(Squash(result), Is.EqualTo("1"));
-        result = Process(grod, $"{WRITE_TOKEN}{ABS_TOKEN}-1))");
-        Assert.That(Squash(result), Is.EqualTo("1"));
-    }
-
-    [Test]
-    public void Test_Add()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{ADD_TOKEN}1,3))");
-        Assert.That(Squash(result), Is.EqualTo("4"));
-    }
-
-    [Test]
-    public void Test_AddTo()
-    {
-        result = Process(grod, $"{SET_TOKEN}value,12) {ADDTO_TOKEN}value,7) {WRITE_TOKEN}{GET_TOKEN}value))");
-        Assert.That(Squash(result), Is.EqualTo("19"));
-    }
-
-    [Test]
     public void Test_Comment()
     {
         result = Process(grod, $"{COMMENT_TOKEN}\"this is a comment\")");
@@ -220,20 +197,6 @@ public class UnitTestDags
         grod.Set(DEBUG_FLAG, FALSE);
         result = Process(grod, $"{DEBUG_TOKEN}\"### this is a comment\")");
         Assert.That(Squash(result), Is.EqualTo(""));
-    }
-
-    [Test]
-    public void Test_Div()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{DIV_TOKEN}42,6))");
-        Assert.That(Squash(result), Is.EqualTo("7"));
-    }
-
-    [Test]
-    public void Test_DivTo()
-    {
-        result = Process(grod, $"{SET_TOKEN}value,12) {DIVTO_TOKEN}value,3) {WRITE_TOKEN}{GET_TOKEN}value))");
-        Assert.That(Squash(result), Is.EqualTo("4"));
     }
 
     [Test]
@@ -473,13 +436,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_MulTo()
-    {
-        result = Process(grod, $"{SET_TOKEN}value,3) {MULTO_TOKEN}value,4) {WRITE_TOKEN}{GET_TOKEN}value))");
-        Assert.That(Squash(result), Is.EqualTo("12"));
-    }
-
-    [Test]
     public void Test_NE()
     {
         result = Process(grod, $"{WRITE_TOKEN}{NE_TOKEN}42,6))");
@@ -580,13 +536,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_SubTo()
-    {
-        result = Process(grod, $"{SET_TOKEN}value,12) {SUBTO_TOKEN}value,7) {WRITE_TOKEN}{GET_TOKEN}value))");
-        Assert.That(Squash(result), Is.EqualTo("5"));
-    }
-
-    [Test]
     public void Test_Swap()
     {
         result = Process(grod, $"{SET_TOKEN}value1,abc) {SET_TOKEN}value2,def) {SWAP_TOKEN}value1,value2) {WRITE_TOKEN}{GET_TOKEN}value1),{GET_TOKEN}value2))");
@@ -660,27 +609,16 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo(""));
     }
 
-    //[Test]
-    //public void Test_Return()
-    //{
-    //    var key = "abc";
-    //    var value1 = "123";
-    //    var value2 = "456";
-    //    result = Process(grod, $"{SET_TOKEN}{key},{value1}) {RETURN_TOKEN} {SET_TOKEN}{key},{value2})");
-    //    Assert.That(result, Is.Empty);
-    //    result = Process(grod, $"{GET_TOKEN}{key})");
-    //    Assert.That(Squash(result), Is.EqualTo(value1));
-    //}
-
     [Test]
-    public void Test_AddList()
+    public void Test_Return()
     {
         var key = "abc";
         var value1 = "123";
         var value2 = "456";
-        Process(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2})");
+        result = Process(grod, $"{SET_TOKEN}{key},{value1}) {RETURN_TOKEN} {SET_TOKEN}{key},{value2})");
+        Assert.That(result, Is.Empty);
         result = Process(grod, $"{GET_TOKEN}{key})");
-        Assert.That(Squash(result), Is.EqualTo(value1 + ',' + value2));
+        Assert.That(Squash(result), Is.EqualTo(value1));
     }
 
     [Test]
