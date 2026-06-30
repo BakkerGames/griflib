@@ -32,7 +32,7 @@ namespace Tests;
 
 public class DagsTokenTests
 {
-    #region Setup
+    #region Setup ###DONE###
     private readonly Grod grod = new("test");
     private List<GrifMessage> result = [];
 
@@ -44,7 +44,7 @@ public class DagsTokenTests
     }
     #endregion
 
-    #region @abs
+    #region @abs ###DONE###
 
     [Test]
     public void Test_ABS_Positive()
@@ -118,7 +118,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @addlist
+    #region @addlist ###DONE###
 
     [Test]
     public void Test_ADDLIST_OneItem()
@@ -206,7 +206,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @addto
+    #region @addto ###DONE###
 
     [Test]
     public void Test_ADDTO_Value()
@@ -294,7 +294,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @add
+    #region @add ###DONE###
 
     [Test]
     public void Test_ADD_Value()
@@ -403,7 +403,7 @@ public class DagsTokenTests
     #region @debug
     #endregion
 
-    #region @divto
+    #region @divto ###DONE###
 
     [Test]
     public void Test_DIVTO_Value()
@@ -500,7 +500,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @div
+    #region @div ###DONE###
 
     [Test]
     public void Test_DIV_Value()
@@ -728,7 +728,7 @@ public class DagsTokenTests
     #region @min
     #endregion
 
-    #region @modto
+    #region @modto ###DONE###
 
     [Test]
     public void Test_MODTO_Value()
@@ -892,7 +892,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @mod
+    #region @mod ###DONE###
 
     [Test]
     public void Test_MOD_Value()
@@ -1061,7 +1061,7 @@ public class DagsTokenTests
     #region @msg
     #endregion
 
-    #region @multo
+    #region @multo ###DONE###
 
     [Test]
     public void Test_MULTO_Value()
@@ -1149,7 +1149,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @mul
+    #region @mul ###DONE###
 
     [Test]
     public void Test_MUL_Value()
@@ -1309,7 +1309,7 @@ public class DagsTokenTests
     #region @substring
     #endregion
 
-    #region @subto
+    #region @subto ###DONE###
 
     [Test]
     public void Test_SUBTO_Value()
@@ -1397,7 +1397,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @sub
+     #region @sub ###DONE###
 
     [Test]
     public void Test_SUB_Value()
