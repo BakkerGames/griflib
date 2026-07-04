@@ -32,16 +32,6 @@ public class TestDags
     }
 
     [Test]
-    public void TestConcatenate()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{WRITE_TOKEN}abc,def)";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage>
-            { new(MessageType.Text, "abc"), new(MessageType.Text, "def") }));
-    }
-
-    [Test]
     public void TestWriteError()
     {
         Grod grod = new("testGrod");
@@ -104,16 +94,6 @@ public class TestDags
     }
 
     [Test]
-    public void TestIfWithAndCondition()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{IF_TOKEN} {TRUE} {AND_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ENDIF_TOKEN}";
-        grod.Set("key1", "value1");
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Condition met") }));
-    }
-
-    [Test]
     public void TestIfWithOrCondition()
     {
         Grod grod = new("testGrod");
@@ -138,26 +118,6 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ELSE_TOKEN} {WRITE_TOKEN}\"Condition not met\") {ENDIF_TOKEN}";
-        grod.Set("key1", "value1");
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Condition not met") }));
-    }
-
-    [Test]
-    public void TestIfWithAndFailsToElseCondition()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{IF_TOKEN} {TRUE} {AND_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ELSE_TOKEN} {WRITE_TOKEN}\"Condition not met\") {ENDIF_TOKEN}";
-        grod.Set("key1", "value1");
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Condition not met") }));
-    }
-
-    [Test]
-    public void TestIfWithAndShortCircuitToElseCondition()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{IF_TOKEN} {FALSE} {AND_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ELSE_TOKEN} {WRITE_TOKEN}\"Condition not met\") {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
         var result = Process(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Condition not met") }));
@@ -506,15 +466,6 @@ public class TestDags
         string script = "   ";
         var result = Process(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage>() { new(MessageType.Text, script) }));
-    }
-
-    [Test]
-    public void TestScriptWithOnlyComments()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{COMMENT_TOKEN}\"This is a comment\n\") {COMMENT_TOKEN}\"Another comment\")";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage>()));
     }
 
     [Test]

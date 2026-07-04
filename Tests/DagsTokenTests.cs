@@ -364,31 +364,194 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @and
+    #region @and ###DONE###
+
+    [Test]
+    public void Test_AND_TrueAndTrue()
+    {
+        var expectedValue = "Condition met";
+        string script = $"{IF_TOKEN} {TRUE} {AND_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ENDIF_TOKEN}";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_AND_TrueAndFalse()
+    {
+        var expectedValue = "Condition not met";
+        string script = $"{IF_TOKEN} {TRUE} {AND_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ELSE_TOKEN} {WRITE_TOKEN}\"Condition not met\") {ENDIF_TOKEN}";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_AND_FalseAndTrue()
+    {
+        var expectedValue = "Condition not met";
+        string script = $"{IF_TOKEN} {FALSE} {AND_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ELSE_TOKEN} {WRITE_TOKEN}\"Condition not met\") {ENDIF_TOKEN}";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
-    #region @bitwiseand
+    #region @bitwiseand ###DONE###
+
+    [Test]
+    public void Test_BitwiseAnd()
+    {
+        var expectedValue1 = "2";
+        result = Process(grod, $"{BITWISEAND_TOKEN}7,2)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var expectedValue2 = "0";
+        result = Process(grod, $"{BITWISEAND_TOKEN}8,2)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+    }
+
     #endregion
 
-    #region @bitwiseor
+    #region @bitwiseor ###DONE###
+
+    [Test]
+    public void Test_BitwiseOr()
+    {
+        var expectedValue1 = "7";
+        result = Process(grod, $"{BITWISEOR_TOKEN}7,2)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var expectedValue2 = "10";
+        result = Process(grod, $"{BITWISEOR_TOKEN}8,2)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+    }
+
     #endregion
 
-    #region @bitwisexor
+    #region @bitwisexor ###DONE###
+
+    [Test]
+    public void Test_BitwiseXor()
+    {
+        var expectedValue1 = "5";
+        result = Process(grod, $"{BITWISEXOR_TOKEN}7,2)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var expectedValue2 = "15";
+        result = Process(grod, $"{BITWISEXOR_TOKEN}8,7)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+    }
+
     #endregion
 
-    #region @cleararray
+    #region @cleararray ###DONE###
+
+    [Test]
+    public void Test_ClearArray()
+    {
+        var key = "abc";
+        var value = "123";
+        var expectedValue = "";
+        result = Process(grod, $"{SETARRAY_TOKEN}{key},2,3,{value}) {CLEARARRAY_TOKEN}{key}) {GETARRAY_TOKEN}{key},2,3)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
-    #region @clearbit
+    #region @clearbit ###DONE###
+
+    [Test]
+    public void Test_ClearBit()
+    {
+        var expectedValue1 = "3";
+        result = Process(grod, $"{CLEARBIT_TOKEN}7,2)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var expectedValue2 = "6";
+        result = Process(grod, $"{CLEARBIT_TOKEN}7,0)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+
+        var expectedValue3 = "0";
+        result = Process(grod, $"{CLEARBIT_TOKEN}1073741824,30)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+    }
+
     #endregion
 
-    #region @clearlist
+    #region @clearlist ###DONE###
+
+    [Test]
+    public void Test_ClearList()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var expectedValue = "";
+        result = Process(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2}) {CLEARLIST_TOKEN}{key}) {GETLIST_TOKEN}{key},0)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
-    #region @comment
+    #region @comment ###DONE###
+
+    [Test]
+    public void Test_COMMENT()
+    {
+        var script = $"{COMMENT_TOKEN}\"this is a comment\")";
+        result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(0));
+    }
+
+    [Test]
+    public void Test_COMMENT_TwoComments()
+    {
+        string script = $"{COMMENT_TOKEN}\"This is a comment\n\") {COMMENT_TOKEN}\"Another comment\")";
+        result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(0));
+    }
+
     #endregion
 
-    #region @concat
+    #region @concat ###DONE###
+
+    [Test]
+    public void Test_Concat()
+    {
+        var expectedValue = "abcdef123";
+        result = Process(grod, $"{CONCAT_TOKEN}abc, def, 123)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @containslist
@@ -397,10 +560,83 @@ public class DagsTokenTests
     #region @contains
     #endregion
 
-    #region @datetime
+    #region @datetime ###DONE###
+
+    [Test]
+    public void TestDateTime()
+    {
+        var script = @"@write(@datetime(""MM-dd-yyyy HH:mm:ss""))";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
+        Assert.That(result[0].Value, Has.Length.EqualTo(19)); // value will vary, length fixed
+        Assert.That(result[0].ExtraValue, Has.Length.EqualTo(6)); // value will vary, length fixed
+    }
+
+    [Test]
+    public void TestDateTimeUTC()
+    {
+        var script = @"@write(@datetime(""MM-dd-yyyy HH:mm:ss"",utc))";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
+        Assert.That(result[0].Value, Has.Length.EqualTo(19)); // value will vary, length fixed
+        Assert.That(result[0].ExtraValue, Is.EqualTo("UTC"));
+    }
+
+    [Test]
+    public void TestDateTimeRoundtrip()
+    {
+        var script = @"@write(@datetime(""O""))";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
+        Assert.That(result[0].Value, Has.Length.EqualTo(33)); // value will vary, length fixed
+        Assert.That(result[0].ExtraValue, Has.Length.EqualTo(6)); // value will vary, length fixed
+    }
+
+    [Test]
+    public void TestDateTimeRoundtripUTC()
+    {
+        var script = @"@write(@datetime(""O"",utc))";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
+        Assert.That(result[0].Value, Has.Length.EqualTo(28)); // value will vary, length fixed
+        Assert.That(result[0].Value[^1], Is.EqualTo('Z'));
+        Assert.That(result[0].ExtraValue, Is.EqualTo("UTC"));
+    }
+
     #endregion
 
-    #region @debug
+    #region @debug ###DONE###
+
+    [Test]
+    public void Test_Debug()
+    {
+        var expectedValue1 = "### this is a debug comment";
+        Process(grod, $"{SET_TOKEN}{DEBUG_FLAG},true)");
+        result = Process(grod, $"{DEBUG_TOKEN}\"### this is a debug comment\")");
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[1].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+        Assert.That(result[1].Value, Is.EqualTo(NL_CHAR));
+
+        var expectedValue2 = "579";
+        Process(grod, $"{SET_TOKEN}{DEBUG_FLAG},true)");
+        result = Process(grod, $"{DEBUG_TOKEN}{ADD_TOKEN}123,456))");
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[1].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+        Assert.That(result[1].Value, Is.EqualTo(NL_CHAR));
+
+        Process(grod, $"{SET_TOKEN}{DEBUG_FLAG},false)");
+        result = Process(grod, $"{DEBUG_TOKEN}\"### this is a comment\")");
+        Assert.That(result, Has.Count.EqualTo(0));
+    }
+
     #endregion
 
     #region @divto ###DONE###
@@ -1397,7 +1633,7 @@ public class DagsTokenTests
 
     #endregion
 
-     #region @sub ###DONE###
+    #region @sub ###DONE###
 
     [Test]
     public void Test_SUB_Value()
@@ -1516,8 +1752,45 @@ public class DagsTokenTests
     #endregion
 
     #region @writeline
+
+    [Test]
+    public void Test_WRITELINE_Concatenate()
+    {
+        var value1 = "abc";
+        var value2 = "def";
+        var expectedValue1 = "abc";
+        var expectedValue2 = "def";
+        var expectedValue3 = NL_CHAR;
+        string script = $"{WRITELINE_TOKEN}{value1},{value2})";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(3));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[1].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[2].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue2));
+        Assert.That(result[2].Value, Is.EqualTo(expectedValue3));
+    }
+
     #endregion
 
     #region @write
+
+    [Test]
+    public void Test_WRITE_Concatenate()
+    {
+        var value1 = "abc";
+        var value2 = "def";
+        var expectedValue1 = "abc";
+        var expectedValue2 = "def";
+        string script = $"{WRITE_TOKEN}{value1},{value2})";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result[0].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[1].Type, Is.Not.EqualTo(MessageType.Error));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue2));
+    }
+
     #endregion
 }

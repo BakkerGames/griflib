@@ -88,16 +88,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo(value));
     }
 
-    [Test]
-    public void Test_ClearArray()
-    {
-        var key = "abc";
-        var value = "123";
-        Process(grod, $"{SETARRAY_TOKEN}{key},2,3,{value})");
-        Process(grod, $"{CLEARARRAY_TOKEN}{key})");
-        result = Process(grod, $"{GETARRAY_TOKEN}{key},2,3)");
-        Assert.That(Squash(result), Is.EqualTo(""));
-    }
 
     [Test]
     public void Test_SetList()
@@ -172,32 +162,7 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo("eek!"));
     }
 
-    [Test]
-    public void Test_Comment()
-    {
-        result = Process(grod, $"{COMMENT_TOKEN}\"this is a comment\")");
-        Assert.That(Squash(result), Is.EqualTo(""));
-    }
 
-    [Test]
-    public void Test_Concat()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{CONCAT_TOKEN}abc, def, 123))");
-        Assert.That(Squash(result), Is.EqualTo("abcdef123"));
-    }
-
-    [Test]
-    public void Test_Debug()
-    {
-        grod.Set(DEBUG_FLAG, TRUE);
-        result = Process(grod, $"{DEBUG_TOKEN}\"### this is a comment\")");
-        Assert.That(Squash(result), Is.EqualTo("### this is a comment" + NL_CHAR));
-        result = Process(grod, $"{DEBUG_TOKEN}{ADD_TOKEN}123,456))");
-        Assert.That(Squash(result), Is.EqualTo("579" + NL_CHAR));
-        grod.Set(DEBUG_FLAG, FALSE);
-        result = Process(grod, $"{DEBUG_TOKEN}\"### this is a comment\")");
-        Assert.That(Squash(result), Is.EqualTo(""));
-    }
 
     [Test]
     public void Test_EQ()
@@ -621,17 +586,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo(value1));
     }
 
-    [Test]
-    public void Test_ClearList()
-    {
-        var key = "abc";
-        var value1 = "123";
-        var value2 = "456";
-        Process(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2})");
-        Process(grod, $"{CLEARLIST_TOKEN}{key})");
-        result = Process(grod, $"{GET_TOKEN}{key})");
-        Assert.That(Squash(result), Is.EqualTo(""));
-    }
 
     [Test]
     public void Test_GetArray()
@@ -721,44 +675,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo("1"));
         result = Process(grod, $"{SETBIT_TOKEN}0,30)");
         Assert.That(Squash(result), Is.EqualTo("1073741824"));
-    }
-
-    [Test]
-    public void Test_ClearBit()
-    {
-        result = Process(grod, $"{CLEARBIT_TOKEN}7,2)");
-        Assert.That(Squash(result), Is.EqualTo("3"));
-        result = Process(grod, $"{CLEARBIT_TOKEN}7,0)");
-        Assert.That(Squash(result), Is.EqualTo("6"));
-        result = Process(grod, $"{CLEARBIT_TOKEN}1073741824,30)");
-        Assert.That(Squash(result), Is.EqualTo("0"));
-    }
-
-    [Test]
-    public void Test_BitwiseAnd()
-    {
-        result = Process(grod, $"{BITWISEAND_TOKEN}7,2)");
-        Assert.That(Squash(result), Is.EqualTo("2"));
-        result = Process(grod, $"{BITWISEAND_TOKEN}8,2)");
-        Assert.That(Squash(result), Is.EqualTo("0"));
-    }
-
-    [Test]
-    public void Test_BitwiseOr()
-    {
-        result = Process(grod, $"{BITWISEOR_TOKEN}7,2)");
-        Assert.That(Squash(result), Is.EqualTo("7"));
-        result = Process(grod, $"{BITWISEOR_TOKEN}8,2)");
-        Assert.That(Squash(result), Is.EqualTo("10"));
-    }
-
-    [Test]
-    public void Test_BitwiseXor()
-    {
-        result = Process(grod, $"{BITWISEXOR_TOKEN}7,2)");
-        Assert.That(Squash(result), Is.EqualTo("5"));
-        result = Process(grod, $"{BITWISEXOR_TOKEN}8,7)");
-        Assert.That(Squash(result), Is.EqualTo("15"));
     }
 
     [Test]

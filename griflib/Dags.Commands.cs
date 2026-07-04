@@ -178,7 +178,7 @@ public partial class Dags
             else
             {
                 var dt = DateTime.Now.ToString(p[0].Value, CultureInfo.InvariantCulture);
-                var tz = TimeZoneInfo.Local.DisplayName[4..10]; // "-05:00"
+                var tz = DateTime.Now.ToString("O")[^6..]; // Get the timezone from the roundtrip format
                 result.Add(new GrifMessage(MessageType.Internal, dt, tz));
             }
         }
