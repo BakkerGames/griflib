@@ -14,7 +14,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     private readonly string[] _falseyList = [FALSE, "f", "no", "n", "0", ""];
 
     // Internal storage for key-value pairs, using case-insensitive keys
-    private readonly Dictionary<string, string?> _data = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string?> _data = new(OICR);
 
     #endregion
 
@@ -55,7 +55,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
         ValidateKey(key);
         if (_data.TryGetValue(key, out var value))
         {
-            if (value == null || value.Equals(NULL, StringComparison.OrdinalIgnoreCase))
+            if (value == null || value.Equals(NULL, OIC))
             {
                 return null;
             }
@@ -95,11 +95,11 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
         {
             return null;
         }
-        if (_truthyList.Contains(value, StringComparer.OrdinalIgnoreCase))
+        if (_truthyList.Contains(value, OICR))
         {
             return true;
         }
-        if (_falseyList.Contains(value, StringComparer.OrdinalIgnoreCase))
+        if (_falseyList.Contains(value, OICR))
         {
             return false;
         }
@@ -116,7 +116,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     public void Set(string key, string? value)
     {
         ValidateKey(key);
-        if (value != null && value.Equals(NULL, StringComparison.OrdinalIgnoreCase))
+        if (value != null && value.Equals(NULL, OIC))
         {
             value = null;
         }
@@ -206,7 +206,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
         if (recursive && Parent != null)
         {
             var parentKeys = Parent.Keys(recursive, false);
-            keys = [.. keys.Union(parentKeys, StringComparer.OrdinalIgnoreCase)];
+            keys = [.. keys.Union(parentKeys, OICR)];
         }
         if (sorted)
         {
@@ -221,14 +221,14 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     public List<string> Keys(string prefix, bool recursive, bool sorted)
     {
         var keys = new List<string>(_data.Keys)
-            .Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            .Where(x => x.StartsWith(prefix, OIC))
             .ToList();
         if (recursive && Parent != null)
         {
             var parentKeys = Parent.Keys(recursive, false)
-                .Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                .Where(x => x.StartsWith(prefix, OIC))
                 .ToList();
-            keys = [.. keys.Union(parentKeys, StringComparer.OrdinalIgnoreCase)];
+            keys = [.. keys.Union(parentKeys, OICR)];
         }
         if (sorted)
         {
@@ -329,7 +329,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
         var parent = Parent;
         while (parent != null)
         {
-            if (parent.Name != null && parent.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+            if (parent.Name != null && parent.Name.Equals(name, OIC))
             {
                 return parent;
             }
@@ -355,14 +355,14 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
         {
             return 1;
         }
-        if (x.Equals(y, StringComparison.OrdinalIgnoreCase)) return 0;
+        if (x.Equals(y, OIC)) return 0;
         var xTokens = x.Split('.');
         var yTokens = y.Split('.');
         for (int i = 0; i < Math.Max(xTokens.Length, yTokens.Length); i++)
         {
             if (i >= xTokens.Length) return -1; // x is shorter and earlier
             if (i >= yTokens.Length) return 1; // y is shorter and earlier
-            if (xTokens[i].Equals(yTokens[i], StringComparison.OrdinalIgnoreCase)) continue;
+            if (xTokens[i].Equals(yTokens[i], OIC)) continue;
             if (xTokens[i] == "*") return -1; // "*" comes first so x is earlier
             if (yTokens[i] == "*") return 1; // "*" comes first so y is earlier
             if (xTokens[i] == "?") return -1; // "?" comes next so x is earlier
@@ -374,7 +374,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
                 if (xVal == yVal) continue;
                 return xVal < yVal ? -1 : 1;
             }
-            return string.Compare(xTokens[i], yTokens[i], StringComparison.OrdinalIgnoreCase);
+            return string.Compare(xTokens[i], yTokens[i], OIC);
         }
         return 0;
     }

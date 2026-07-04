@@ -848,7 +848,7 @@ public partial class Dags
     /// </summary>
     private static string? FixListItemOut(string? value)
     {
-        if (value == null || value.Equals(NULL, StringComparison.OrdinalIgnoreCase))
+        if (value == null || value.Equals(NULL, OIC))
             return "";
         if (value.Contains(COMMA_CHAR))
             value = value.Replace(COMMA_CHAR, ",");

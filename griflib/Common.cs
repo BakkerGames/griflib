@@ -5,12 +5,17 @@ public static partial class Common
     /// <summary>
     /// Gets the current version of the library.
     /// </summary>
-    public static string Version { get { return "2.2026.614.0"; } }
+    public static string Version { get { return "2.2026.704.0"; } }
 
     /// <summary>
     /// String comparison: OrdinalIgnoreCase
     /// </summary>
     public static readonly StringComparison OIC = StringComparison.OrdinalIgnoreCase;
+
+    /// <summary>
+    /// String comparer: OrdinalIgnoreCase
+    /// </summary>
+    public static readonly StringComparer OICR = StringComparer.OrdinalIgnoreCase;
 
     // Basic constants
     public const string NULL = "null";
@@ -54,6 +59,7 @@ public static partial class Common
     public const string INCHANNEL = "#INCHANNEL;";
 
     // Outchannel message prefixes
+    public const string OUTCHANNEL_ADD_EXTRA = "#ADDEXTRA;";
     public const string OUTCHANNEL_ASK = "#ASK;";
     public const string OUTCHANNEL_ENTER = "#ENTER;";
     public const string OUTCHANNEL_EXISTS_SAVE = "#EXISTS;";
@@ -64,7 +70,6 @@ public static partial class Common
     public const string OUTCHANNEL_RESTORE_NAME = "#RESTORENAME;";
     public const string OUTCHANNEL_SAVE = "#SAVE;";
     public const string OUTCHANNEL_SAVE_NAME = "#SAVENAME;";
-    public const string OUTCHANNEL_ADD_EXTRA = "`#ADDEXTRA;";
     public const string OUTCHANNEL_SET_EXTRA_VALUE = "#SETEXTRAVALUE;";
 
     // Prefixes for word types
@@ -72,11 +77,11 @@ public static partial class Common
     public const string BACKGROUND_PREFIX = "background.";
     public const string COMMAND_PREFIX = "command.";
     public const string DIRECTION_PREFIX = "direction.";
+    public const string INPUT_PREFIX = "input.";
     public const string NOUN_PREFIX = "noun.";
     public const string NOUNITEM_PREFIX = "nounitem.";
     public const string PREPOSITION_PREFIX = "preposition.";
     public const string VERB_PREFIX = "verb.";
-    public const string INPUT_PREFIX = "input.";
 
     public const string DIRECTION_COMMAND_SUFFIX = ".command";
 }
