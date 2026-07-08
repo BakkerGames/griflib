@@ -1747,7 +1747,22 @@ public class DagsTokenTests
     #region @rand
     #endregion
 
-    #region @removeatlist
+    #region @removeatlist ###DONE###
+
+    [Test]
+    public void Test_RemoveAtList()
+    {
+        var key = "key";
+        var value = "123";
+        var expectedValue = "123";
+        Process(grod, $"{SETLIST_TOKEN}{key},3,{value})");
+        Process(grod, $"{REMOVEATLIST_TOKEN}{key},0)");
+        result = Process(grod, $"{GETLIST_TOKEN}{key},2)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @replace
@@ -1989,7 +2004,55 @@ public class DagsTokenTests
     #region @upper
     #endregion
 
-    #region @while
+    #region @while ###DONE###
+
+    [Test]
+    public void Test_WHILE()
+    {
+        var script = @"
+            @set(_a,0)
+            @while @lt(@get(_a),3) @do
+                @addto(_a,1)
+                @write(@get(_a))
+            @endwhile
+            @write(""xyz"")
+            ";
+        var answer = new List<GrifMessage> {
+            new(MessageType.Text, "1"),
+            new(MessageType.Text, "2"),
+            new(MessageType.Text, "3"),
+            new(MessageType.Text, "xyz")
+        };
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(4));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result, Is.EqualTo(answer));
+    }
+
+    [Test]
+    public void Test_WHILE_Return()
+    {
+        var script = @"
+            @set(_a,0)
+            @while @lt(@get(_a),3) @do
+                @addto(_a,1)
+                @write(@get(_a))
+                @if @eq(@get(_a),2) @then
+                    @return
+                @endif
+            @endwhile
+            @write(""xyz"")
+            ";
+        var answer = new List<GrifMessage> {
+            new(MessageType.Text, "1"),
+            new(MessageType.Text, "2")
+        };
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result, Is.EqualTo(answer));
+    }
+
     #endregion
 
     #region @writeline ###DONE###

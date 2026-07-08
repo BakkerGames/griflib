@@ -135,16 +135,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo("3"));
     }
 
-    [Test]
-    public void Test_RemoveAtList()
-    {
-        var key = "abc";
-        var value = "123";
-        Process(grod, $"{SETLIST_TOKEN}{key},3,{value})");
-        Process(grod, $"{REMOVEATLIST_TOKEN}{key},0)");
-        result = Process(grod, $"{GETLIST_TOKEN}{key},2)");
-        Assert.That(Squash(result), Is.EqualTo(value));
-    }
 
     [Test]
     public void Test_Function()

@@ -89,50 +89,6 @@ public class MoreTests
         }
     }
 
-    [Test]
-    public void TestWhile()
-    {
-        Grod grod = new("testGrod");
-        var script = @"
-            @set(_a,0)
-            @while @lt(@get(_a),3) @do
-                @addto(_a,1)
-                @write(@get(_a))
-            @endwhile
-            @write(""xyz"")
-            ";
-        var answer = new List<GrifMessage> {
-            new(MessageType.Text, "1"),
-            new(MessageType.Text, "2"),
-            new(MessageType.Text, "3"),
-            new(MessageType.Text, "xyz")
-        };
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(answer));
-    }
-
-    [Test]
-    public void TestWhileReturn()
-    {
-        Grod grod = new("testGrod");
-        var script = @"
-            @set(_a,0)
-            @while @lt(@get(_a),3) @do
-                @addto(_a,1)
-                @write(@get(_a))
-                @if @eq(@get(_a),2) @then
-                    @return
-                @endif
-            @endwhile
-            @write(""xyz"")
-            ";
-        var answer = new List<GrifMessage> {
-            new(MessageType.Text, "1"),
-            new(MessageType.Text, "2")
-        };
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(answer));
-    }
 
     [Test]
     public void TestNestedReturn()
