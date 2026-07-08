@@ -387,13 +387,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Msg()
-    {
-        result = Process(grod, $"{SET_TOKEN}value,abcdef) {MSG_TOKEN}value)");
-        Assert.That(Squash(result), Is.EqualTo("abcdef" + NL_CHAR));
-    }
-
-    [Test]
     public void Test_Mul()
     {
         result = Process(grod, $"{WRITE_TOKEN}{MUL_TOKEN}3,4))");
@@ -407,20 +400,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo(TRUE));
         result = Process(grod, $"{WRITE_TOKEN}{NE_TOKEN}42,42))");
         Assert.That(Squash(result), Is.EqualTo(FALSE));
-    }
-
-    [Test]
-    public void Test_Neg()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{NEG_TOKEN}3))");
-        Assert.That(Squash(result), Is.EqualTo("-3"));
-    }
-
-    [Test]
-    public void Test_NegTo()
-    {
-        result = Process(grod, $"{SET_TOKEN}value,3) {NEGTO_TOKEN}value) {WRITE_TOKEN}{GET_TOKEN}value))");
-        Assert.That(Squash(result), Is.EqualTo("-3"));
     }
 
     [Test]

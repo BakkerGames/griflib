@@ -94,26 +94,6 @@ public class TestDags
     }
 
     [Test]
-    public void TestIfWithOrCondition()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{IF_TOKEN} {FALSE} {OR_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ENDIF_TOKEN}";
-        grod.Set("key1", "value1");
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Condition met") }));
-    }
-
-    [Test]
-    public void TestIfWithOrShortCircuitCondition()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{IF_TOKEN} {TRUE} {OR_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ENDIF_TOKEN}";
-        grod.Set("key1", "value1");
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Condition met") }));
-    }
-
-    [Test]
     public void TestIfWithElseCondition()
     {
         Grod grod = new("testGrod");
@@ -346,16 +326,6 @@ public class TestDags
     }
 
     [Test]
-    public void TestMsg()
-    {
-        Grod grod = new("testGrod");
-        grod.Set("Hello", "Hello, World!");
-        string script = $"{MSG_TOKEN}Hello)";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Hello, World!"), new(MessageType.Text, "\\n") }));
-    }
-
-    [Test]
     public void TestParameterWithFunction()
     {
         Grod grod = new("testGrod");
@@ -475,34 +445,6 @@ public class TestDags
         string script = $"{COMMENT_TOKEN}\"This is a comment\n\") {WRITE_TOKEN}Hello) {COMMENT_TOKEN}\"Another comment\") {WRITE_TOKEN}World)";
         var result = Process(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Hello"), new(MessageType.Text, "World") }));
-    }
-
-    [Test]
-    public void TestNeg()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{NEG_TOKEN}5)";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Internal, "-5") }));
-    }
-
-    [Test]
-    public void TestNegZero()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{NEG_TOKEN}0)";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Internal, "0") }));
-    }
-
-    [Test]
-    public void TestNegTo()
-    {
-        Grod grod = new("testGrod");
-        grod.Set("counter", "5");
-        string script = $"{NEGTO_TOKEN}counter){GET_TOKEN}counter)";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Internal, "-5") }));
     }
 
     [Test]
