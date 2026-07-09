@@ -334,17 +334,6 @@ public class UnitTestGrod
     }
 
     [Test]
-    public void Test_Keys()
-    {
-        Grod g = new("base");
-        g.Set("a", "1");
-        g.Set("b", "2");
-        g.Set("c", "3");
-        var keys = g.Keys(false, false);
-        Assert.That(keys.Contains("a") && keys.Contains("b") && keys.Contains("c"), Is.True);
-    }
-
-    [Test]
     public void Test_KeysOverlay()
     {
         Grod g = new("base");

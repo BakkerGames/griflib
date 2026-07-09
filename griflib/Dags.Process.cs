@@ -125,9 +125,6 @@ public partial class Dags
                 case CONTAINS_TOKEN:
                     Exec_Contains(grod, script, p, result);
                     break;
-                case CONTAINSLIST_TOKEN:
-                    Exec_ContainsList(grod, script, p, result);
-                    break;
                 case DATETIME_TOKEN:
                     Exec_DateTime(grod, script, p, result);
                     break;
@@ -204,7 +201,7 @@ public partial class Dags
                     Exec_GreaterThan(grod, script, p, result);
                     break;
                 case INLIST_TOKEN:
-                    Exec_InList(grod, script, p, result);
+                    Exec_ListContains(grod, script, p, result);
                     break;
                 case INSERTATLIST_TOKEN:
                     Exec_InsertAtList(grod, script, p, result);
@@ -226,6 +223,12 @@ public partial class Dags
                     break;
                 case LEN_TOKEN:
                     Exec_Len(grod, script, p, result);
+                    break;
+                case LISTCONTAINS_TOKEN:
+                    Exec_ListContains(grod, script, p, result);
+                    break;
+                case LISTCONTAINSALL_TOKEN:
+                    Exec_ListContainsAll(grod, script, p, result);
                     break;
                 case LISTLENGTH_TOKEN:
                     Exec_ListLength(grod, script, p, result);

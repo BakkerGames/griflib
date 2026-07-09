@@ -27,8 +27,6 @@
 	Concatenates the values supplied and returns the result.
 @contains(x,y)
 	Returns true/false if string "x" contains string "y". Case is ignored.
-@containslist(key1,key2)
-	Returns true/false if list 'key1' contains all values in list 'key2'. Case is ignored.
 @datetime(format)
 	Returns the current local datetime using a valid .NET format pattern. Use quotes around the pattern. Timezone in returned in ExtraValue. For example, @datetime("MM/dd/yyyy HH:mm") might return "01/17/2020 15:23", and the ExtraValue might be "-05:00" for US Eastern time zone.
 @datetime(format,utc)
@@ -99,8 +97,8 @@
 	Returns "true" if "x" is greater than "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "x" is not null and "y" is null, the answer is "true" since null is less than all other values. If "x" is null the answer is "false".
 @if
 	Begins an "@if" block. The full format of an "@if" block is: "@if <conditions> @then <statements> [@elseif <conditions> @then <statements> ...] [@else <statements>] @endif". There can be any number of @elseif sections. "<conditions>" consist of one or more values or functions which return truthy or falsey values. Multiple conditions are connected with "@and" or "@or", and may start with "@not" to reverse the value. "<statements>" are one or more "@" functions. "@if" may be nested within other "@if" <statement> blocks.
-@inlist(
-	todo
+@inlist(key,value)
+	Returns true/false if list "key" contains an item "value". Case is ignored. Same as "@listcontains".
 @insertatlist(
 	todo
 @isbool(x)
@@ -121,6 +119,10 @@
 	todo
 @len(
 	todo
+@listcontains(key,value)
+	Returns true/false if list "key" contains an item "value". Case is ignored. Same as "@inlist".
+@listcontainsall(key1,key2)
+	Returns true/false if list "key1" contains all values in list "key2". Case is ignored.
 @listlength(key)
 	Returns the number of items in list "key".
 @lower(x)

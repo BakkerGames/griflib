@@ -16,7 +16,6 @@ public partial class Dags
     public const string CLEARLIST_TOKEN = "@clearlist(";
     public const string COMMENT_TOKEN = "@comment(";
     public const string CONCAT_TOKEN = "@concat(";
-    public const string CONTAINSLIST_TOKEN = "@containslist(";
     public const string CONTAINS_TOKEN = "@contains(";
     public const string DATETIME_TOKEN = "@datetime(";
     public const string DEBUG_TOKEN = "@debug(";
@@ -63,6 +62,8 @@ public partial class Dags
     public const string LABEL_TOKEN = "@label(";
     public const string LEN_TOKEN = "@len(";
     public const string LE_TOKEN = "@le(";
+    public const string LISTCONTAINS_TOKEN = "@listcontains(";
+    public const string LISTCONTAINSALL_TOKEN = "@listcontainsall(";
     public const string LISTLENGTH_TOKEN = "@listlength(";
     public const string LOWER_TOKEN = "@lower(";
     public const string LT_TOKEN = "@lt(";

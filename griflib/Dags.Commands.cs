@@ -128,34 +128,11 @@ public partial class Dags
     public static void Exec_Contains(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
-        var list1 = SplitList(p[0].Value);
-        if (list1.Contains(p[1].Value))
-        {
-            result.Add(new GrifMessage(MessageType.Internal, TRUE));
-            return;
-        }
-        result.Add(new GrifMessage(MessageType.Internal, FALSE));
-    }
-
-    public static void Exec_ContainsList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
-    {
-        CheckParameterCount(p, 2);
-        var list1 = SplitList(p[0].Value);
-        var list2 = SplitList(p[1].Value);
-        if (list1.Length == 0 || list2.Length == 0)
+        if (p[0].Value.Length == 0 || p[1].Value.Length == 0)
         {
             result.Add(new GrifMessage(MessageType.Internal, FALSE));
-            return;
         }
-        foreach (var listItem in list2)
-        {
-            if (!list1.Contains(listItem))
-            {
-                result.Add(new GrifMessage(MessageType.Internal, FALSE));
-                break;
-            }
-        }
-        result.Add(new GrifMessage(MessageType.Internal, TRUE));
+        result.Add(new GrifMessage(MessageType.Internal, TrueFalse(p[0].Value.Contains(p[1].Value, OIC))));
     }
 
     public static void Exec_DateTime(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -483,19 +460,6 @@ public partial class Dags
         result.AddRange(ProcessIf(grod, script));
     }
 
-    public static void Exec_InList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
-    {
-        CheckParameterCount(p, 2);
-        if (InList(grod, script, p[0].Value, p[1].Value))
-        {
-            result.Add(new GrifMessage(MessageType.Internal, TRUE));
-        }
-        else
-        {
-            result.Add(new GrifMessage(MessageType.Internal, FALSE));
-        }
-    }
-
     public static void Exec_InsertAtList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 3);
@@ -635,6 +599,28 @@ public partial class Dags
             result.Add(new GrifMessage(MessageType.Internal,
                 TrueFalse(string.Compare(p[0].Value, p[1].Value, OIC) <= 0)));
         }
+    }
+
+    public static void Exec_ListContains(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterCount(p, 2);
+        var answer = InList(grod, script, p[0].Value, p[1].Value);
+        result.Add(new GrifMessage(MessageType.Internal, TrueFalse(answer)));
+    }
+
+    public static void Exec_ListContainsAll(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterCount(p, 2);
+        var list2 = SplitList(grod.Get(p[1].Value, true));
+        foreach (var item2 in list2)
+        {
+            if (!InList(grod, script, p[0].Value, item2))
+            {
+                result.Add(new GrifMessage(MessageType.Internal, FALSE));
+                return;
+            }
+        }
+        result.Add(new GrifMessage(MessageType.Internal, TRUE));
     }
 
     public static void Exec_ListLength(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
