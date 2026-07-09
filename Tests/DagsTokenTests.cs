@@ -33,6 +33,7 @@ namespace Tests;
 public class DagsTokenTests
 {
     #region Setup ###DONE###
+
     private readonly Grod grod = new("test");
     private List<GrifMessage> result = [];
 
@@ -42,6 +43,7 @@ public class DagsTokenTests
         grod.Clear(true);
         result.Clear();
     }
+
     #endregion
 
     #region @abs ###DONE###
@@ -2207,6 +2209,22 @@ public class DagsTokenTests
     #endregion
 
     #region @swap
+
+    [Test]
+    public void Test_Swap()
+    {
+        var key1 = "key1";
+        var key2 = "key2";
+        var value1 = "value1";
+        var value2 = "value2";
+        var expectedValue = "value2,value1";
+        var script = @$"{SET_TOKEN}{key1},{value1}) {SET_TOKEN}{key2},{value2}) {SWAP_TOKEN}{key1},{key2}) {CONCAT_TOKEN}{GET_TOKEN}{key1}),"","",{GET_TOKEN}{key2}))";
+        result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @then
@@ -2222,6 +2240,43 @@ public class DagsTokenTests
     #endregion
 
     #region @true
+
+    [Test]
+    public void Test_True()
+    {
+        var value2 = "1";
+        var expectedValue2 = "true";
+        var script2 = $"{ISTRUE_TOKEN}{value2})";
+        result = Process(grod, script2);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+
+        var value1 = "0";
+        var expectedValue1 = "false";
+        var script1 = $"{ISTRUE_TOKEN}{value1})";
+        result = Process(grod, script1);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var value3 = "abc";
+        var expectedValue3 = "false";
+        var script3 = $"{ISTRUE_TOKEN}{value3})";
+        result = Process(grod, script3);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+
+        var value4 = NULL;
+        var expectedValue4 = "false";
+        var script4 = $"{ISTRUE_TOKEN}{value4})";
+        result = Process(grod, script3);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue4));
+    }
+
     #endregion
 
     #region @upper

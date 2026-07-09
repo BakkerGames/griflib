@@ -470,28 +470,10 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Swap()
-    {
-        result = Process(grod, $"{SET_TOKEN}value1,abc) {SET_TOKEN}value2,def) {SWAP_TOKEN}value1,value2) {WRITE_TOKEN}{GET_TOKEN}value1),{GET_TOKEN}value2))");
-        Assert.That(Squash(result), Is.EqualTo("defabc"));
-    }
-
-    [Test]
     public void Test_Trim()
     {
         result = Process(grod, $"{SET_TOKEN}value,\"   abc   \") {WRITE_TOKEN}{TRIM_TOKEN}{GET_TOKEN}value)))");
         Assert.That(Squash(result), Is.EqualTo("abc"));
-    }
-
-    [Test]
-    public void Test_True()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{ISTRUE_TOKEN}0))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{WRITE_TOKEN}{ISTRUE_TOKEN}1))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{ISTRUE_TOKEN}abc))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
     }
 
     [Test]
