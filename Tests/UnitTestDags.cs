@@ -683,7 +683,7 @@ public class UnitTestDags
         bool isValid = ValidateScript(script1);
         Assert.That(isValid, Is.True);
         var script2 = $"{SET_TOKEN}value,123 {WRITE_TOKEN}{GET_TOKEN}value))";
-        isValid = ValidateScript(script2);
-        Assert.That(isValid, Is.False);
+        Assert.Throws<ArgumentException>(() => QuickValidate(script2));
+        Assert.Throws<ArgumentException>(() => ValidateScript(script2));
     }
 }

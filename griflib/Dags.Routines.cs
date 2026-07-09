@@ -19,6 +19,7 @@ public partial class Dags
     /// </summary>
     public static string[] SplitTokens(string? script)
     {
+        QuickValidate(script);
         List<string> result = [];
         if (string.IsNullOrWhiteSpace(script))
         {
@@ -454,6 +455,103 @@ public partial class Dags
             return false; // foreachlist loops not balanced
         }
         return true;
+    }
+
+    /// <summary>
+    /// Quick script validation to make sure all parentesis are matched,
+    /// quotes are ended, and quotes start in correct locations.
+    /// </summary>
+    /// <param name="script"></param>
+    /// <exception cref="ArgumentException"></exception>
+    public static void QuickValidate(string? script)
+    {
+        if (string.IsNullOrWhiteSpace(script)) return;
+        if (!IsScript(script)) return;
+        var inQuote = false;
+        var inToken = false;
+        var lastChar = ' ';
+        var index = 0;
+        var depth = 0;
+        char c = ' ';
+        while (index < script.Length)
+        {
+            lastChar = c;
+            if (!inQuote)
+            {
+                SkipWhitespace(script, ref index);
+                if (index >= script.Length)
+                {
+                    break;
+                }
+                lastChar = ' ';
+            }
+            c = script[index++];
+            if (inQuote)
+            {
+                if (c == '"' && lastChar != '\\')
+                {
+                    inQuote = false;
+                }
+                continue;
+            }
+            if (c == '"')
+            {
+                if (depth == 0 || lastChar != ' ')
+                {
+                    throw new ArgumentException("Invalid position to start quote");
+                }
+                inQuote = true;
+                continue;
+            }
+            if (c == '(')
+            {
+                if (!inToken)
+                {
+                    throw new ArgumentException("Starting parenthesis not part of token");
+                }
+                depth++;
+                c = ' ';
+                inToken = false;
+                continue;
+            }
+            if (c == ',')
+            {
+                c = ' ';
+                inToken = false;
+                continue;
+            }
+            if (c == ')')
+            {
+                if (depth <= 0)
+                {
+                    throw new ArgumentException("Too many ending parenthesis");
+                }
+                depth--;
+                inToken = false;
+                continue;
+            }
+            if (inToken)
+            {
+                if (char.IsWhiteSpace(c))
+                {
+                    inToken = false;
+                }
+                continue;
+            }
+            if (c == SCRIPT_CHAR)
+            {
+                inToken = true;
+                continue;
+            }
+        }
+        if (inQuote)
+        {
+            throw new ArgumentException("Missing end quotee");
+        }
+        if (depth > 0)
+        {
+            throw new ArgumentException("Too few ending parenthesis");
+        }
     }
 
     /// <summary>

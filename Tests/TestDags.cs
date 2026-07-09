@@ -36,15 +36,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{WRITE_TOKEN}abc";
-        var result = Process(grod, script);
-        var expected = "Missing closing parenthesis";
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result, Is.Not.Empty);
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(result[0].Type, Is.EqualTo(MessageType.Error));
-            Assert.That(result[0].Value, Does.Contain(expected));
-        }
+        Assert.Throws<ArgumentException>(() => Process(grod, script));
     }
 
     [Test]
