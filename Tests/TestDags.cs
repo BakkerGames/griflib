@@ -156,33 +156,6 @@ public class TestDags
     }
 
     [Test]
-    public void TestIfEQ()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{IF_TOKEN} {EQ_TOKEN}1,1) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
-    }
-
-    [Test]
-    public void TestIfEQNull()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{IF_TOKEN} {EQ_TOKEN}null,null) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
-    }
-
-    [Test]
-    public void TestIfEQString()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{IF_TOKEN} {EQ_TOKEN}abc,abc) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
-    }
-
-    [Test]
     public void TestIfNE()
     {
         Grod grod = new("testGrod");
@@ -371,22 +344,6 @@ public class TestDags
         string script = $"{DIV_TOKEN}6,0)";
         var result = Process(grod, script);
         var expected = "Division by zero is not allowed.";
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result, Is.Not.Empty);
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(result[0].Type, Is.EqualTo(MessageType.Error));
-            Assert.That(result[0].Value, Does.Contain(expected));
-        }
-    }
-
-    [Test]
-    public void TestModByZero()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{MOD_TOKEN}20,0)";
-        var result = Process(grod, script);
-        var expected = "Attempted to divide by zero.";
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Not.Empty);
         using (Assert.EnterMultipleScope())

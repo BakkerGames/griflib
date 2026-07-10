@@ -152,17 +152,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo("eek!"));
     }
 
-
-
-    [Test]
-    public void Test_EQ()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{EQ_TOKEN}42,6))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{WRITE_TOKEN}{EQ_TOKEN}42,42))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-    }
-
     [Test]
     public void Test_Exec()
     {
@@ -222,17 +211,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_GE()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{GE_TOKEN}42,6))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{GE_TOKEN}42,42))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{GE_TOKEN}1,42))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-    }
-
-    [Test]
     public void Test_GetInChannel()
     {
         grod.Set(INCHANNEL, "abc");
@@ -257,17 +235,6 @@ public class UnitTestDags
     {
         result = Process(grod, $"{WRITE_TOKEN}abc) {GOLABEL_TOKEN}1) {WRITE_TOKEN}def) {LABEL_TOKEN}1) {WRITE_TOKEN}xyz)");
         Assert.That(Squash(result), Is.EqualTo("abcxyz"));
-    }
-
-    [Test]
-    public void Test_GT()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{GT_TOKEN}42,6))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{GT_TOKEN}42,42))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{WRITE_TOKEN}{GT_TOKEN}1,42))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
     }
 
     [Test]
@@ -330,17 +297,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_LE()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{LE_TOKEN}42,6))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{WRITE_TOKEN}{LE_TOKEN}42,42))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{LE_TOKEN}1,42))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-    }
-
-    [Test]
     public void Test_Lower()
     {
         result = Process(grod, $"{LOWER_TOKEN}ABC)");
@@ -350,67 +306,10 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_LT()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{LT_TOKEN}42,6))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{WRITE_TOKEN}{LT_TOKEN}42,42))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{WRITE_TOKEN}{LT_TOKEN}1,42))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-    }
-
-    [Test]
-    public void Test_Mod()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{MOD_TOKEN}13,4))");
-        Assert.That(Squash(result), Is.EqualTo("1"));
-        result = Process(grod, $"{WRITE_TOKEN}{MOD_TOKEN}12,4))");
-        Assert.That(Squash(result), Is.EqualTo("0"));
-    }
-
-    [Test]
-    public void Test_ModTo()
-    {
-        result = Process(grod, $"{SET_TOKEN}value,13) {MODTO_TOKEN}value,4) {WRITE_TOKEN}{GET_TOKEN}value))");
-        Assert.That(Squash(result), Is.EqualTo("1"));
-    }
-
-    [Test]
-    public void Test_Mul()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{MUL_TOKEN}3,4))");
-        Assert.That(Squash(result), Is.EqualTo("12"));
-    }
-
-    [Test]
-    public void Test_NE()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{NE_TOKEN}42,6))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{NE_TOKEN}42,42))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-    }
-
-    [Test]
     public void Test_NL()
     {
         result = Process(grod, NL_TOKEN);
         Assert.That(Squash(result), Is.EqualTo(NL_CHAR));
-    }
-
-    [Test]
-    public void Test_Not()
-    {
-        result = Process(grod, $"{IF_TOKEN} {NOT_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}abc) {ELSE_TOKEN} {WRITE_TOKEN}def) {ENDIF_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("abc"));
-    }
-
-    [Test]
-    public void Test_Or()
-    {
-        result = Process(grod, $"{IF_TOKEN} {TRUE} {OR_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}abc) {ELSE_TOKEN} {WRITE_TOKEN}def) {ENDIF_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("abc"));
     }
 
     [Test]
@@ -453,13 +352,6 @@ public class UnitTestDags
             Assert.That(result[0].Type, Is.EqualTo(MessageType.OutChannel));
             Assert.That(result[0].Value, Is.EqualTo("abc"));
         }
-    }
-
-    [Test]
-    public void Test_Sub()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{SUB_TOKEN}1,3))");
-        Assert.That(Squash(result), Is.EqualTo("-2"));
     }
 
     [Test]
