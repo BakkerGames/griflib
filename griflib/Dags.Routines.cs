@@ -585,19 +585,11 @@ public partial class Dags
     }
 
     /// <summary>
-    /// Determines if the value is null or the special NULL string.
+    /// Determines whether the specified string is null, empty, or the special NULL string.
     /// </summary>
     public static bool IsNull(string? value)
     {
-        return value == null || value.Equals(NULL, OIC);
-    }
-
-    /// <summary>
-    /// Determines whether the specified string is null, empty, or the special NULL string.
-    /// </summary>
-    public static bool IsNullOrEmpty(string? value)
-    {
-        return value == null || value.Equals(NULL, OIC) || value == "";
+        return string.IsNullOrEmpty(value) || value.Equals(NULL, OIC);
     }
 
     /// <summary>
@@ -873,14 +865,14 @@ public partial class Dags
     /// </summary>
     private static bool IsTrue(string? value)
     {
-        if (value == null)
+        if (IsNull(value))
         {
             return false; // Treat null as false
         }
-        return value.ToLower() switch
+        return value!.ToLower() switch
         {
             TRUE or "t" or "yes" or "y" or "1" or "-1" => true,
-            FALSE or "f" or "no" or "n" or "0" or NULL or "" => false,
+            FALSE or "f" or "no" or "n" or "0" => false,
             _ => throw new SystemException($"Non-boolean value: {value}"),
         };
     }
@@ -895,21 +887,14 @@ public partial class Dags
             throw new SystemException("Key cannot be null or empty.");
         }
         value = FixListItemIn(value);
-        if (!grod.ContainsKey(key, true))
+        var existing = GetGlobalOrLocal(grod, script, key, true);
+        if (existing == "")
         {
             SetGlobalOrLocal(grod, script, key, value);
         }
         else
         {
-            var existing = GetGlobalOrLocal(grod, script, key, true);
-            if (IsNull(existing))
-            {
-                SetGlobalOrLocal(grod, script, key, value);
-            }
-            else
-            {
-                SetGlobalOrLocal(grod, script, key, existing + "," + value);
-            }
+            SetGlobalOrLocal(grod, script, key, existing + "," + value);
         }
     }
 
@@ -934,9 +919,9 @@ public partial class Dags
     /// </summary>
     private static string FixListItemIn(string? value)
     {
-        if (string.IsNullOrEmpty(value))
-            return "";
-        if (value.Contains(','))
+        if (IsNull(value))
+            return NULL;
+        if (value!.Contains(','))
             value = value.Replace(",", COMMA_CHAR);
         return value;
     }
@@ -946,9 +931,9 @@ public partial class Dags
     /// </summary>
     private static string? FixListItemOut(string? value)
     {
-        if (value == null || value.Equals(NULL, OIC))
+        if (IsNull(value))
             return "";
-        if (value.Contains(COMMA_CHAR))
+        if (value!.Contains(COMMA_CHAR))
             value = value.Replace(COMMA_CHAR, ",");
         return value;
     }
@@ -1027,7 +1012,7 @@ public partial class Dags
             throw new SystemException($"List indexes cannot be negative: {key}: {x}");
         }
         var list = GetGlobalOrLocal(grod, script, key, true);
-        if (string.IsNullOrWhiteSpace(list) || IsNull(list))
+        if (IsNull(list))
         {
             list = NULL;
         }
@@ -1046,7 +1031,7 @@ public partial class Dags
         {
             throw new SystemException("Key cannot be null or empty.");
         }
-        if (value == null || value.Equals(NULL, OIC))
+        if (IsNull(value))
         {
             return false;
         }
@@ -1080,7 +1065,7 @@ public partial class Dags
             throw new SystemException($"List indexes cannot be negative: {key}: {x}");
         }
         var list = GetGlobalOrLocal(grod, script, key, true);
-        if (string.IsNullOrWhiteSpace(list) || IsNull(list))
+        if (IsNull(list))
         {
             list = NULL;
         }
@@ -1107,7 +1092,7 @@ public partial class Dags
             throw new SystemException($"List indexes cannot be negative: {key}: {x}");
         }
         var list = GetGlobalOrLocal(grod, script, key, true);
-        if (string.IsNullOrWhiteSpace(list) || IsNull(list))
+        if (IsNull(list))
         {
             list = NULL;
         }
@@ -1152,7 +1137,7 @@ public partial class Dags
     /// </summary>
     private static bool IsLocal(string? value)
     {
-        return value != null && value.StartsWith(LOCAL_CHAR);
+        return value?.StartsWith(LOCAL_CHAR) ?? false;
     }
 
     /// <summary>

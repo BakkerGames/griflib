@@ -5,7 +5,7 @@ public static partial class Common
     /// <summary>
     /// Gets the current version of the library.
     /// </summary>
-    public static string Version { get { return "2.2026.704.0"; } }
+    public static string Version { get { return "2.2026.711.0"; } }
 
     /// <summary>
     /// String comparison: OrdinalIgnoreCase
@@ -30,7 +30,6 @@ public static partial class Common
     public const string COMMA_CHAR = "\\u002c";
     public const char LOCAL_CHAR = '_';
     public const char PARAM_CHAR = '$';
-    public const string EMPTY_STRING = "\"\"";
 
     // File and application constants
     public const string APP_NAME = "GRIF";

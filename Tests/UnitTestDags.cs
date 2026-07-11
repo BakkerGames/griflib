@@ -162,7 +162,7 @@ public class UnitTestDags
     [Test]
     public void Test_False()
     {
-        result = Process(grod, $"{WRITE_TOKEN}{ISFALSE_TOKEN}{EMPTY_STRING}))");
+        result = Process(grod, $"{WRITE_TOKEN}{ISFALSE_TOKEN}{NULL}))");
         Assert.That(Squash(result), Is.EqualTo(TRUE));
         result = Process(grod, $"{WRITE_TOKEN}{ISFALSE_TOKEN}0))");
         Assert.That(Squash(result), Is.EqualTo(TRUE));
@@ -280,11 +280,11 @@ public class UnitTestDags
         result = Process(grod, $"{WRITE_TOKEN}{EXISTS_TOKEN}test.value))");
         Assert.That(Squash(result), Is.EqualTo(FALSE));
         result = Process(grod, $"{SET_TOKEN}test.value,null) {WRITE_TOKEN}{EXISTS_TOKEN}test.value))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
+        Assert.That(Squash(result), Is.EqualTo(TRUE));
         result = Process(grod, $"{SET_TOKEN}test.value,abc) {WRITE_TOKEN}{EXISTS_TOKEN}test.value))");
         Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{SET_TOKEN}test.value,{EMPTY_STRING}) {WRITE_TOKEN}{EXISTS_TOKEN}test.value))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
+        result = Process(grod, $"{SET_TOKEN}test.value,{NULL}) {WRITE_TOKEN}{EXISTS_TOKEN}test.value))");
+        Assert.That(Squash(result), Is.EqualTo(TRUE));
     }
 
     [Test]
@@ -562,9 +562,9 @@ public class UnitTestDags
     {
         result = Process(grod, $"{LEN_TOKEN}abcabc)");
         Assert.That(Squash(result), Is.EqualTo("6"));
-        result = Process(grod, $"{LEN_TOKEN}{EMPTY_STRING})");
+        result = Process(grod, $"{LEN_TOKEN}\"\")");
         Assert.That(Squash(result), Is.EqualTo("0"));
-        result = Process(grod, $"{LEN_TOKEN}null)");
+        result = Process(grod, $"{LEN_TOKEN}{NULL})");
         Assert.That(Squash(result), Is.EqualTo("4"));
     }
 

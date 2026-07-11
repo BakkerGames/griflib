@@ -59,23 +59,23 @@ public static class IFParser
         }
         _initialized = true;
         _verbs = [.. grod.Items(VERB_PREFIX, true, true)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
+            .Where(x => !IsNull(x.Value))
             .Select(x => new ParserItem(x.Key[VERB_PREFIX.Length..], SplitList(x.Value)))];
         _nouns = [.. grod.Items(NOUN_PREFIX, true, true)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
+            .Where(x => !IsNull(x.Value))
             .Select(x => new ParserItem(x.Key[NOUN_PREFIX.Length..], SplitList(x.Value)))];
         _nounitems = [.. grod.Items(NOUNITEM_PREFIX, true, true)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
+            .Where(x => !IsNull(x.Value))
             .Select(x => new ParserItem(x.Key[NOUNITEM_PREFIX.Length..], SplitList(x.Value)))];
         var dirKeys = grod.MainKeys(DIRECTION_PREFIX, true, true);
         _directions = [.. grod.Items(dirKeys, true)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
+            .Where(x => !IsNull(x.Value))
             .Select(x => new ParserItem(x.Key[DIRECTION_PREFIX.Length..], SplitList(x.Value)))];
         _prepositions = [.. grod.Items(PREPOSITION_PREFIX, true, true)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
+            .Where(x => !IsNull(x.Value))
             .Select(x => new ParserItem(x.Key[PREPOSITION_PREFIX.Length..], SplitList(x.Value)))];
         _adjectives = [.. grod.Items(ADJECTIVE_PREFIX, true, true)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Value) && x.Value != NULL)
+            .Where(x => !IsNull(x.Value))
             .Select(x => new ParserItem(x.Key[ADJECTIVE_PREFIX.Length..], SplitList(x.Value)))];
         _articles = [.. SplitList(grod.Get(ARTICLE_KEY, true))
             .Select(x => new ParserItem(ARTICLE_KEY, SplitList(x)))];
@@ -198,14 +198,14 @@ public static class IFParser
             if (preposition != null && indirectNoun != null)
             {
                 var tempCommand = $"{command}.{noun}.{preposition}.{indirectNoun}";
-                if (grod.Get(tempCommand, true) != null)
+                if (!IsNull(grod.Get(tempCommand, true)))
                 {
                     command = tempCommand;
                 }
                 else
                 {
                     tempCommand = $"{command}.{noun}.{preposition}.*"; // any indirect noun
-                    if (grod.Get(tempCommand, true) != null)
+                    if (!IsNull(grod.Get(tempCommand, true)))
                     {
                         command = tempCommand;
                     }
@@ -218,7 +218,7 @@ public static class IFParser
             else if (preposition != null) // no indirect noun
             {
                 var tempCommand = $"{command}.{preposition}.{noun}";
-                if (grod.Get(tempCommand, true) != null)
+                if (!IsNull(grod.Get(tempCommand, true)))
                 {
                     command = tempCommand;
                 }
@@ -227,7 +227,7 @@ public static class IFParser
                     command = $"{command}.{preposition}.*"; // any noun
                 }
             }
-            else if (grod.Get($"{command}.{noun}", true) != null)
+            else if (!IsNull(grod.Get($"{command}.{noun}", true)))
             {
                 command += $".{noun}";
             }
@@ -238,7 +238,7 @@ public static class IFParser
         }
         if (words.Count > 0)
         {
-            if (grod.Get(command + ".?", true) != null)
+            if (!IsNull(grod.Get(command + ".?", true)))
             {
                 command += ".?"; // any extra text
                 extraText = string.Join(' ', words);
@@ -250,7 +250,7 @@ public static class IFParser
                 return result;
             }
         }
-        if (grod.Get(command, true) == null)
+        if (IsNull(grod.Get(command, true)))
         {
             result.AddRange(DontUnderstandMsg(grod, inputText));
             return result;

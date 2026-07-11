@@ -9,12 +9,8 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
 {
     #region private definitions
 
-    // Lists of string representations for Boolean true and false values
-    private readonly string[] _truthyList = [TRUE, "t", "yes", "y", "1", "-1"];
-    private readonly string[] _falseyList = [FALSE, "f", "no", "n", "0", ""];
-
     // Internal storage for key-value pairs, using case-insensitive keys
-    private readonly Dictionary<string, string?> _data = new(OICR);
+    private readonly Dictionary<string, string> _data = new(OICR);
 
     #endregion
 
@@ -49,15 +45,28 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
 
     /// <summary>
     /// Retrieves the value associated with the specified key, optionally searching parent collections recursively.
+    /// Returns "" if null, "null", or missing.
     /// </summary>
-    public string? Get(string key, bool recursive)
+    public string Get(string key, bool recursive)
     {
         ValidateKey(key);
         if (_data.TryGetValue(key, out var value))
         {
-            if (value == null || value.Equals(NULL, OIC))
+            if (string.IsNullOrEmpty(value))
             {
-                return null;
+                return "";
+            }
+            if (value.Equals(NULL, OIC))
+            {
+                return NULL;
+            }
+            if (value.Equals(FALSE, OIC))
+            {
+                return FALSE;
+            }
+            if (value.Equals(TRUE, OIC))
+            {
+                return TRUE;
             }
             return value;
         }
@@ -65,49 +74,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
         {
             return Parent.Get(key, recursive);
         }
-        return null;
-    }
-
-    /// <summary>
-    /// Retrieves the numeric value associated with the specified key, optionally searching parent collections recursively.
-    /// </summary>
-    public long? GetNumber(string key, bool recursive)
-    {
-        var value = Get(key, recursive);
-        if (value == null)
-        {
-            return null;
-        }
-        if (long.TryParse(value, out long longValue))
-        {
-            return longValue;
-        }
-        throw new FormatException($"Value for key '{key}' is not a valid number.");
-    }
-
-    /// <summary>
-    /// Retrieves the value associated with the specified key and attempts to convert it to a Boolean value.
-    /// </summary>
-    public bool? GetBool(string key, bool recursive)
-    {
-        var value = Get(key, recursive);
-        if (value == null)
-        {
-            return null;
-        }
-        if (_truthyList.Contains(value, OICR))
-        {
-            return true;
-        }
-        if (_falseyList.Contains(value, OICR))
-        {
-            return false;
-        }
-        if (bool.TryParse(value, out bool boolValue))
-        {
-            return boolValue;
-        }
-        throw new FormatException($"Value for key '{key}' is not a valid boolean.");
+        return "";
     }
 
     /// <summary>
@@ -116,9 +83,21 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     public void Set(string key, string? value)
     {
         ValidateKey(key);
-        if (value != null && value.Equals(NULL, OIC))
+        if (string.IsNullOrEmpty(value))
         {
-            value = null;
+            value = "";
+        }
+        if (value.Equals(NULL, OIC))
+        {
+            value = NULL;
+        }
+        if (value.Equals(FALSE, OIC))
+        {
+            value = FALSE;
+        }
+        if (value.Equals(TRUE, OIC))
+        {
+            value = TRUE;
         }
         if (!_data.TryAdd(key, value))
         {
@@ -344,14 +323,13 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     /// Compares two dot-delimited key strings using a custom ordering that accounts for special wildcard tokens and
     /// numeric values.
     /// </summary>
-    public static int CompareKeys(string x, string y)
+    public static int CompareKeys(string? x, string? y)
     {
-        if (x == null)
+        if (string.IsNullOrEmpty(x))
         {
-            if (y == null) return 0;
-            return -1;
+            return string.IsNullOrEmpty(y) ? 0 : -1;
         }
-        if (y == null)
+        if (string.IsNullOrEmpty(y))
         {
             return 1;
         }

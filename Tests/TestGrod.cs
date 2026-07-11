@@ -34,7 +34,7 @@ public class TestGrod
         var grod = new Grod("grod3");
         grod.Set("key3", "value3");
         grod.Remove("key3", false);
-        Assert.That(grod.Get("key3", false), Is.Null);
+        Assert.That(grod.Get("key3", false), Is.Empty);
     }
 
     [Test]
@@ -43,7 +43,7 @@ public class TestGrod
         var grod = new Grod("grod4");
         grod.Set("key4", "value4");
         grod.Clear(false);
-        Assert.That(grod.Get("key4", false), Is.Null);
+        Assert.That(grod.Get("key4", false), Is.Empty);
     }
 
     [Test]
@@ -80,7 +80,7 @@ public class TestGrod
     {
         var grod = new Grod("grod7");
         grod.Set("key9", null);
-        Assert.That(grod.Get("key9", false), Is.Null);
+        Assert.That(grod.Get("key9", false), Is.Empty);
     }
 
     [Test]
@@ -111,7 +111,7 @@ public class TestGrod
     public void TestGrodGetNonExistentKey()
     {
         var grod = new Grod("grod11");
-        Assert.That(grod.Get("nonExistentKey", false), Is.Null);
+        Assert.That(grod.Get("nonExistentKey", false), Is.Empty);
     }
 
     [Test]
@@ -124,8 +124,8 @@ public class TestGrod
         childGrod.Clear(true);
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(childGrod.Get("key14", false), Is.Null);
-            Assert.That(childGrod.Get("key13", true), Is.Null);
+            Assert.That(childGrod.Get("key14", false), Is.Empty);
+            Assert.That(childGrod.Get("key13", true), Is.Empty);
         }
     }
 }

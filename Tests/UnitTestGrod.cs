@@ -55,7 +55,7 @@ public class UnitTestGrod
     public void Test_NotFound()
     {
         Grod g = new("base");
-        Assert.That(g.Get("k", false), Is.Null);
+        Assert.That(g.Get("k", false), Is.Empty);
     }
 
     [Test]
@@ -88,7 +88,7 @@ public class UnitTestGrod
     {
         Grod g = new("base");
         g.Set("k", null);
-        Assert.That(g.Get("k", false), Is.Null);
+        Assert.That(g.Get("k", false), Is.Empty);
     }
 
     [Test]

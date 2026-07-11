@@ -215,7 +215,7 @@ public static class IO
                 {
                     if (value == "")
                     {
-                        value = EMPTY_STRING;
+                        value = NULL;
                     }
                     else
                     {
@@ -607,7 +607,7 @@ public static class IO
             valueTemp = valueTemp.Replace(SPACE_CHAR, " ");
         }
         // handle empty string
-        if (valueTemp == EMPTY_STRING)
+        if (IsNull(valueTemp))
         {
             valueTemp = "";
         }

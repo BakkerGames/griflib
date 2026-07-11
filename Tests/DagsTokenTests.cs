@@ -1,5 +1,4 @@
 ﻿using GrifLib;
-using Newtonsoft.Json.Linq;
 using static GrifLib.Common;
 using static GrifLib.Dags;
 
@@ -163,7 +162,7 @@ public class DagsTokenTests
     {
         var key = "key";
         var value = "";
-        var expectedValue = "";
+        var expectedValue = $"{NULL}";
         result = ProcessTest(grod, $"{ADDLIST_TOKEN}{key},{value}) {GET_TOKEN}{key})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -177,7 +176,7 @@ public class DagsTokenTests
         var value1 = "value1";
         var value2 = "";
         var value3 = "value3";
-        var expectedValue = $"{value1},,{value3}";
+        var expectedValue = $"{value1},{NULL},{value3}";
         result = ProcessTest(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2}) {ADDLIST_TOKEN}{key},{value3}) {GET_TOKEN}{key})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -191,7 +190,7 @@ public class DagsTokenTests
         var value1 = "value1";
         string? value2 = null;
         var value3 = "value3";
-        var expectedValue = $"{value1},,{value3}";
+        var expectedValue = $"{value1},{NULL},{value3}";
         result = ProcessTest(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2}) {ADDLIST_TOKEN}{key},{value3}) {GET_TOKEN}{key})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -205,7 +204,7 @@ public class DagsTokenTests
         string? value1 = null;
         string? value2 = null;
         string? value3 = null;
-        var expectedValue = $",,";
+        var expectedValue = $"{NULL},{NULL},{NULL}";
         result = ProcessTest(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2}) {ADDLIST_TOKEN}{key},{value3}) {GET_TOKEN}{key})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -998,7 +997,7 @@ public class DagsTokenTests
     {
         var value1 = NULL;
         var value2 = "";
-        var expectedValue = FALSE;
+        var expectedValue = TRUE;
         result = ProcessTest(grod, $"{EQ_TOKEN}{value1},{value2})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -1267,7 +1266,7 @@ public class DagsTokenTests
     {
         var value1 = NULL;
         var value2 = "";
-        var expectedValue = FALSE;
+        var expectedValue = TRUE;
         result = ProcessTest(grod, $"{GE_TOKEN}{value1},{value2})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -1706,7 +1705,7 @@ public class DagsTokenTests
     {
         var value1 = NULL;
         var value2 = "";
-        var expectedValue = TRUE;
+        var expectedValue = FALSE;
         result = ProcessTest(grod, $"{LT_TOKEN}{value1},{value2})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -2451,7 +2450,7 @@ public class DagsTokenTests
     {
         var value1 = NULL;
         var value2 = "";
-        var expectedValue = TRUE;
+        var expectedValue = FALSE;
         result = ProcessTest(grod, $"{NE_TOKEN}{value1},{value2})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);

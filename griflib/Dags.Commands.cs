@@ -234,8 +234,8 @@ public partial class Dags
     public static void Exec_Exists(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
-        var value = GetGlobalOrLocal(grod, script, p[0].Value, true);
-        result.Add(new GrifMessage(MessageType.Internal, TrueFalse(!IsNullOrEmpty(value))));
+        var value = grod.ContainsKey(p[0].Value, true);
+        result.Add(new GrifMessage(MessageType.Internal, TrueFalse(value)));
     }
 
     public static void Exec_Flipbit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -357,14 +357,19 @@ public partial class Dags
         {
             throw new SystemException("Index out of range");
         }
-        if (int1 >= p[0].Value.Length)
+        var value = p[0].Value;
+        if (IsNull(value))
+        {
+            value = "";
+        }
+        if (int1 >= value.Length)
         {
             result.Add(new GrifMessage(MessageType.Internal, " "));
         }
         else
         {
-            var value = p[0].Value.Substring(int1, 1);
-            result.Add(new GrifMessage(MessageType.Internal, value));
+            var valueChar = p[0].Value.Substring(int1, 1);
+            result.Add(new GrifMessage(MessageType.Internal, valueChar));
         }
     }
 
@@ -498,7 +503,7 @@ public partial class Dags
     public static void Exec_IsNull(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
-        result.Add(new GrifMessage(MessageType.Internal, TrueFalse(IsNullOrEmpty(p[0].Value))));
+        result.Add(new GrifMessage(MessageType.Internal, TrueFalse(IsNull(p[0].Value))));
     }
 
     public static void Exec_IsNumber(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -631,7 +636,7 @@ public partial class Dags
             throw new SystemException($"{LISTLENGTH_TOKEN}): List name cannot be blank");
         }
         var value = GetGlobalOrLocal(grod, script, p[0].Value, true);
-        if (IsNullOrEmpty(value))
+        if (IsNull(value))
         {
             result.Add(new GrifMessage(MessageType.Internal, "0"));
         }
@@ -872,7 +877,7 @@ public partial class Dags
         {
             throw new SystemException("Index out of range");
         }
-        if (p[2].Value == null || p[2].Value == NULL || p[2].Value.Length < 1)
+        if (IsNull(p[2].Value) || IsNull(p[2].Value))
         {
             throw new SystemException("Character not supplied");
         }

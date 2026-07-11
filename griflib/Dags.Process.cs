@@ -67,7 +67,7 @@ public partial class Dags
                         throw new SystemException($"Token found out of context: {token}");
                     default:
                         value = GetGlobalOrLocal(grod, script, token, true);
-                        if (value != null)
+                        if (!IsNull(value))
                         {
                             var userResult = Process(grod, value);
                             result.AddRange(userResult);
