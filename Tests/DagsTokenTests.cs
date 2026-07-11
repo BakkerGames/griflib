@@ -1009,9 +1009,6 @@ public class DagsTokenTests
     #region @exec
     #endregion
 
-    #region @exists
-    #endregion
-
     #region @false
     #endregion
 
@@ -1428,6 +1425,9 @@ public class DagsTokenTests
     #endregion
 
     #region @istrue
+    #endregion
+
+    #region @keyexists
     #endregion
 
     #region @label
