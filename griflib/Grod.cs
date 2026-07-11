@@ -9,6 +9,10 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
 {
     #region private definitions
 
+    // Lists of string representations for Boolean true and false values
+    private readonly string[] _truthyList = [TRUE, "t", "yes", "y", "1", "-1"];
+    private readonly string[] _falseyList = [FALSE, "f", "no", "n", "0"];
+
     // Internal storage for key-value pairs, using case-insensitive keys
     private readonly Dictionary<string, string> _data = new(OICR);
 
@@ -75,6 +79,50 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
             return Parent.Get(key, recursive);
         }
         return "";
+    }
+
+    /// <summary>
+    /// Retrieves the numeric value associated with the specified key, optionally searching parent collections recursively.
+    /// Returns 0 if null, "null", or missing.
+    /// </summary>
+    public long GetNumber(string key, bool recursive)
+    {
+        var value = Get(key, recursive);
+        if (value == "" || value.Equals(NULL, OIC))
+        {
+            return 0;
+        }
+        if (long.TryParse(value, out long longValue))
+        {
+            return longValue;
+        }
+        throw new FormatException($"Value for key '{key}' is not a valid number.");
+    }
+
+    /// <summary>
+    /// Retrieves the value associated with the specified key and attempts to convert it to a Boolean value.
+    /// Returns "false" if null, "null", or missing.
+    /// </summary>
+    public bool GetBool(string key, bool recursive)
+    {
+        var value = Get(key, recursive);
+        if (value == "" || value.Equals(NULL, OIC))
+        {
+            return false;
+        }
+        if (_truthyList.Contains(value, OICR))
+        {
+            return true;
+        }
+        if (_falseyList.Contains(value, OICR))
+        {
+            return false;
+        }
+        if (bool.TryParse(value, out bool boolValue))
+        {
+            return boolValue;
+        }
+        throw new FormatException($"Value for key '{key}' is not a valid boolean.");
     }
 
     /// <summary>
