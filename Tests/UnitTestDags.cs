@@ -275,15 +275,15 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Exists()
+    public void Test_KeyExists()
     {
-        result = Process(grod, $"{WRITE_TOKEN}{EXISTS_TOKEN}test.value))");
+        result = Process(grod, $"{WRITE_TOKEN}{KEYEXISTS_TOKEN}test.value))");
         Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{SET_TOKEN}test.value,null) {WRITE_TOKEN}{EXISTS_TOKEN}test.value))");
+        result = Process(grod, $"{SET_TOKEN}test.value,null) {WRITE_TOKEN}{KEYEXISTS_TOKEN}test.value))");
         Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{SET_TOKEN}test.value,abc) {WRITE_TOKEN}{EXISTS_TOKEN}test.value))");
+        result = Process(grod, $"{SET_TOKEN}test.value,abc) {WRITE_TOKEN}{KEYEXISTS_TOKEN}test.value))");
         Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{SET_TOKEN}test.value,{NULL}) {WRITE_TOKEN}{EXISTS_TOKEN}test.value))");
+        result = Process(grod, $"{SET_TOKEN}test.value,{NULL}) {WRITE_TOKEN}{KEYEXISTS_TOKEN}test.value))");
         Assert.That(Squash(result), Is.EqualTo(TRUE));
     }
 

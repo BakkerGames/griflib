@@ -5,7 +5,7 @@ public static partial class Common
     /// <summary>
     /// Gets the current version of the library.
     /// </summary>
-    public static string Version { get { return "2.2026.711.1"; } }
+    public static string Version { get { return "2.2026.711.2"; } }
 
     /// <summary>
     /// String comparison: OrdinalIgnoreCase

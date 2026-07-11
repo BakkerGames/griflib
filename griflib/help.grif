@@ -57,8 +57,6 @@
 	Returns true/false if "x" equals "y". Compares as numeric if possible. Otherwise it compares as strings ignoring case.
 @exec(value)
 	Executes the value as a script. Must surround the value with quotes to prevent it from being evaluated incorrectly.
-@exists(key)
-	Returns true/false if "key" exists and value is not "null" or an empty string.
 @false(x)
 	Returns "true" if "x" is falsey or "false" otherwise. Falsey values are "false", "f", "no", "n", "0", and "", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@isfalse(x)". 
 @flipbit(x,b)
@@ -86,7 +84,7 @@
 @getchar(
 	todo
 @getinchannel
-	Get the value sent from calling program sent in \"#INCHANNEL;\".
+	Get the value sent from calling program sent in "#INCHANNEL;".
 @getlist(key,x)
 	Gets the value in list "key" at position "x". Returns "null" if "x" is beyond the end of the list. Throws an error if "x" is negative.
 @getvalue(
@@ -113,6 +111,8 @@
 	Returns "true" if the value for "key" is a script, i.e. starts with "@". Returns "false" otherwise.
 @istrue(x)
 	Returns "true" if "x" is truthy or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@true(x)".
+@keyexists(key)
+	Returns true/false if "key" exists in any GROD layer. Use "@not @isnull(@get(key))" to check for a blank/null value.
 @label(x)
 	A label named "x" within a script. This is the target of "@golabel(x)" or an "@ongolabel(value,..,x,...)" command. Execution will continue with the command after the label. "x" must be a constant value, not a script. If there is more than one label with the same name, the first one is always used.
 @le(

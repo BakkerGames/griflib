@@ -143,9 +143,6 @@ public partial class Dags
                 case EXEC_TOKEN:
                     Exec_Exec(grod, script, p, result);
                     break;
-                case EXISTS_TOKEN:
-                    Exec_Exists(grod, script, p, result);
-                    break;
                 case ISFALSE_TOKEN:
                     Exec_IsFalse(grod, script, p, result);
                     break;
@@ -214,6 +211,9 @@ public partial class Dags
                     break;
                 case ISSCRIPT_TOKEN:
                     Exec_IsScript(grod, script, p, result);
+                    break;
+                case KEYEXISTS_TOKEN:
+                    Exec_KeyExists(grod, script, p, result);
                     break;
                 case LABEL_TOKEN:
                     Exec_Label(grod, script, p, result);

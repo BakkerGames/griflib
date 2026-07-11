@@ -31,7 +31,6 @@ public partial class Dags
     public const string ENDWHILE_TOKEN = "@endwhile";
     public const string EQ_TOKEN = "@eq(";
     public const string EXEC_TOKEN = "@exec(";
-    public const string EXISTS_TOKEN = "@exists(";
     public const string FALSE_TOKEN = "@false(";
     public const string FLIPBIT_TOKEN = "@flipbit(";
     public const string FOREACHKEY_TOKEN = "@foreachkey(";
@@ -59,6 +58,7 @@ public partial class Dags
     public const string ISNUMBER_TOKEN = "@isnumber(";
     public const string ISSCRIPT_TOKEN = "@isscript(";
     public const string ISTRUE_TOKEN = "@istrue(";
+    public const string KEYEXISTS_TOKEN = "@keyexists(";
     public const string LABEL_TOKEN = "@label(";
     public const string LEN_TOKEN = "@len(";
     public const string LE_TOKEN = "@le(";

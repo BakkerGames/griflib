@@ -231,7 +231,7 @@ public partial class Dags
         result.AddRange(Process(grod, value));
     }
 
-    public static void Exec_Exists(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    public static void Exec_KeyExists(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var value = grod.ContainsKey(p[0].Value, true);
