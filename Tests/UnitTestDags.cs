@@ -369,13 +369,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Upper()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{UPPER_TOKEN}abc))");
-        Assert.That(Squash(result), Is.EqualTo("ABC"));
-    }
-
-    [Test]
     public void Test_PrettyScript()
     {
         var script = $"{IF_TOKEN} {EQ_TOKEN}{GET_TOKEN}value),0) {THEN_TOKEN} {WRITE_TOKEN}\"zero\") {ELSE_TOKEN} {WRITE_TOKEN}\"not zero\") {ENDIF_TOKEN}";
@@ -565,7 +558,7 @@ public class UnitTestDags
         result = Process(grod, $"{LEN_TOKEN}\"\")");
         Assert.That(Squash(result), Is.EqualTo("0"));
         result = Process(grod, $"{LEN_TOKEN}{NULL})");
-        Assert.That(Squash(result), Is.EqualTo("4"));
+        Assert.That(Squash(result), Is.EqualTo("0"));
     }
 
     [Test]

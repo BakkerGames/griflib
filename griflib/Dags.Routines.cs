@@ -697,6 +697,11 @@ public partial class Dags
             {
                 parameters.Add(new GrifMessage(MessageType.Internal, ""));
             }
+            else if (token.Equals(NULL, OIC))
+            {
+                parameters.Add(new GrifMessage(MessageType.Internal, ""));
+                script.Index++;
+            }
             else
             {
                 parameters.Add(new GrifMessage(MessageType.Internal, TrimQuotes(token)));
