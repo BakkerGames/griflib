@@ -258,6 +258,10 @@ public class IFGame
                     OutputMessages.Enqueue(item);
                 }
                 break;
+            case MessageType.Debug:
+                OutputEvent?.Invoke(this, message);
+                OutputEvent?.Invoke(this, new GrifMessage(MessageType.Text, NL_CHAR));
+                break;
             case MessageType.Error:
                 OutputEvent?.Invoke(this, message);
                 break;

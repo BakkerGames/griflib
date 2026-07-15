@@ -1170,8 +1170,7 @@ public partial class Dags
     {
         if (IsTrue(grod.Get(DEBUG_FLAG, true)))
         {
-            result.Add(new GrifMessage(MessageType.Text, message));
-            result.Add(new GrifMessage(MessageType.Text, NL_CHAR));
+            result.Add(new GrifMessage(MessageType.Debug, message));
         }
     }
 

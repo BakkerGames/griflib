@@ -667,18 +667,16 @@ public class DagsTokenTests
         var expectedValue1 = "### this is a debug comment";
         ProcessTest(grod, $"{SET_TOKEN}{DEBUG_FLAG},true)");
         result = ProcessTest(grod, $"{DEBUG_TOKEN}\"### this is a debug comment\")");
-        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
-        Assert.That(result[1].Value, Is.EqualTo(NL_CHAR));
 
         var expectedValue2 = "579";
         ProcessTest(grod, $"{SET_TOKEN}{DEBUG_FLAG},true)");
         result = ProcessTest(grod, $"{DEBUG_TOKEN}{ADD_TOKEN}123,456))");
-        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
-        Assert.That(result[1].Value, Is.EqualTo(NL_CHAR));
 
         ProcessTest(grod, $"{SET_TOKEN}{DEBUG_FLAG},false)");
         result = ProcessTest(grod, $"{DEBUG_TOKEN}\"### this is a comment\")");

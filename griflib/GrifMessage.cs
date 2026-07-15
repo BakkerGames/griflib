@@ -12,6 +12,7 @@ public enum MessageType
     Internal = 3,
     OutChannel = 4,
     InChannel = 5,
+    Debug = 6,
 }
 
 /// <summary>
