@@ -153,26 +153,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Exec()
-    {
-        result = Process(grod, $"{EXEC_TOKEN}\"{SET_TOKEN}value,23)\") {WRITE_TOKEN}{GET_TOKEN}value))");
-        Assert.That(Squash(result), Is.EqualTo("23"));
-    }
-
-    [Test]
-    public void Test_False()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{ISFALSE_TOKEN}{NULL}))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{ISFALSE_TOKEN}0))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{ISFALSE_TOKEN}1))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{WRITE_TOKEN}{ISFALSE_TOKEN}abc))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-    }
-
-    [Test]
     public void Test_For()
     {
         result = Process(grod, $"{FOR_TOKEN}x,1,3) {WRITE_TOKEN}$x) {ENDFOR_TOKEN}");
@@ -294,15 +274,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo(FALSE));
         result = Process(grod, $"{SET_TOKEN}test.value,\"{GET_TOKEN}value)\") {WRITE_TOKEN}{ISSCRIPT_TOKEN}test.value))");
         Assert.That(Squash(result), Is.EqualTo(TRUE));
-    }
-
-    [Test]
-    public void Test_Lower()
-    {
-        result = Process(grod, $"{LOWER_TOKEN}ABC)");
-        Assert.That(Squash(result), Is.EqualTo("abc"));
-        result = Process(grod, $"{LOWER_TOKEN}DEF)");
-        Assert.That(Squash(result), Is.EqualTo("def"));
     }
 
     [Test]
