@@ -114,20 +114,4 @@ public class MoreTests
         var result = Process(grod, script);
         Assert.That(result, Is.EqualTo(answer));
     }
-
-    [Test]
-    public void TestSetChar()
-    {
-        Grod grod = new("testGrod");
-        var script = @"
-            @set(text,Hello)
-            @set(text,@setchar(@get(text),1,a))
-            @write(@get(text))
-            ";
-        var answer = new List<GrifMessage> {
-            new(MessageType.Text, "Hallo")
-        };
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(answer));
-    }
 }

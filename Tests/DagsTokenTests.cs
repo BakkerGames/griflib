@@ -1100,7 +1100,28 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @flipbit
+    #region @flipbit ###DONE###
+
+    [Test]
+    public void Test_FLIPBIT()
+    {
+        var value1 = "7";
+        var bit1 = "2";
+        var expectedValue1 = "3";
+        result = Process(grod, $"{FLIPBIT_TOKEN}{value1},{bit1})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var value2 = "8";
+        var bit2 = "2";
+        var expectedValue2 = "12";
+        result = Process(grod, $"{FLIPBIT_TOKEN}{value2},{bit2})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+    }
+
     #endregion
 
     #region @foreachkey
@@ -1115,16 +1136,69 @@ public class DagsTokenTests
     #region @for
     #endregion
 
-    #region @frombinary
+    #region @frombinary ###DONE###
+
+    [Test]
+    public void Test_FROMBINARY()
+    {
+        var value = "111";
+        var expectedValue = "7";
+        result = Process(grod, $"{FROMBINARY_TOKEN}{value})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
-    #region @fromhex
+    #region @fromhex ###DONE###
+
+    [Test]
+    public void Test_FromHex()
+    {
+        var value = "FF";
+        var expectedValue = "255";
+        result = Process(grod, $"{FROMHEX_TOKEN}{value})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @getarray
     #endregion
 
-    #region @getbit
+    #region @getbit ###DONE###
+
+    [Test]
+    public void Test_GETBIT()
+    {
+        var value1 = "4";
+        var bit1 = "2";
+        var expectedValue1 = "1";
+        result = ProcessTest(grod, $"{GETBIT_TOKEN}{value1},{bit1})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var value2 = "8";
+        var bit2 = "2";
+        var expectedValue2 = "0";
+        result = ProcessTest(grod, $"{GETBIT_TOKEN}{value2},{bit2})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+
+        var value3 = "1073741824";
+        var bit3 = "30";
+        var expectedValue3 = "1";
+        result = ProcessTest(grod, $"{GETBIT_TOKEN}{value3},{bit3})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+    }
+
     #endregion
 
     #region @getchar
@@ -2769,10 +2843,59 @@ public class DagsTokenTests
     #region @setarray
     #endregion
 
-    #region @setbit
+    #region @setbit ###DONE###
+
+    [Test]
+    public void Test_SETBIT()
+    {
+        var value1 = "0";
+        var bit1 = "2";
+        var expectedValue1 = "4";
+        result = ProcessTest(grod, $"{SETBIT_TOKEN}{value1},{bit1})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var value2 = "0";
+        var bit2 = "0";
+        var expectedValue2 = "1";
+        result = ProcessTest(grod, $"{SETBIT_TOKEN}{value2},{bit2})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+
+        var value3 = "0";
+        var bit3 = "30";
+        var expectedValue3 = "1073741824";
+        result = ProcessTest(grod, $"{SETBIT_TOKEN}{value3},{bit3})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+    }
+
     #endregion
 
-    #region @setchar
+    #region @setchar ###DONE###
+
+    [Test]
+    public void Test_SETCHAR()
+    {
+        var key = "key";
+        var value = "Hello";
+        var pos = "1";
+        var newChar = "a";
+        var expectedValue = "Hallo";
+        var script = @$"
+            {SET_TOKEN}{key},{value})
+            {SET_TOKEN}{key},{SETCHAR_TOKEN}{GET_TOKEN}{key}),{pos},{newChar}))
+            {GET_TOKEN}{key})
+            ";
+        var result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @setextra
@@ -2784,10 +2907,38 @@ public class DagsTokenTests
     #region @setoutchannel
     #endregion
 
-    #region @set
+    #region @set ###DONE###
+
+    [Test]
+    public void Test_SET()
+    {
+        var key = "abc";
+        var value = "123";
+        var expectedValue = "123";
+        Process(grod, $"{SET_TOKEN}{key},{value})");
+        result = Process(grod, $"{GET_TOKEN}{key})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
-    #region @substring
+    #region @substring ###DONE###
+
+    [Test]
+    public void Test_SUBSTRING()
+    {
+        var value = "abcdef";
+        var startPos = "1";
+        var len = "4";
+        var expectedValue = "bcde";
+        result = Process(grod, $"{WRITE_TOKEN}{SUBSTRING_TOKEN}{value},{startPos},{len}))");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @subto ###DONE###
@@ -2976,7 +3127,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @swap
+    #region @swap ###DONE###
 
     [Test]
     public void Test_Swap()
@@ -2998,13 +3149,50 @@ public class DagsTokenTests
     #region @then
     #endregion
 
-    #region @tobinary
+    #region @tobinary ###DONE###
+
+    [Test]
+    public void Test_TOBINARY()
+    {
+        var value = "7";
+        var expectedValue = "111";
+        result = Process(grod, $"{TOBINARY_TOKEN}{value})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
-    #region @tohex
+    #region @tohex ###DONE###
+
+    [Test]
+    public void Test_TOHEX()
+    {
+        var value = "255";
+        var expectedValue = "FF";
+        result = Process(grod, $"{TOHEX_TOKEN}{value})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
-    #region @trim
+    #region @trim ###DONE###
+
+    [Test]
+    public void Test_TRIM()
+    {
+        var key = "key";
+        var value = "\"   abc   \"";
+        var expectedValue = "abc";
+        result = Process(grod, $"{SET_TOKEN}{key},{value}) {WRITE_TOKEN}{TRIM_TOKEN}{GET_TOKEN}{key})))");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @true ###DONE###

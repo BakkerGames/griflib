@@ -48,16 +48,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Set()
-    {
-        var key = "abc";
-        var value = "123";
-        Process(grod, $"{SET_TOKEN}{key},{value})");
-        result = Process(grod, $"{GET_TOKEN}{key})");
-        Assert.That(Squash(result), Is.EqualTo(value));
-    }
-
-    [Test]
     public void Test_Set_Script()
     {
         var key = "abc";
@@ -326,20 +316,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Substring()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{SUBSTRING_TOKEN}abcdef,1,4))");
-        Assert.That(Squash(result), Is.EqualTo("bcde"));
-    }
-
-    [Test]
-    public void Test_Trim()
-    {
-        result = Process(grod, $"{SET_TOKEN}value,\"   abc   \") {WRITE_TOKEN}{TRIM_TOKEN}{GET_TOKEN}value)))");
-        Assert.That(Squash(result), Is.EqualTo("abc"));
-    }
-
-    [Test]
     public void Test_PrettyScript()
     {
         var script = $"{IF_TOKEN} {EQ_TOKEN}{GET_TOKEN}value),0) {THEN_TOKEN} {WRITE_TOKEN}\"zero\") {ELSE_TOKEN} {WRITE_TOKEN}\"not zero\") {ENDIF_TOKEN}";
@@ -460,65 +436,6 @@ public class UnitTestDags
         // @writeline result ends with two characters, '\' and 'n'.
         // This is the expected behavior. See Test_NL().
         Assert.That(Squash(result), Is.EqualTo(value1 + NL_CHAR));
-    }
-
-    [Test]
-    public void Test_GetBit()
-    {
-        result = Process(grod, $"{GETBIT_TOKEN}4,2)");
-        Assert.That(Squash(result), Is.EqualTo("1"));
-        result = Process(grod, $"{GETBIT_TOKEN}8,2)");
-        Assert.That(Squash(result), Is.EqualTo("0"));
-        result = Process(grod, $"{GETBIT_TOKEN}1073741824,30)");
-        Assert.That(Squash(result), Is.EqualTo("1"));
-    }
-
-    [Test]
-    public void Test_SetBit()
-    {
-        result = Process(grod, $"{SETBIT_TOKEN}0,2)");
-        Assert.That(Squash(result), Is.EqualTo("4"));
-        result = Process(grod, $"{SETBIT_TOKEN}0,0)");
-        Assert.That(Squash(result), Is.EqualTo("1"));
-        result = Process(grod, $"{SETBIT_TOKEN}0,30)");
-        Assert.That(Squash(result), Is.EqualTo("1073741824"));
-    }
-
-    [Test]
-    public void Test_ToBinary()
-    {
-        result = Process(grod, $"{TOBINARY_TOKEN}7)");
-        Assert.That(Squash(result), Is.EqualTo("111"));
-    }
-
-    [Test]
-    public void Test_ToInteger()
-    {
-        result = Process(grod, $"{FROMBINARY_TOKEN}111)");
-        Assert.That(Squash(result), Is.EqualTo("7"));
-    }
-
-    [Test]
-    public void Test_ToHex()
-    {
-        result = Process(grod, $"{TOHEX_TOKEN}255)");
-        Assert.That(Squash(result), Is.EqualTo("FF"));
-    }
-
-    [Test]
-    public void Test_FromHex()
-    {
-        result = Process(grod, $"{FROMHEX_TOKEN}FF)");
-        Assert.That(Squash(result), Is.EqualTo("255"));
-    }
-
-    [Test]
-    public void Test_FlipBit()
-    {
-        result = Process(grod, $"{FLIPBIT_TOKEN}7,2)");
-        Assert.That(Squash(result), Is.EqualTo("3"));
-        result = Process(grod, $"{FLIPBIT_TOKEN}8,2)");
-        Assert.That(Squash(result), Is.EqualTo("12"));
     }
 
     [Test]
