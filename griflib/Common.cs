@@ -63,10 +63,12 @@ public static partial class Common
     public const string OUTCHANNEL_EXISTS_SAVE = "#EXISTS;";
     public const string OUTCHANNEL_EXISTS_SAVE_NAME = "#EXISTSNAME;";
     public const string OUTCHANNEL_GAMEOVER = "#GAMEOVER;";
+    public const string OUTCHANNEL_LOAD_LAYER = "#LOADLAYER;";
     public const string OUTCHANNEL_RESTART = "#RESTART;";
     public const string OUTCHANNEL_RESTORE = "#RESTORE;";
     public const string OUTCHANNEL_RESTORE_NAME = "#RESTORENAME;";
     public const string OUTCHANNEL_SAVE = "#SAVE;";
+    public const string OUTCHANNEL_SAVE_LAYER = "#SAVELAYER;";
     public const string OUTCHANNEL_SAVE_NAME = "#SAVENAME;";
     public const string OUTCHANNEL_SET_LAYER = "#SETLAYER;";
 

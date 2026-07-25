@@ -405,9 +405,68 @@ public class IFGame
             return true;
         }
 
+        if (message.Value.Equals(OUTCHANNEL_LOAD_LAYER, OIC))
+        {
+            if (string.IsNullOrEmpty(message.ExtraValue))
+            {
+                throw new Exception("Grod name not specified.");
+            }
+            var grodName = message.ExtraValue;
+            var tempGrod = _overlayGrod.GetGrod(grodName);
+            if (tempGrod == null)
+            {
+                // Insert a new grod layer into the hierarchy to save the data
+                tempGrod = new Grod()
+                {
+                    Name = grodName,
+                    FilePath = Path.Combine(_saveBasePath, grodName + DATA_EXTENSION),
+                    Parent = _overlayGrod.Parent
+                };
+                _overlayGrod.Parent = tempGrod;
+                return false;
+            }
+            if (tempGrod.FilePath == null)
+            {
+                throw new Exception("Grod file path not specified.");
+            }
+            if (!File.Exists(tempGrod.FilePath))
+            {
+                throw new Exception($"Grod file not found: {tempGrod.FilePath}");
+            }
+            var existingList = ReadGrif(tempGrod.FilePath);
+            tempGrod.Clear(false);
+            tempGrod.AddItems(existingList);
+            tempGrod.Changed = false;
+            return false;
+        }
+
+        if (message.Value.Equals(OUTCHANNEL_SAVE_LAYER, OIC))
+        {
+            if (string.IsNullOrEmpty(message.ExtraValue))
+            {
+                throw new Exception("Grod name not specified.");
+            }
+            var grodName = message.ExtraValue;
+            var tempGrod = _overlayGrod.GetGrod(grodName);
+            if (tempGrod == null)
+            {
+                throw new Exception("Grod name not found in stack.");
+            }
+            if (tempGrod.FilePath == null)
+            {
+                throw new Exception("Grod file path not specified.");
+            }
+            // save file immediately
+            var savefile = tempGrod.FilePath;
+            var itemList = tempGrod.Items(false, true);
+            WriteGrif(savefile, itemList, true);
+            tempGrod.Changed = false;
+            return false;
+        }
+
         if (message.Value.Equals(OUTCHANNEL_SET_LAYER, OIC))
         {
-            if (message.ExtraValue == null)
+            if (string.IsNullOrEmpty(message.ExtraValue))
             {
                 throw new Exception("Grod name not specified.");
             }
@@ -426,29 +485,8 @@ public class IFGame
                 };
                 _overlayGrod.Parent = tempGrod;
             }
-            // Refresh the data from its file, if it exists.
-            // This allows the game to keep the data in sync with any external changes.
-            if (tempGrod.FilePath == null)
-            {
-                throw new Exception("Grod file path not specified.");
-            }
-            if (File.Exists(tempGrod.FilePath))
-            {
-                var existingList = ReadGrif(tempGrod.FilePath);
-                tempGrod.Clear(false);
-                tempGrod.AddItems(existingList);
-                tempGrod.Changed = false;
-            }
             // set value
             tempGrod.Set(extraParms[1], extraParms[2]); // key and value
-            if (tempGrod.Changed)
-            {
-                // save file immediately
-                var savefile = tempGrod.FilePath;
-                var itemList = tempGrod.Items(false, true);
-                WriteGrif(savefile, itemList, true);
-                tempGrod.Changed = false;
-            }
             return false;
         }
 
