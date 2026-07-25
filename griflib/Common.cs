@@ -58,7 +58,6 @@ public static partial class Common
     public const string INCHANNEL = "#INCHANNEL;";
 
     // Outchannel message prefixes
-    public const string OUTCHANNEL_ADD_EXTRA = "#ADDEXTRA;";
     public const string OUTCHANNEL_ASK = "#ASK;";
     public const string OUTCHANNEL_ENTER = "#ENTER;";
     public const string OUTCHANNEL_EXISTS_SAVE = "#EXISTS;";
@@ -69,7 +68,7 @@ public static partial class Common
     public const string OUTCHANNEL_RESTORE_NAME = "#RESTORENAME;";
     public const string OUTCHANNEL_SAVE = "#SAVE;";
     public const string OUTCHANNEL_SAVE_NAME = "#SAVENAME;";
-    public const string OUTCHANNEL_SET_EXTRA_VALUE = "#SETEXTRAVALUE;";
+    public const string OUTCHANNEL_SET_LAYER = "#SETLAYER;";
 
     // Prefixes for word types
     public const string ADJECTIVE_PREFIX = "adjective.";

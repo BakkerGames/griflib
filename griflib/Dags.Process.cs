@@ -305,8 +305,8 @@ public partial class Dags
                 case SETCHAR_TOKEN:
                     Exec_SetChar(grod, script, p, result);
                     break;
-                case SETEXTRA_TOKEN:
-                    Exec_SetExtra(grod, script, p, result);
+                case SETLAYER_TOKEN:
+                    Exec_SetLayer(grod, script, p, result);
                     break;
                 case SETLIST_TOKEN:
                     Exec_SetList(grod, script, p, result);

@@ -147,6 +147,10 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
         {
             value = TRUE;
         }
+        if (_data.TryGetValue(key, out string? value1) && value1.Equals(value, OIC))
+        {
+            return;
+        }
         if (!_data.TryAdd(key, value))
         {
             _data[key] = value;

@@ -897,13 +897,12 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
-    public static void Exec_SetExtra(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    public static void Exec_SetLayer(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        // Set a value in a parent grod by name.
-        // Good for configuration settings or notes or global variables across all saves.
-        // Use OUTCHANNEL_ADD_EXTRA_GROD first to create a parent grod with a name.
+        // Set a value in a grod layer by name.
+        // p[0]=layer, p[1]=key, p[2]=value
         CheckParameterCount(p, 3);
-        result.Add(new GrifMessage(MessageType.OutChannel, OUTCHANNEL_SET_EXTRA_VALUE,
+        result.Add(new GrifMessage(MessageType.OutChannel, OUTCHANNEL_SET_LAYER,
             p[0].Value + '\t' + p[1].Value + '\t' + p[2].Value));
     }
 

@@ -292,15 +292,18 @@ public class IFGame
     /// <summary>
     /// Handles an outbound channel message by performing the corresponding action.
     /// Returns true if an answer is requested.
+    /// Ignores unsupported OutChannel messages.
     /// </summary>
     private bool HandleOutChannel(GrifMessage message)
     {
         bool exists;
+
         if (message.Value.Equals(OUTCHANNEL_GAMEOVER, OIC))
         {
             GameOver = true;
             return false;
         }
+
         if (message.Value.Equals(OUTCHANNEL_EXISTS_SAVE, OIC))
         {
             var savefile = Path.Combine(_saveBasePath, SAVE_FILENAME + SAVE_EXTENSION);
@@ -308,6 +311,7 @@ public class IFGame
             _overlayGrod.Set(INCHANNEL, exists ? "true" : "false");
             return false;
         }
+
         if (message.Value.Equals(OUTCHANNEL_EXISTS_SAVE_NAME, OIC))
         {
             if (message.ExtraValue == null)
@@ -319,6 +323,7 @@ public class IFGame
             _overlayGrod.Set(INCHANNEL, exists ? "true" : "false");
             return false;
         }
+
         if (message.Value.Equals(OUTCHANNEL_SAVE, OIC))
         {
             var savefile = Path.Combine(_saveBasePath, SAVE_FILENAME + SAVE_EXTENSION);
@@ -327,6 +332,7 @@ public class IFGame
             _overlayGrod.Changed = false;
             return false;
         }
+
         if (message.Value.Equals(OUTCHANNEL_SAVE_NAME, OIC))
         {
             if (message.ExtraValue == null)
@@ -339,6 +345,7 @@ public class IFGame
             _overlayGrod.Changed = false;
             return false;
         }
+
         if (message.Value.Equals(OUTCHANNEL_RESTORE, OIC))
         {
             var savefile = Path.Combine(_saveBasePath, SAVE_FILENAME + SAVE_EXTENSION);
@@ -352,6 +359,7 @@ public class IFGame
             _overlayGrod.Changed = false;
             return false;
         }
+
         if (message.Value.Equals(OUTCHANNEL_RESTORE_NAME, OIC))
         {
             if (message.ExtraValue == null)
@@ -369,12 +377,14 @@ public class IFGame
             _overlayGrod.Changed = false;
             return false;
         }
+
         if (message.Value.Equals(OUTCHANNEL_RESTART, OIC))
         {
             _overlayGrod.Clear(false); // clear only the user data
             _overlayGrod.Changed = false;
             return false;
         }
+
         if (message.Value.Equals(OUTCHANNEL_ENTER, OIC))
         {
             awaitEnter++;
@@ -384,6 +394,7 @@ public class IFGame
             }
             return true;
         }
+
         if (message.Value.Equals(OUTCHANNEL_ASK, OIC))
         {
             awaitAnswer++;
@@ -393,34 +404,8 @@ public class IFGame
             }
             return true;
         }
-        if (message.Value.Equals(OUTCHANNEL_ADD_EXTRA, OIC))
-        {
-            // Add a new grod to the hierarchy for storing extra data, if it doesn't already exist.
-            if (message.ExtraValue == null)
-            {
-                throw new Exception("Grod name not specified.");
-            }
-            var grodName = message.ExtraValue;
-            var tempGrod = _overlayGrod.GetGrod(grodName);
-            if (tempGrod == null)
-            {
-                // Insert a new grod into the hierarchy to save the data
-                tempGrod = new Grod()
-                {
-                    Name = grodName,
-                    FilePath = Path.Combine(_saveBasePath, grodName + DATA_EXTENSION),
-                    Parent = _overlayGrod.Parent
-                };
-                _overlayGrod.Parent = tempGrod;
-                if (File.Exists(tempGrod.FilePath))
-                {
-                    var itemList = ReadGrif(tempGrod.FilePath);
-                    tempGrod.AddItems(itemList);
-                    tempGrod.Changed = false;
-                }
-            }
-        }
-        if (message.Value.Equals(OUTCHANNEL_SET_EXTRA_VALUE, OIC))
+
+        if (message.Value.Equals(OUTCHANNEL_SET_LAYER, OIC))
         {
             if (message.ExtraValue == null)
             {
@@ -430,30 +415,43 @@ public class IFGame
             var extraParms = message.ExtraValue.Split('\t');
             var grodName = extraParms[0];
             var tempGrod = _overlayGrod.GetGrod(grodName);
-            if (tempGrod != null)
+            if (tempGrod == null)
             {
-                // Refresh the data in an extra grod from its file, if it exists.
-                // This allows the game to keep the data in sync with external changes.
-                if (tempGrod.FilePath == null)
+                // Insert a new grod layer into the hierarchy to save the data
+                tempGrod = new Grod()
                 {
-                    throw new Exception("Grod file path not specified.");
-                }
-                if (File.Exists(tempGrod.FilePath))
-                {
-                    var existingList = ReadGrif(tempGrod.FilePath);
-                    tempGrod.Clear(false);
-                    tempGrod.AddItems(existingList);
-                    tempGrod.Changed = false;
-                }
-                // set value
-                tempGrod.Set(extraParms[1], extraParms[2]); // key and value
+                    Name = grodName,
+                    FilePath = Path.Combine(_saveBasePath, grodName + DATA_EXTENSION),
+                    Parent = _overlayGrod.Parent
+                };
+                _overlayGrod.Parent = tempGrod;
+            }
+            // Refresh the data from its file, if it exists.
+            // This allows the game to keep the data in sync with any external changes.
+            if (tempGrod.FilePath == null)
+            {
+                throw new Exception("Grod file path not specified.");
+            }
+            if (File.Exists(tempGrod.FilePath))
+            {
+                var existingList = ReadGrif(tempGrod.FilePath);
+                tempGrod.Clear(false);
+                tempGrod.AddItems(existingList);
+                tempGrod.Changed = false;
+            }
+            // set value
+            tempGrod.Set(extraParms[1], extraParms[2]); // key and value
+            if (tempGrod.Changed)
+            {
                 // save file immediately
                 var savefile = tempGrod.FilePath;
                 var itemList = tempGrod.Items(false, true);
                 WriteGrif(savefile, itemList, true);
                 tempGrod.Changed = false;
             }
+            return false;
         }
+
         if (IsScript(message.Value))
         {
             var outputItems = ProcessItems(_overlayGrod, [new GrifMessage(MessageType.Script, message.Value)]);
@@ -463,8 +461,8 @@ public class IFGame
             }
             return false;
         }
-        // Sent unknown outchannel message to calling program
-        OutputEvent?.Invoke(this, message);
+
+        // Sent unknown outchannel message, do nothing
         return false;
     }
 
