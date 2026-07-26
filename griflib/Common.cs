@@ -57,7 +57,7 @@ public static partial class Common
     // Inchannel message prefix
     public const string INCHANNEL = "#INCHANNEL;";
 
-    // Outchannel message prefixes
+    // Outchannel messages used by IFGame
     public const string OUTCHANNEL_ASK = "#ASK;";
     public const string OUTCHANNEL_ENTER = "#ENTER;";
     public const string OUTCHANNEL_EXISTS_SAVE = "#EXISTS;";
@@ -70,7 +70,6 @@ public static partial class Common
     public const string OUTCHANNEL_SAVE = "#SAVE;";
     public const string OUTCHANNEL_SAVE_LAYER = "#SAVELAYER;";
     public const string OUTCHANNEL_SAVE_NAME = "#SAVENAME;";
-    public const string OUTCHANNEL_SET_LAYER = "#SETLAYER;";
 
     // Prefixes for word types
     public const string ADJECTIVE_PREFIX = "adjective.";

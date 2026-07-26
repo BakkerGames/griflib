@@ -152,35 +152,35 @@
 @nl
 	Add a newline character to the result.
 @not
-	In @if or @while, negates the following condition.
+	In "@if" or "@while", negates the following condition.
 @null(x)
 	Returns "true" if "x" is null or an empty string, "false" otherwise. Identical to "@isnull(x)".
 @ongolabel(value,label1,label2...)
 	Goes to a specific label based on the value. If value=1, control is passed to @label(label1), value=2 to @label(label2), and so on. If the value is less than 1 or more than the number of labels, or if the label is not found, control just drops through to the next command.
 @or
-	In @if or @while, this separates multiple conditions. If the previous condition is true, it short-circuits and returns true. It does not check the rest of the conditions but jumps to @then. Otherwise it continues on and checks the next condition.
-@rand(
-	todo
+	In "@if" or "@while", this separates multiple conditions. If the previous condition is true, it short-circuits and returns true. It does not check the rest of the conditions but jumps to @then. Otherwise it continues on and checks the next condition.
+@rand(value)
+	Returns true or false if a random integer value from 0 to 99 is less than "value". Used for percentage tests, so "@rand(50)" will be true about 50% of the time. "@rand(0)" is always false and "@rand(100)" is always true.
 @removeatlist(
 	todo
 @replace(
 	todo
 @return
 	Exit the current script immediately, returning any results.
-@rnd(
-	todo
+@rnd(value)
+	Returns a random integer value from 0 to "value" minus one. "@rnd(0)" is always zero.
 @script(key)
 	Runs the script stored at "key". If the value is not a script, it is output as text.
-@set(key,x)
-	Sets the value for "key" to "x".
+@set(key,value)
+	Sets the value for "key" to "value". This happens on the top GROD layer. See "@setlayer()".
 @setarray(
 	todo
 @setbit(x,b)
 	Sets the bit "b" in "x" to 1, with b = 0 to 30. Lowest bit is on the right. Returns an error if either are not numeric, below zero, or "b" is over 30.
 @setchar(
 	todo
-@setextra(
-	todo
+@setlayer(layer,key,value)
+	For a named GROD layer, sets "key" to "value". If the named layer does not exists, one is added as the parent of the current layer. This is the way to change values on layers other than the top GROD layer. See "@set()".
 @setlist(
 	todo
 @setoutchannel(

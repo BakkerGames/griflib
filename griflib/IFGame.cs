@@ -16,6 +16,12 @@ public delegate void InputEventHandler(object sender);
 /// <param name="sender">The source of the event.</param>
 public delegate void OutputEventHandler(object sender, GrifMessage e);
 
+/// <summary>
+/// Represents the method that will handle an OutChannel event raised by the system.
+/// </summary>
+/// <param name="sender">The source of the event.</param>
+public delegate void OutChannelEventHandler(object sender, GrifMessage e);
+
 public class IFGame
 {
     private Grod _baseGrod = new();
@@ -34,6 +40,11 @@ public class IFGame
     /// Occurs when output data is available or an output event is raised.
     /// </summary>
     public event OutputEventHandler? OutputEvent;
+
+    /// <summary>
+    /// Occurs when an OutChannel message is not handled by the current routines.
+    /// </summary>
+    public event OutChannelEventHandler? OutChannelEvent;
 
     /// <summary>
     /// Gets or sets a value indicating whether the game has ended.
@@ -409,26 +420,21 @@ public class IFGame
         {
             if (string.IsNullOrEmpty(message.ExtraValue))
             {
-                throw new Exception("Grod name not specified.");
+                throw new Exception("Grod layer name not specified.");
             }
             var grodName = message.ExtraValue;
             var tempGrod = _overlayGrod.GetGrod(grodName);
             if (tempGrod == null)
             {
-                // Insert a new grod layer into the hierarchy to save the data
+                // Insert a new grod layer into the stack to save the data
                 tempGrod = new Grod()
                 {
                     Name = grodName,
-                    FilePath = Path.Combine(_saveBasePath, grodName + DATA_EXTENSION),
                     Parent = _overlayGrod.Parent
                 };
                 _overlayGrod.Parent = tempGrod;
-                return false;
             }
-            if (tempGrod.FilePath == null)
-            {
-                throw new Exception("Grod file path not specified.");
-            }
+            tempGrod.FilePath ??= Path.Combine(_saveBasePath, grodName + DATA_EXTENSION);
             if (!File.Exists(tempGrod.FilePath))
             {
                 throw new Exception($"Grod file not found: {tempGrod.FilePath}");
@@ -452,41 +458,15 @@ public class IFGame
             {
                 throw new Exception("Grod name not found in stack.");
             }
-            if (tempGrod.FilePath == null)
+            tempGrod.FilePath ??= Path.Combine(_saveBasePath, grodName + DATA_EXTENSION);
+            if (!File.Exists(tempGrod.FilePath))
             {
-                throw new Exception("Grod file path not specified.");
+                throw new Exception($"Grod file not found: {tempGrod.FilePath}");
             }
-            // save file immediately
             var savefile = tempGrod.FilePath;
             var itemList = tempGrod.Items(false, true);
             WriteGrif(savefile, itemList, true);
             tempGrod.Changed = false;
-            return false;
-        }
-
-        if (message.Value.Equals(OUTCHANNEL_SET_LAYER, OIC))
-        {
-            if (string.IsNullOrEmpty(message.ExtraValue))
-            {
-                throw new Exception("Grod name not specified.");
-            }
-            // extraParams = grodname \t key \t value
-            var extraParms = message.ExtraValue.Split('\t');
-            var grodName = extraParms[0];
-            var tempGrod = _overlayGrod.GetGrod(grodName);
-            if (tempGrod == null)
-            {
-                // Insert a new grod layer into the hierarchy to save the data
-                tempGrod = new Grod()
-                {
-                    Name = grodName,
-                    FilePath = Path.Combine(_saveBasePath, grodName + DATA_EXTENSION),
-                    Parent = _overlayGrod.Parent
-                };
-                _overlayGrod.Parent = tempGrod;
-            }
-            // set value
-            tempGrod.Set(extraParms[1], extraParms[2]); // key and value
             return false;
         }
 
@@ -500,7 +480,9 @@ public class IFGame
             return false;
         }
 
-        // Sent unknown outchannel message, do nothing
+        // Send unhandled OutChannel message to calling program for processing
+        OutChannelEvent?.Invoke(this, message);
+
         return false;
     }
 

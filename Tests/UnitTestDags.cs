@@ -274,13 +274,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Rand()
-    {
-        result = Process(grod, $"{RAND_TOKEN}30)");
-        Assert.That(result[0].Value == TRUE || result[0].Value == FALSE);
-    }
-
-    [Test]
     public void Test_Replace()
     {
         result = Process(grod, $"{WRITE_TOKEN}{REPLACE_TOKEN}abcdef,d,x))");

@@ -353,10 +353,14 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     }
 
     /// <summary>
-    /// Gets the parent Grod with the specified name, searching recursively up the parent chain. Returns null if no matching parent is found.
+    /// Gets the Grod with the specified name, searching recursively up the parent chain. Returns null if no matching Grod is found.
     /// </summary>
     public Grod? GetGrod(string name)
     {
+        if (Name != null && Name.Equals(name, OIC))
+        {
+            return this;
+        }
         var parent = Parent;
         while (parent != null)
         {

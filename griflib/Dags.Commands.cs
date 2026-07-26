@@ -373,6 +373,24 @@ public partial class Dags
         }
     }
 
+    public static void Exec_GetLayer(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        // Gets a value in a specific grod layer. p[0]=layer, p[1]=key
+        CheckParameterCount(p, 2);
+        if (string.IsNullOrEmpty(p[0].Value))
+        {
+            throw new SystemException($"{GETLAYER_TOKEN}...): Layer name cannot be blank");
+        }
+        var layerGrod = grod.GetGrod(p[0].Value);
+        if (layerGrod == null)
+        {
+            result.Add(new GrifMessage(MessageType.Internal, ""));
+            return;
+        }
+        var value = layerGrod.Get(p[1].Value, false) ?? "";
+        result.Add(new GrifMessage(MessageType.Internal, value));
+    }
+
     public static void Exec_GetInChannel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         result.Add(new GrifMessage(MessageType.Internal, grod.Get(INCHANNEL, true) ?? ""));
@@ -796,6 +814,10 @@ public partial class Dags
     {
         CheckParameterCount(p, 1);
         var long1 = GetNumberValue(p[0].Value);
+        if (long1 < 0 || long1 > 100)
+        {
+            throw new SystemException($"{RAND_TOKEN}{p[0].Value}): Value must be 0 to 100");
+        }
         var long2 = _random.Next(100);
         var boolAnswer = long2 < long1;
         result.Add(new GrifMessage(MessageType.Internal, TrueFalse(boolAnswer)));
@@ -824,7 +846,12 @@ public partial class Dags
     {
         CheckParameterCount(p, 1);
         var long1 = GetNumberValue(p[0].Value);
-        result.Add(new GrifMessage(MessageType.Internal, _random.Next((int)long1).ToString()));
+        if (long1 < 0 || long1 > int.MaxValue)
+        {
+            throw new SystemException($"{RND_TOKEN}{p[0].Value}): Value must be 0 to {int.MaxValue}.");
+        }
+        var int1 = _random.Next((int)long1);
+        result.Add(new GrifMessage(MessageType.Internal, int1.ToString()));
     }
 
     public static void Exec_Script(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -899,11 +926,23 @@ public partial class Dags
 
     public static void Exec_SetLayer(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        // Set a value in a grod layer by name.
-        // p[0]=layer, p[1]=key, p[2]=value
+        // Set a value in a specific grod layer. p[0]=layer, p[1]=key, p[2]=value
         CheckParameterCount(p, 3);
-        result.Add(new GrifMessage(MessageType.OutChannel, OUTCHANNEL_SET_LAYER,
-            p[0].Value + '\t' + p[1].Value + '\t' + p[2].Value));
+        if (string.IsNullOrEmpty(p[0].Value))
+        {
+            throw new SystemException($"{SETLAYER_TOKEN}...): Layer name cannot be blank");
+        }
+        var layerGrod = grod.GetGrod(p[0].Value);
+        if (layerGrod == null)
+        {
+            layerGrod = new Grod()
+            {
+                Name = p[0].Value,
+                Parent = grod.Parent
+            };
+            grod.Parent = layerGrod;
+        }
+        layerGrod.Set(p[1].Value, p[2].Value);
     }
 
     public static void Exec_SetList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)

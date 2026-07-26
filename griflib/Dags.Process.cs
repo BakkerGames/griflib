@@ -185,6 +185,9 @@ public partial class Dags
                 case GETCHAR_TOKEN:
                     Exec_GetChar(grod, script, p, result);
                     break;
+                case GETLAYER_TOKEN:
+                    Exec_GetLayer(grod, script, p, result);
+                    break;
                 case GETLIST_TOKEN:
                     Exec_GetList(grod, script, p, result);
                     break;
