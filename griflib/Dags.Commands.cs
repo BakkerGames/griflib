@@ -116,13 +116,16 @@ public partial class Dags
 
     public static void Exec_Concat(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        CheckParameterAtLeastOne(p);
+        // don't need to check parameter count
         StringBuilder sb = new();
         foreach (var item in p)
         {
             sb.Append(item.Value);
         }
-        result.Add(new GrifMessage(MessageType.Internal, sb.ToString()));
+        if (sb.Length > 0)
+        {
+            result.Add(new GrifMessage(MessageType.Internal, sb.ToString()));
+        }
     }
 
     public static void Exec_Contains(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -1044,7 +1047,7 @@ public partial class Dags
 
     public static void Exec_Write(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        CheckParameterAtLeastOne(p);
+        // don't need to check parameter count
         foreach (var item in p) // concatenate all parameters
         {
             var value = GetValue(grod, item.Value);
@@ -1054,7 +1057,7 @@ public partial class Dags
 
     public static void Exec_WriteLine(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        CheckParameterAtLeastOne(p);
+        // don't need to check parameter count
         foreach (var item in p) // concatenate all parameters
         {
             var value = GetValue(grod, item.Value);

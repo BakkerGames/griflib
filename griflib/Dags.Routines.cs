@@ -599,12 +599,35 @@ public partial class Dags
     {
         if (string.IsNullOrWhiteSpace(list) || IsNull(list))
         {
-            return [];
+            return [""];
         }
         var items = list.Split(',');
         for (int i = 0; i < items.Length; i++)
         {
-            items[i] = FixListItemOut(items[i]) ?? "";
+            var outItem = FixListItemOut(items[i]) ?? "";
+            items[i] = outItem;
+        }
+        return items;
+    }
+
+    /// <summary>
+    /// Splits a comma-delimited string into an array of items, changing "" to NULL.
+    /// </summary>
+    public static string[] SplitListNull(string? list)
+    {
+        if (string.IsNullOrWhiteSpace(list) || IsNull(list))
+        {
+            return [NULL];
+        }
+        var items = list.Split(',');
+        for (int i = 0; i < items.Length; i++)
+        {
+            var outItem = FixListItemOut(items[i]);
+            if (string.IsNullOrEmpty(outItem))
+            {
+                outItem = NULL;
+            }
+            items[i] = outItem;
         }
         return items;
     }
@@ -925,9 +948,13 @@ public partial class Dags
     private static string FixListItemIn(string? value)
     {
         if (IsNull(value))
+        {
             return NULL;
+        }
         if (value!.Contains(','))
+        {
             value = value.Replace(",", COMMA_CHAR);
+        }
         return value;
     }
 
@@ -937,9 +964,13 @@ public partial class Dags
     private static string? FixListItemOut(string? value)
     {
         if (IsNull(value))
+        {
             return "";
+        }
         if (value!.Contains(COMMA_CHAR))
+        {
             value = value.Replace(COMMA_CHAR, ",");
+        }
         return value;
     }
 
@@ -993,12 +1024,12 @@ public partial class Dags
         var list = GetGlobalOrLocal(grod, script, key, true);
         if (string.IsNullOrWhiteSpace(list) || IsNull(list))
         {
-            return null;
+            return "";
         }
         var items = SplitList(list);
         if (x >= items.Length)
         {
-            return null;
+            return "";
         }
         return items[x];
     }
@@ -1021,7 +1052,7 @@ public partial class Dags
         {
             list = NULL;
         }
-        var items = SplitList(list).ToList();
+        var items = SplitListNull(list).ToList();
         while (x >= items.Count)
         {
             items.Add(NULL);

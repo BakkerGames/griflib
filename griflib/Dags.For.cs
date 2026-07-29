@@ -167,24 +167,21 @@ public partial class Dags
             foreach (string value in items)
             {
                 var value2 = FixListItemOut(value);
-                if (!string.IsNullOrEmpty(value2))
+                var loopText = newTokens.ToString().Replace($"{PARAM_CHAR}{p[0].Value}", value2);
+                var loopScript = CreateScript(loopText);
+                loopScript.LocalData = script.LocalData;
+                do
                 {
-                    var loopText = newTokens.ToString().Replace($"{PARAM_CHAR}{p[0].Value}", value2);
-                    var loopScript = CreateScript(loopText);
-                    loopScript.LocalData = script.LocalData;
-                    do
+                    var answer = ProcessOneCommand(grod, loopScript);
+                    if (answer.Count > 0)
                     {
-                        var answer = ProcessOneCommand(grod, loopScript);
-                        if (answer.Count > 0)
-                        {
-                            result.AddRange(answer);
-                        }
-                        if (loopScript.ReturnFlag)
-                        {
-                            break;
-                        }
-                    } while (loopScript.Index < loopScript.Tokens.Length);
-                }
+                        result.AddRange(answer);
+                    }
+                    if (loopScript.ReturnFlag)
+                    {
+                        break;
+                    }
+                } while (loopScript.Index < loopScript.Tokens.Length);
             }
         }
     }

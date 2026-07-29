@@ -40,22 +40,6 @@ public class TestDags
     }
 
     [Test]
-    public void TestNoParams()
-    {
-        Grod grod = new("testGrod");
-        string script = $"{WRITE_TOKEN})";
-        var result = Process(grod, script);
-        var expected = "Expected at least one parameter, but got 0";
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result, Is.Not.Empty);
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(result[0].Type, Is.EqualTo(MessageType.Error));
-            Assert.That(result[0].Value, Does.Contain(expected));
-        }
-    }
-
-    [Test]
     public void TestGetAndSet()
     {
         Grod grod = new("testGrod");

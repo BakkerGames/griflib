@@ -149,25 +149,8 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo("123"));
     }
 
-    [Test]
-    public void Test_ForEachKey()
-    {
-        Process(grod, $"{SET_TOKEN}value.1,100) {SET_TOKEN}value.2,200)");
-        result = Process(grod, $"{FOREACHKEY_TOKEN}x,\"value.\") {WRITE_TOKEN}$x) {ENDFOREACHKEY_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("12"));
-        result = Process(grod, $"{FOREACHKEY_TOKEN}x,\"value.\") {GET_TOKEN}value.$x) {ENDFOREACHKEY_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("100200"));
-    }
 
-    [Test]
-    public void Test_ForEachList()
-    {
-        Process(grod, $"{SETLIST_TOKEN}value,1,10)");
-        Process(grod, $"{SETLIST_TOKEN}value,2,20)");
-        Process(grod, $"{SETLIST_TOKEN}value,3,30)");
-        result = Process(grod, $"{FOREACHLIST_TOKEN}x,value) {WRITE_TOKEN}$x) {ENDFOREACHLIST_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("102030"));
-    }
+
 
     [Test]
     public void Test_Format()
