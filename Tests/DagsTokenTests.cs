@@ -883,38 +883,6 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @do ###DONE###
-    // part of @while
-    #endregion
-
-    #region @elseif ###DONE###
-    // part of @if
-    #endregion
-
-    #region @else ###DONE###
-    // part of @if
-    #endregion
-
-    #region @endforeachkey ###DONE###
-    // part of @foreachkey
-    #endregion
-
-    #region @endforeachlist ###DONE###
-    // part of @foreachlist
-    #endregion
-
-    #region @endfor ###DONE###
-    // part of @for
-    #endregion
-
-    #region @endif ###DONE###
-    // part of @if
-    #endregion
-
-    #region @endwhile ###DONE###
-    // part of @while
-    #endregion
-
     #region @eq ###DONE###
 
     [Test]
@@ -1162,7 +1130,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @foreachlist
+    #region @foreachlist ###DONE###
 
     [Test]
     public void Test_FOREACHLIST()
@@ -1682,10 +1650,6 @@ public class DagsTokenTests
     #region @if
     #endregion
 
-    #region @inlist
-    // See @listcontains
-    #endregion
-
     #region @insertatlist
     #endregion
 
@@ -2055,10 +2019,86 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @max
+    #region @max ###DONE###
+
+    [Test]
+    public void Test_MAX()
+    {
+        var value1 = "1";
+        var value2 = "10";
+        var expectedValue = "10";
+        result = ProcessTest(grod, $"{MAX_TOKEN}{value1},{value2})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_MAX_ManyValues()
+    {
+        var value1 = "1";
+        var value2 = "10";
+        var value3 = "-10";
+        var value4 = "7";
+        var value5 = "0";
+        var expectedValue = "10";
+        result = ProcessTest(grod, $"{MAX_TOKEN}{value1},{value2},{value3},{value4},{value5})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_MAX_NonNumeric()
+    {
+        var value1 = "abc";
+        var value2 = "5";
+        result = ProcessTest(grod, $"{MAX_TOKEN}{value1},{value2})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
     #endregion
 
     #region @min
+
+    [Test]
+    public void Test_MIN()
+    {
+        var value1 = "1";
+        var value2 = "10";
+        var expectedValue = "1";
+        result = ProcessTest(grod, $"{MIN_TOKEN}{value1},{value2})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_MIN_ManyValues()
+    {
+        var value1 = "1";
+        var value2 = "10";
+        var value3 = "-10";
+        var value4 = "7";
+        var value5 = "0";
+        var expectedValue = "-10";
+        result = ProcessTest(grod, $"{MIN_TOKEN}{value1},{value2},{value3},{value4},{value5})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_MIN_NonNumeric()
+    {
+        var value1 = "abc";
+        var value2 = "5";
+        result = ProcessTest(grod, $"{MIN_TOKEN}{value1},{value2})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
     #endregion
 
     #region @modto ###DONE###
@@ -2807,7 +2847,7 @@ public class DagsTokenTests
     #region @nl
     #endregion
 
-    #region @not
+    #region @not ###DONE###
 
     [Test]
     public void Test_NOT_AND_TrueAndNotTrue()

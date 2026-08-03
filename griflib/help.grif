@@ -115,8 +115,8 @@
 	Returns true/false if "key" exists in any GROD layer. Use "@not @isnull(@get(key))" to check for a blank/null value.
 @label(x)
 	A label named "x" within a script. This is the target of "@golabel(x)" or an "@ongolabel(value,..,x,...)" command. Execution will continue with the command after the label. "x" must be a constant value, not a script. If there is more than one label with the same name, the first one is always used.
-@le(
-	todo
+@le(x,y)
+	Returns "true" if "x" is less than or equal to "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "x" is null, the answer is "true". If "x" is not null and "y" is null, the answer is "false".
 @len(
 	todo
 @listcontains(key,value)
@@ -127,12 +127,12 @@
 	Returns the number of items in list "key".
 @lower(x)
 	Converts all the alphabetic characters in string "x" to lowercase.
-@lt(
-	todo
-@max(
-	todo
-@min(
-	todo
+@lt(x,y)
+	Returns "true" if "x" is less than "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "x" is null and "y" is not null, the answer is "true". If "y" is null, the answer is "false".
+@max(x1,x2,...)
+	Returns the maximum numeric value for all parameters. Throws an error if any are not numeric.
+@min(x1,x2,...)
+	Returns the minimum numeric value for all parameters. Throws an error if any are not numeric.
 @mod(x,y)
 	Returns the numeric value of "x" modulus "y". This is the remainder if "x" were to be divided by "y". If "x" is negative, the answer is negative.
 @modto(key,x)
@@ -208,6 +208,14 @@
 @while
 	todo
 @write(value1,value2,...)
-	Writes out the concatination of value1+value2+...
+	Writes out the concatination of value1+value2+... Note that this is returned as a list of separate values, not a single string.
 @writeline(value1,value2,...)
-	Writes out the concatination of value1+value2+..., with a newline at the end.
+	Writes out the concatination of value1+value2+..., with a newline at the end. Note that this is returned as a list of separate values, not a single string.
+Scripts
+	A script is a value which starts with "@" as the start of some function key. There can be one or many statements, such as @if blocks, @for blocks, etc. The statements will process until it reaches the end of the script, or it reaches a "@return" statement, or it throws an error.\n\nThe complete set of all results from the script are returned together, not individually as they occur.\n\nScripts do not need to be formatted, but they will be when stored in a GRIF file for human readability. In a JSON file, they are stored as an unformatted string.\n\nWithin a script, using a key which starts with underline ("_") signifies a local variable only available in that copy of the script. If another copy of the same script is started, it won't have the same values.\n\nScripts are parsed from the string value into a collection of tokens which is held in memory while processing, then discarded. You can alter a running script stored in the dictionary, but it won't take effect until the next time it is run.
+User-defined functions
+	You can define your own functions/routines by starting the key with "@". If there are parameters, you would describe them in the key, like "@func(x,y)". Within the script the values "$x" and "$y" would be replaced by the values sent in "x" and "y".\n\nYou can define a function without parameters, such as "@func2". These could do any normal commands starting with "@", or they could be a plain text value. For instance, "@darkmsg" = "You are in the dark.", could be used as "@write(@darkmsg)".\n\nA user-defined function can be used anywhere a built-in function is allowed.\n\nThe keys for user-defined functions cannot have spaces or quotes. They cannot have an "@" after the begining one. They cannot duplicate the names of built-in functions, even with different numbers of parameters. They need one start and one end parenthesis if there are parameters. The parameters should start with a letter and use only letters and numbers, and are separated by commas.
+Game Dictionaries
+	A GRIF game is stored in one or more dictionaries (saved as *.GRIF or *.JSON files). The dictionaries are key/value pairs, with both the key and value being strings.\n\nYou can put an entire game into a single file, with all values and scripts to make it work. You can  split a game across multiple files and load them all in a stack. A "*.GRIFSTACK" file contains a list of filenames of the files to load in a stack. Or you can list them on the command line for GRIF (either with or without "-m"/"--mod" arguments).\n\nHaving separate files will allow you to store different kinds of values in each, such as global routines, special routines, room data, item data, and values. Whatever makes sense to you.\n\nYou can create "mod" files which modify the game (hence the "-m"/"--mod" argument) that change how it works without changing the basic game files. Maybe put all written string values into one file, and make mod files for other languages using the same keys, so your messages display in French, for instance.
+Game Overlay
+	Once the game is loaded in memory, a special dictionary is added to the top of the stack, known as the "overlay". This contains all added or changed key/value pairs since the game started. Using the "@set(...)" command writes only to the overlay, while a "@get(...)" will start at the overlay looking for a key, falling down through the stack until it is found. This makes the overlay exactly all the data needed for saving the game state.

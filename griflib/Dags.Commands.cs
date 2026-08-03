@@ -6,7 +6,7 @@ namespace GrifLib;
 
 public partial class Dags
 {
-    public static void Exec_Abs(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Abs(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var long1 = GetNumberValue(p[0].Value);
@@ -17,7 +17,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
     }
 
-    public static void Exec_Add(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Add(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -26,13 +26,13 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, longAnswer.ToString()));
     }
 
-    public static void Exec_AddList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_AddList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         AddListItem(grod, script, p[0].Value, p[1].Value);
     }
 
-    public static void Exec_AddTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_AddTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(GetGlobalOrLocal(grod, script, p[0].Value, true));
@@ -41,7 +41,7 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, p[0].Value, longAnswer.ToString());
     }
 
-    public static void Exec_BitwiseAnd(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_BitwiseAnd(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -54,7 +54,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, longAnswer.ToString()));
     }
 
-    public static void Exec_BitwiseOr(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_BitwiseOr(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -67,7 +67,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, longAnswer.ToString()));
     }
 
-    public static void Exec_BitwiseXor(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_BitwiseXor(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -80,13 +80,13 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, longAnswer.ToString()));
     }
 
-    public static void Exec_ClearArray(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ClearArray(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         ClearArray(grod, script, p[0].Value);
     }
 
-    public static void Exec_ClearBit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ClearBit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -99,7 +99,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, longAnswer.ToString()));
     }
 
-    public static void Exec_ClearList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ClearList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         if (string.IsNullOrWhiteSpace(p[0].Value))
@@ -109,12 +109,12 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, p[0].Value, null);
     }
 
-    public static void Exec_Comment(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Comment(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // Ignore comments
     }
 
-    public static void Exec_Concat(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Concat(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // don't need to check parameter count
         StringBuilder sb = new();
@@ -128,7 +128,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_Contains(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Contains(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         if (p[0].Value.Length == 0 || p[1].Value.Length == 0)
@@ -138,7 +138,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, TrueFalse(p[0].Value.Contains(p[1].Value, OIC))));
     }
 
-    public static void Exec_DateTime(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_DateTime(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParmeterCountBetween(p, 1, 2);
         try
@@ -168,13 +168,13 @@ public partial class Dags
         }
     }
 
-    public static void Exec_Debug(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Debug(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         AddDebugMessage(grod, result, p[0].Value);
     }
 
-    public static void Exec_Div(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Div(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -187,7 +187,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
     }
 
-    public static void Exec_DivTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_DivTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(GetGlobalOrLocal(grod, script, p[0].Value, true));
@@ -200,7 +200,7 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, p[0].Value, long1.ToString());
     }
 
-    public static void Exec_Equals(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Equals(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var isNull0 = IsNull(p[0].Value);
@@ -227,21 +227,21 @@ public partial class Dags
         }
     }
 
-    public static void Exec_Exec(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Exec(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var value = p[0].Value;
         result.AddRange(Process(grod, value));
     }
 
-    public static void Exec_KeyExists(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_KeyExists(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var value = grod.ContainsKey(p[0].Value, true);
         result.Add(new GrifMessage(MessageType.Internal, TrueFalse(value)));
     }
 
-    public static void Exec_Flipbit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Flipbit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -254,13 +254,13 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, longAnswer.ToString()));
     }
 
-    public static void Exec_For(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_For(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 3);
         HandleFor(grod, script, p, result);
     }
 
-    public static void Exec_ForEachKey(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ForEachKey(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         if (p.Count != 2 && p.Count != 3)
         {
@@ -269,13 +269,13 @@ public partial class Dags
         HandleForEachKey(grod, script, p, result);
     }
 
-    public static void Exec_ForEachList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ForEachList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         HandleForEachList(grod, script, p, result);
     }
 
-    public static void Exec_Format(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Format(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterAtLeastOne(p);
         var value = p[0].Value;
@@ -286,7 +286,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
-    public static void Exec_FromBinary(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_FromBinary(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         try
@@ -300,7 +300,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_FromHex(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_FromHex(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         try
@@ -315,14 +315,14 @@ public partial class Dags
         }
     }
 
-    public static void Exec_Get(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Get(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var value = GetGlobalOrLocal(grod, script, p[0].Value, true) ?? "";
         result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
-    public static void Exec_GetArray(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GetArray(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 3);
         if (string.IsNullOrWhiteSpace(p[0].Value))
@@ -335,7 +335,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, value ?? ""));
     }
 
-    public static void Exec_GetBit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GetBit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -352,7 +352,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, longAnswer.ToString()));
     }
 
-    public static void Exec_GetChar(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GetChar(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var int1 = (int)GetNumberValue(p[1].Value);
@@ -376,7 +376,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_GetLayer(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GetLayer(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // Gets a value in a specific grod layer. p[0]=layer, p[1]=key
         CheckParameterCount(p, 2);
@@ -394,13 +394,13 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
-    public static void Exec_GetInChannel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GetInChannel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         result.Add(new GrifMessage(MessageType.Internal, grod.Get(INCHANNEL, true) ?? ""));
         grod.Remove(INCHANNEL, false); // Clear after reading
     }
 
-    public static void Exec_GetList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GetList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         if (string.IsNullOrWhiteSpace(p[0].Value))
@@ -412,14 +412,14 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, value ?? ""));
     }
 
-    public static void Exec_GetValue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GetValue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var value = GetValue(grod, GetGlobalOrLocal(grod, script, p[0].Value, true));
         result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
-    public static void Exec_GoLabel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GoLabel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         for (int i = 0; i < script.Tokens.Length - 1; i++)
@@ -433,7 +433,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_GreaterThan(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GreaterThan(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var isNull0 = IsNull(p[0].Value);
@@ -457,7 +457,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_GreaterThanOrEquals(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_GreaterThanOrEquals(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var isNull0 = IsNull(p[0].Value);
@@ -481,19 +481,19 @@ public partial class Dags
         }
     }
 
-    public static void Exec_If(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_If(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         result.AddRange(ProcessIf(grod, script));
     }
 
-    public static void Exec_InsertAtList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_InsertAtList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 3);
         var long1 = GetNumberValue(p[1].Value);
         InsertAtListItem(grod, script, p[0].Value, long1, p[2].Value);
     }
 
-    public static void Exec_IsBool(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_IsBool(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         try
@@ -507,7 +507,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_IsFalse(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_IsFalse(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         try
@@ -521,13 +521,13 @@ public partial class Dags
         }
     }
 
-    public static void Exec_IsNull(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_IsNull(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         result.Add(new GrifMessage(MessageType.Internal, TrueFalse(IsNull(p[0].Value))));
     }
 
-    public static void Exec_IsNumber(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_IsNumber(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         if (long.TryParse(p[0].Value, out _))
@@ -540,7 +540,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_IsScript(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_IsScript(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var value = GetGlobalOrLocal(grod, script, p[0].Value, true);
@@ -554,7 +554,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_IsTrue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_IsTrue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         try
@@ -568,18 +568,18 @@ public partial class Dags
         }
     }
 
-    public static void Exec_Label(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Label(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
     }
 
-    public static void Exec_Len(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Len(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         result.Add(new GrifMessage(MessageType.Internal, p[0].Value.Length.ToString()));
     }
 
-    public static void Exec_LessThan(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_LessThan(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var isNull0 = IsNull(p[0].Value);
@@ -603,7 +603,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_LessThanOrEquals(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_LessThanOrEquals(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var isNull0 = IsNull(p[0].Value);
@@ -627,14 +627,14 @@ public partial class Dags
         }
     }
 
-    public static void Exec_ListContains(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ListContains(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var answer = InList(grod, script, p[0].Value, p[1].Value);
         result.Add(new GrifMessage(MessageType.Internal, TrueFalse(answer)));
     }
 
-    public static void Exec_ListContainsAll(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ListContainsAll(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var list2 = SplitList(grod.Get(p[1].Value, true));
@@ -649,7 +649,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, TRUE));
     }
 
-    public static void Exec_ListLength(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ListLength(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         if (string.IsNullOrWhiteSpace(p[0].Value))
@@ -668,31 +668,37 @@ public partial class Dags
         }
     }
 
-    public static void Exec_Lower(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Lower(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         result.Add(new GrifMessage(MessageType.Internal, p[0].Value.ToLower()));
     }
 
-    public static void Exec_Max(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Max(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        CheckParameterCount(p, 2);
-        var long1 = GetNumberValue(p[0].Value);
-        var long2 = GetNumberValue(p[1].Value);
-        long1 = Math.Max(long1, long2);
-        result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
+        CheckParameterAtLeastOne(p);
+        var answer = long.MinValue;
+        foreach (var param in p)
+        {
+            var long1 = GetNumberValue(param.Value);
+            answer = Math.Max(answer, long1);
+        }
+        result.Add(new GrifMessage(MessageType.Internal, answer.ToString()));
     }
 
-    public static void Exec_Min(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Min(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        CheckParameterCount(p, 2);
-        var long1 = GetNumberValue(p[0].Value);
-        var long2 = GetNumberValue(p[1].Value);
-        long1 = Math.Min(long1, long2);
-        result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
+        CheckParameterAtLeastOne(p);
+        var answer = long.MaxValue;
+        foreach (var param in p)
+        {
+            var long1 = GetNumberValue(param.Value);
+            answer = Math.Min(answer, long1);
+        }
+        result.Add(new GrifMessage(MessageType.Internal, answer.ToString()));
     }
 
-    public static void Exec_Mod(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Mod(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -701,7 +707,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
     }
 
-    public static void Exec_ModTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ModTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(GetGlobalOrLocal(grod, script, p[0].Value, true));
@@ -710,7 +716,7 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, p[0].Value, long1.ToString());
     }
 
-    public static void Exec_Msg(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Msg(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var tempResult = Process(grod, GetGlobalOrLocal(grod, script, p[0].Value, true));
@@ -728,7 +734,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Text, NL_CHAR));
     }
 
-    public static void Exec_Mul(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Mul(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -737,7 +743,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
     }
 
-    public static void Exec_MulTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_MulTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(GetGlobalOrLocal(grod, script, p[0].Value, true));
@@ -746,7 +752,7 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, p[0].Value, long1.ToString());
     }
 
-    public static void Exec_Neg(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Neg(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var long1 = GetNumberValue(p[0].Value);
@@ -754,7 +760,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
     }
 
-    public static void Exec_NegTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_NegTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var long1 = GetNumberValue(GetGlobalOrLocal(grod, script, p[0].Value, true));
@@ -762,12 +768,12 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, p[0].Value, long1.ToString());
     }
 
-    public static void Exec_Newline(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Newline(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         result.Add(new GrifMessage(MessageType.Text, NL_CHAR));
     }
 
-    public static void Exec_NotEqual(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_NotEqual(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var isNull0 = IsNull(p[0].Value);
@@ -794,7 +800,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_OnGoLabel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_OnGoLabel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterAtLeastOne(p);
         var int1 = (int)GetNumberValue(p[0].Value);
@@ -813,7 +819,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_Rand(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Rand(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var long1 = GetNumberValue(p[0].Value);
@@ -826,26 +832,26 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, TrueFalse(boolAnswer)));
     }
 
-    public static void Exec_RemoveAtList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_RemoveAtList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[1].Value);
         RemoveAtListItem(grod, script, p[0].Value, long1);
     }
 
-    public static void Exec_Replace(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Replace(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 3);
         result.Add(new GrifMessage(MessageType.Internal, p[0].Value.Replace(p[1].Value, p[2].Value, OIC)));
     }
 
-    public static void Exec_Return(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Return(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         script.Index = script.Tokens.Length;
         script.ReturnFlag = true; // End processing
     }
 
-    public static void Exec_Rnd(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Rnd(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var long1 = GetNumberValue(p[0].Value);
@@ -857,7 +863,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, int1.ToString()));
     }
 
-    public static void Exec_Script(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Script(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var value = GetGlobalOrLocal(grod, script, p[0].Value, true);
@@ -868,13 +874,13 @@ public partial class Dags
         }
     }
 
-    public static void Exec_Set(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Set(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         SetGlobalOrLocal(grod, script, p[0].Value, p[1].Value);
     }
 
-    public static void Exec_SetArray(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_SetArray(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 4);
         if (string.IsNullOrWhiteSpace(p[0].Value))
@@ -886,7 +892,7 @@ public partial class Dags
         SetArrayItem(grod, script, p[0].Value, long1, long2, p[3].Value);
     }
 
-    public static void Exec_SetBit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_SetBit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -899,7 +905,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, longAnswer.ToString()));
     }
 
-    public static void Exec_SetChar(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_SetChar(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 3);
         var int1 = (int)GetNumberValue(p[1].Value);
@@ -927,7 +933,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
-    public static void Exec_SetLayer(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_SetLayer(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // Set a value in a specific grod layer. p[0]=layer, p[1]=key, p[2]=value
         CheckParameterCount(p, 3);
@@ -948,14 +954,14 @@ public partial class Dags
         layerGrod.Set(p[1].Value, p[2].Value);
     }
 
-    public static void Exec_SetList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_SetList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 3);
         var long1 = GetNumberValue(p[1].Value);
         SetListItem(grod, script, p[0].Value, long1, p[2].Value);
     }
 
-    public static void Exec_SetOutChannel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_SetOutChannel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         if (p.Count == 1)
         {
@@ -967,7 +973,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_Sub(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Sub(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(p[0].Value);
@@ -976,7 +982,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
     }
 
-    public static void Exec_Substring(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Substring(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParmeterCountBetween(p, 2, 3);
         var long1 = GetNumberValue(p[1].Value);
@@ -996,7 +1002,7 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, p[0].Value.Substring((int)long1, (int)long2)));
     }
 
-    public static void Exec_SubTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_SubTo(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var long1 = GetNumberValue(GetGlobalOrLocal(grod, script, p[0].Value, true));
@@ -1005,7 +1011,7 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, p[0].Value, long1.ToString());
     }
 
-    public static void Exec_Swap(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Swap(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
         var value1 = GetGlobalOrLocal(grod, script, p[0].Value, true);
@@ -1014,38 +1020,38 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, p[1].Value, value1);
     }
 
-    public static void Exec_ToBinary(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ToBinary(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var long1 = GetNumberValue(p[0].Value);
         result.Add(new GrifMessage(MessageType.Internal, Convert.ToString(long1, 2)));
     }
 
-    public static void Exec_ToHex(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_ToHex(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         var long1 = GetNumberValue(p[0].Value);
         result.Add(new GrifMessage(MessageType.Internal, long1.ToString("X")));
     }
 
-    public static void Exec_Trim(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Trim(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         result.Add(new GrifMessage(MessageType.Internal, p[0].Value.Trim()));
     }
 
-    public static void Exec_Upper(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Upper(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
         result.Add(new GrifMessage(MessageType.Internal, p[0].Value.ToUpper()));
     }
 
-    public static void Exec_While(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_While(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         result.AddRange(ProcessWhile(grod, script));
     }
 
-    public static void Exec_Write(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_Write(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // don't need to check parameter count
         foreach (var item in p) // concatenate all parameters
@@ -1055,7 +1061,7 @@ public partial class Dags
         }
     }
 
-    public static void Exec_WriteLine(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    private static void Exec_WriteLine(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // don't need to check parameter count
         foreach (var item in p) // concatenate all parameters
