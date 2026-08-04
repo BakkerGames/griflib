@@ -199,7 +199,7 @@ public static class IO
             }
             else
             {
-                value = item.Value ?? NULL;
+                value = item.Value;
                 if (value.Contains('\r') || value.Contains('\n'))
                 {
                     value = value.Replace("\r", "").Replace("\n", NL_CHAR);

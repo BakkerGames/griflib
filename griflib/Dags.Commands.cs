@@ -106,7 +106,7 @@ public partial class Dags
         {
             throw new SystemException($"{CLEARLIST_TOKEN}): List name cannot be blank");
         }
-        SetGlobalOrLocal(grod, script, p[0].Value, null);
+        SetGlobalOrLocal(grod, script, p[0].Value, NULL);
     }
 
     private static void Exec_Comment(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -318,7 +318,7 @@ public partial class Dags
     private static void Exec_Get(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
-        var value = GetGlobalOrLocal(grod, script, p[0].Value, true) ?? "";
+        var value = GetGlobalOrLocal(grod, script, p[0].Value, true);
         result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
@@ -332,7 +332,7 @@ public partial class Dags
         var long1 = GetNumberValue(p[1].Value);
         var long2 = GetNumberValue(p[2].Value);
         var value = GetArrayItem(grod, script, p[0].Value, long1, long2);
-        result.Add(new GrifMessage(MessageType.Internal, value ?? ""));
+        result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
     private static void Exec_GetBit(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -390,13 +390,17 @@ public partial class Dags
             result.Add(new GrifMessage(MessageType.Internal, ""));
             return;
         }
-        var value = layerGrod.Get(p[1].Value, false) ?? "";
+        var value = layerGrod.Get(p[1].Value, false);
         result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
     private static void Exec_GetInChannel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        result.Add(new GrifMessage(MessageType.Internal, grod.Get(INCHANNEL, true) ?? ""));
+        var value = grod.Get(INCHANNEL, true);
+        if (!IsNull(value))
+        {
+            result.Add(new GrifMessage(MessageType.Internal, value));
+        }
         grod.Remove(INCHANNEL, false); // Clear after reading
     }
 
@@ -409,7 +413,7 @@ public partial class Dags
         }
         var long1 = GetNumberValue(p[1].Value);
         var value = GetListItem(grod, script, p[0].Value, long1);
-        result.Add(new GrifMessage(MessageType.Internal, value ?? ""));
+        result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
     private static void Exec_GetValue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)

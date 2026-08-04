@@ -1,26 +1,10 @@
 using GrifLib;
+using static GrifLib.Common;
 
 namespace Tests;
 
 public class UnitTestGrod
 {
-    [Test]
-    public void Test_NullKey()
-    {
-        Grod g = new("base");
-        try
-        {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            g.Set(null, null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Fail();
-        }
-        catch (Exception)
-        {
-            Assert.Pass();
-        }
-    }
-
     [Test]
     public void Test_EmptyKey()
     {
@@ -87,7 +71,7 @@ public class UnitTestGrod
     public void Test_NullValue()
     {
         Grod g = new("base");
-        g.Set("k", null);
+        g.Set("k", "");
         Assert.That(g.Get("k", false), Is.Empty);
     }
 

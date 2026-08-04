@@ -196,32 +196,35 @@ public class IFGame
     /// <summary>
     /// Generates and returns the current prompt text, processing scripts if present.
     /// </summary>
-    public string? Prompt()
+    public List<GrifMessage> Prompt()
     {
         var prompt = _overlayGrod.Get(PROMPT, true);
+        if (IsNull(prompt))
+        {
+            return [];
+        }
         if (IsScript(prompt))
         {
-            var promptData = Process(_overlayGrod, prompt);
-            prompt = "";
-            foreach (var item in promptData)
-            {
-                prompt += item.Value;
-            }
+            return Process(_overlayGrod, prompt);
         }
-        return prompt;
+        return [new GrifMessage(MessageType.Text, prompt)];
     }
 
     /// <summary>
     /// Generates and returns the text or script to be displayed after the prompt.
     /// </summary>
-    public string? AfterPrompt()
+    public List<GrifMessage> AfterPrompt()
     {
         var afterPrompt = _overlayGrod.Get(AFTER_PROMPT, true);
+        if (IsNull(afterPrompt))
+        {
+            return [];
+        }
         if (IsScript(afterPrompt))
         {
-            afterPrompt = Process(_overlayGrod, afterPrompt).FirstOrDefault()?.Value;
+            return Process(_overlayGrod, afterPrompt);
         }
-        return afterPrompt;
+        return [new GrifMessage(MessageType.Text, afterPrompt)];
     }
 
     #region Private routines
@@ -253,7 +256,7 @@ public class IFGame
     /// Processes an output message and dispatches it to the appropriate handler based on its type.
     /// Returns true if an answer is requested.
     /// </summary>
-    private bool ProcessOutputMessage(GrifMessage message)
+    public bool ProcessOutputMessage(GrifMessage message)
     {
         switch (message.Type)
         {

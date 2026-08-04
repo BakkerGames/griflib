@@ -38,7 +38,7 @@ public partial class Dags
         foreach (var item in grod.Items(true, true))
         {
             if (item.Key.Contains(searchTerm, OIC)
-                || (item.Value ?? "").Contains(searchTerm, OIC))
+                || item.Value.Contains(searchTerm, OIC))
             {
                 result.Set(item.Key, item.Value);
             }

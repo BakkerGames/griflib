@@ -128,7 +128,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     /// <summary>
     /// Adds a new entry or updates the value associated with the specified key.
     /// </summary>
-    public void Set(string key, string? value)
+    public void Set(string key, string value)
     {
         ValidateKey(key);
         if (string.IsNullOrEmpty(value))
@@ -147,7 +147,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
         {
             value = TRUE;
         }
-        if (_data.TryGetValue(key, out string? value1) && value1.Equals(value, OIC))
+        if (_data.TryGetValue(key, out string? value1) && value.Equals(value1, OIC))
         {
             return;
         }
@@ -379,7 +379,7 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     /// Compares two dot-delimited key strings using a custom ordering that accounts for special wildcard tokens and
     /// numeric values.
     /// </summary>
-    public static int CompareKeys(string? x, string? y)
+    public static int CompareKeys(string x, string y)
     {
         if (string.IsNullOrEmpty(x))
         {

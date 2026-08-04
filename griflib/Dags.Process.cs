@@ -13,7 +13,7 @@ public partial class Dags
     private static List<GrifMessage> ProcessOneCommand(Grod grod, ScriptObj script)
     {
         List<GrifMessage> result = [];
-        string? value;
+        string value;
         try
         {
             if (script.Index >= script.Tokens.Length)

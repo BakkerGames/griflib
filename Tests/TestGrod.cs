@@ -1,4 +1,5 @@
 ﻿using GrifLib;
+using static GrifLib.Common;
 
 namespace Tests;
 
@@ -79,7 +80,7 @@ public class TestGrod
     public void TestGrodSetNullValue()
     {
         var grod = new Grod("grod7");
-        grod.Set("key9", null);
+        grod.Set("key9", "");
         Assert.That(grod.Get("key9", false), Is.Empty);
     }
 

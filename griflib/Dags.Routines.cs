@@ -5,7 +5,7 @@ namespace GrifLib;
 
 public partial class Dags
 {
-    public static ScriptObj CreateScript(string? script)
+    public static ScriptObj CreateScript(string script)
     {
         return new ScriptObj
         {
@@ -17,7 +17,7 @@ public partial class Dags
     /// <summary>
     /// Split the script into script.Tokens for processing.
     /// </summary>
-    public static string[] SplitTokens(string? script)
+    public static string[] SplitTokens(string script)
     {
         QuickValidate(script);
         List<string> result = [];
@@ -173,7 +173,7 @@ public partial class Dags
     /// Format the script with line breaks and indents.
     /// Parameter "indent" adds one extra tab at the beginning of each line.
     /// </summary>
-    public static string PrettyScript(string? scriptText, bool indent = false)
+    public static string PrettyScript(string scriptText, bool indent = false)
     {
         StringBuilder result = new();
 
@@ -293,7 +293,7 @@ public partial class Dags
     /// <summary>
     /// Format the script in a single line with minimal spaces.
     /// </summary>
-    public static string CompressScript(string? scriptText)
+    public static string CompressScript(string scriptText)
     {
         if (!IsScript(scriptText))
         {
@@ -338,7 +338,7 @@ public partial class Dags
     /// <summary>
     /// Validate the script for correct syntax.
     /// </summary>
-    public static bool ValidateScript(string? scriptText)
+    public static bool ValidateScript(string scriptText)
     {
         if (!IsScript(scriptText))
         {
@@ -463,7 +463,7 @@ public partial class Dags
     /// </summary>
     /// <param name="script"></param>
     /// <exception cref="ArgumentException"></exception>
-    public static void QuickValidate(string? script)
+    public static void QuickValidate(string script)
     {
         if (string.IsNullOrWhiteSpace(script)) return;
         if (!IsScript(script)) return;
@@ -557,7 +557,7 @@ public partial class Dags
     /// <summary>
     /// Get long value from string, with error handling.
     /// </summary>
-    public static long GetNumberValue(string? value)
+    public static long GetNumberValue(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -573,7 +573,7 @@ public partial class Dags
     /// <summary>
     /// Determines if the value is a script.
     /// </summary>
-    public static bool IsScript(string? value)
+    public static bool IsScript(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -587,7 +587,7 @@ public partial class Dags
     /// <summary>
     /// Determines whether the specified string is null, empty, or the special NULL string.
     /// </summary>
-    public static bool IsNull(string? value)
+    public static bool IsNull(string value)
     {
         return string.IsNullOrEmpty(value) || value.Equals(NULL, OIC);
     }
@@ -595,7 +595,7 @@ public partial class Dags
     /// <summary>
     /// Splits a comma-delimited string into an array of items, normalizing each element.
     /// </summary>
-    public static string[] SplitList(string? list)
+    public static string[] SplitList(string list)
     {
         if (string.IsNullOrWhiteSpace(list) || IsNull(list))
         {
@@ -604,7 +604,7 @@ public partial class Dags
         var items = list.Split(',');
         for (int i = 0; i < items.Length; i++)
         {
-            var outItem = FixListItemOut(items[i]) ?? "";
+            var outItem = FixListItemOut(items[i]);
             items[i] = outItem;
         }
         return items;
@@ -613,7 +613,7 @@ public partial class Dags
     /// <summary>
     /// Splits a comma-delimited string into an array of items, changing "" to NULL.
     /// </summary>
-    public static string[] SplitListNull(string? list)
+    public static string[] SplitListNull(string list)
     {
         if (string.IsNullOrWhiteSpace(list) || IsNull(list))
         {
@@ -826,7 +826,7 @@ public partial class Dags
     /// <summary>
     /// Get the string value from a Grod, processing scripts as needed.
     /// </summary>
-    private static string GetValue(Grod grod, string? value)
+    private static string GetValue(Grod grod, string value)
     {
         if (IsNull(value))
         {
@@ -834,7 +834,7 @@ public partial class Dags
         }
         if (!IsScript(value))
         {
-            return value ?? "";
+            return value;
         }
         var resultItems = Process(grod, value);
         if (resultItems.Count == 1 &&
@@ -859,7 +859,7 @@ public partial class Dags
         {
             throw new SystemException($"Multiple definitions found for {token}");
         }
-        var key = keys.First();
+        var key = keys[0];
         if (!key.EndsWith(')'))
         {
             throw new SystemException($"Invalid key format: {key}");
@@ -869,8 +869,11 @@ public partial class Dags
         {
             throw new SystemException($"Parameter count mismatch for {key}. Expected {placeholders.Length}, got {p.Count}");
         }
-        var value = GetGlobalOrLocal(grod, script, key, true)
-            ?? throw new SystemException($"Key not found: {keys.First()}");
+        var value = GetGlobalOrLocal(grod, script, key, true);
+        if (IsNull(value))
+        {
+            throw new SystemException($"Key not found: {key}");
+        }
         for (int i = 0; i < placeholders.Length; i++)
         {
             var placeholder = placeholders[i].Trim();
@@ -891,7 +894,7 @@ public partial class Dags
     /// <summary>
     /// Evaluate a string as a boolean value.
     /// </summary>
-    private static bool IsTrue(string? value)
+    private static bool IsTrue(string value)
     {
         if (IsNull(value))
         {
@@ -908,7 +911,7 @@ public partial class Dags
     /// <summary>
     /// Add an item to a comma-delimited list in the Grod.
     /// </summary>
-    private static void AddListItem(Grod grod, ScriptObj script, string key, string? value)
+    private static void AddListItem(Grod grod, ScriptObj script, string key, string value)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -938,14 +941,14 @@ public partial class Dags
         var list = grod.Keys(key + ":", true, true);
         foreach (var item in list)
         {
-            SetGlobalOrLocal(grod, script, item, null);
+            SetGlobalOrLocal(grod, script, item, NULL);
         }
     }
 
     /// <summary>
     /// Fix a list item for storage by replacing commas and handling nulls.
     /// </summary>
-    private static string FixListItemIn(string? value)
+    private static string FixListItemIn(string value)
     {
         if (IsNull(value))
         {
@@ -961,7 +964,7 @@ public partial class Dags
     /// <summary>
     /// Fix a list item for output by restoring commas and handling nulls.
     /// </summary>
-    private static string? FixListItemOut(string? value)
+    private static string FixListItemOut(string value)
     {
         if (IsNull(value))
         {
@@ -977,7 +980,7 @@ public partial class Dags
     /// <summary>
     /// Get an item from a 2D array stored in the Grod.
     /// </summary>
-    private static string? GetArrayItem(Grod grod, ScriptObj script, string key, long y, long x)
+    private static string GetArrayItem(Grod grod, ScriptObj script, string key, long y, long x)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -994,7 +997,7 @@ public partial class Dags
     /// <summary>
     /// Set an item in a 2D array stored in the Grod.
     /// </summary>
-    private static void SetArrayItem(Grod grod, ScriptObj script, string key, long y, long x, string? value)
+    private static void SetArrayItem(Grod grod, ScriptObj script, string key, long y, long x, string value)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -1011,7 +1014,7 @@ public partial class Dags
     /// <summary>
     /// Get an item from a comma-delimited list in the Grod.
     /// </summary>
-    private static string? GetListItem(Grod grod, ScriptObj script, string key, long x)
+    private static string GetListItem(Grod grod, ScriptObj script, string key, long x)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -1037,7 +1040,7 @@ public partial class Dags
     /// <summary>
     /// Set an item in a comma-delimited list in the Grod.
     /// </summary>
-    private static void SetListItem(Grod grod, ScriptObj script, string key, long x, string? value)
+    private static void SetListItem(Grod grod, ScriptObj script, string key, long x, string value)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -1061,7 +1064,7 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, key, string.Join(',', items));
     }
 
-    private static bool InList(Grod grod, ScriptObj script, string key, string? value)
+    private static bool InList(Grod grod, ScriptObj script, string key, string value)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -1090,7 +1093,7 @@ public partial class Dags
     /// <summary>
     /// Insert an item at a specific script.Index in a comma-delimited list in the Grod.
     /// </summary>
-    private static void InsertAtListItem(Grod grod, ScriptObj script, string key, long x, string? value)
+    private static void InsertAtListItem(Grod grod, ScriptObj script, string key, long x, string value)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -1144,7 +1147,7 @@ public partial class Dags
     /// <summary>
     /// Get a value from either the local script Grod or the global Grod.
     /// </summary>
-    private static string? GetGlobalOrLocal(Grod grod, ScriptObj script, string key, bool recursive)
+    private static string GetGlobalOrLocal(Grod grod, ScriptObj script, string key, bool recursive)
     {
         if (IsLocal(key))
         {
@@ -1156,7 +1159,7 @@ public partial class Dags
         }
     }
 
-    private static void SetGlobalOrLocal(Grod grod, ScriptObj script, string key, string? value)
+    private static void SetGlobalOrLocal(Grod grod, ScriptObj script, string key, string value)
     {
         if (IsLocal(key))
         {
@@ -1171,7 +1174,7 @@ public partial class Dags
     /// <summary>
     /// Get whether the value is a local variable.
     /// </summary>
-    private static bool IsLocal(string? value)
+    private static bool IsLocal(string value)
     {
         return value?.StartsWith(LOCAL_CHAR) ?? false;
     }

@@ -130,7 +130,11 @@ public static class IFParser
         {
             // some directions may need translation into command keys
             var key = $"{DIRECTION_PREFIX}{direction}{DIRECTION_COMMAND_SUFFIX}";
-            directionCommand = grod.Get(key, true) ?? direction;
+            directionCommand = grod.Get(key, true);
+            if (IsNull(directionCommand))
+            {
+                directionCommand = direction;
+            }
         }
         // check for verbs
         if (words.Count > 0)

@@ -160,7 +160,7 @@ public partial class Dags
             newTokens.Append(token);
         } while (script.Index < script.Tokens.Length);
         // p[1] holds the name of the list
-        string? list = GetGlobalOrLocal(grod, script, p[1].Value, true);
+        var list = GetGlobalOrLocal(grod, script, p[1].Value, true);
         if (!string.IsNullOrWhiteSpace(list))
         {
             var items = SplitList(list);

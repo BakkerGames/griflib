@@ -43,7 +43,7 @@ public class DagsTokenTests
         result.Clear();
     }
 
-    private static List<GrifMessage> ProcessTest(Grod grod, string? script)
+    private static List<GrifMessage> ProcessTest(Grod grod, string script)
     {
         Assert.DoesNotThrow(() => QuickValidate(script));
         return Process(grod, script);
