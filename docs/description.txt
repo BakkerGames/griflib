@@ -1,0 +1,5 @@
+I have been working for a while on an interpreted game scripting language. Version 1 was ready last year, and I've been doing Version 2 since.
+
+It is designed to be stored in a dictionary(string,string) with script names for the keys and scripts for the values. The dictionary also contains the data that it works upon. The language uses "@" to start a function/command name, and you can make your own functions/commands by starting the key with "@". Any value not starting with "@" is data. The basic commands "@get(key)" and "@set(key,value)" read and write information. The dictionaries can be layered, with the top layer receiving any changes while the game runs, to make saving/restoring simple. "@get(key)" reads down through the layers until the key is found, and "@set(key,value)" writes to the top layer, hiding any deeper values.
+
+This month I have been building heavy-duty unit tests to verify that each built-in function/command operates properly, as well as writing the help documentation for them all. There are about 100 built-in functions/commands so far. This is an excellent exercise as it found several tricky issues I had overlooked.
