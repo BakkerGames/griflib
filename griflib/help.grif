@@ -57,8 +57,6 @@
 	Returns true/false if "x" equals "y". Compares as numeric if possible. Otherwise it compares as strings ignoring case.
 @exec(value)
 	Executes the value as a script. Must surround the value with quotes to prevent it from being evaluated incorrectly.
-@false(x)
-	Returns "true" if "x" is falsey or "false" otherwise. Falsey values are "false", "f", "no", "n", "0", and "", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@isfalse(x)". 
 @flipbit(x,b)
 	Sets bit "b" in "x" to the opposite 0/1, with b = 0 to 30. Lowest bit is on the right. Returns an error if either are not numeric, below zero, or "b" is over 30.
 @for(x,start,end)
@@ -102,15 +100,15 @@
 @isbool(x)
 	Returns "true" if "x" is truthy or falsey, or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. Falsey values are "false", "f", "no", "n", "0", and "", ignoring case. "null" is neither truthy or falsey and will return "false".
 @isfalse(x)
-	Returns "true" if "x" is falsey or "false" otherwise. Falsey values are "false", "f", "no", "n", "0", and "", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@false(x)".
+	Returns "true" if "x" is falsey or "false" otherwise. Falsey values are "false", "f", "no", "n", "0", and "", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false".
 @isnull(x)
-	Returns "true" if "x" is null or an empty string, "false" otherwise. Identical to "@null(x)".
-@isnumber(
-	todo
+	Returns "true" if "x" is "null" or an empty string, "false" otherwise.
+@isnumber(x)
+	Returns "true" if the string value "x" can be converted into a 64-bit signed integer value. Returns "false" otherwise. Known as "long" or "bigint" in some languages.
 @isscript(key)
 	Returns "true" if the value for "key" is a script, i.e. starts with "@". Returns "false" otherwise.
 @istrue(x)
-	Returns "true" if "x" is truthy or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@true(x)".
+	Returns "true" if "x" is truthy or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false".
 @keyexists(key)
 	Returns true/false if "key" exists in any GROD layer. Use "@not @isnull(@get(key))" to check for a blank/null value.
 @label(x)
@@ -201,8 +199,6 @@
 	Converts the integer x to a hex string. @tohex(255) = FF.
 @trim(x)
 	Trims any whitespace from the beginning and ending of string x.
-@true(x)
-	Returns "true" if "x" is truthy or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. "null" is neither truthy or falsey and will return "false". Any invalid value will return "false". Identical to "@istrue(x)".
 @upper(x)
 	Converts all the alphabetic characters in string x to uppercase.
 @while

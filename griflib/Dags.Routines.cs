@@ -865,21 +865,28 @@ public partial class Dags
             throw new SystemException($"Invalid key format: {key}");
         }
         var placeholders = key[(key.IndexOf('(') + 1)..^1].Split(',');
-        if (placeholders.Length != p.Count)
+        // allow optional parameters in definition. set them all to NULL ("").
+        while (placeholders.Length > p.Count)
         {
-            throw new SystemException($"Parameter count mismatch for {key}. Expected {placeholders.Length}, got {p.Count}");
+            p.Add(new GrifMessage(MessageType.Internal, NULL));
         }
         var value = GetGlobalOrLocal(grod, script, key, true);
         if (IsNull(value))
         {
-            throw new SystemException($"Key not found: {key}");
+            throw new SystemException($"User-defined function not found: {key}");
         }
+        // change placeholders "$x" to "@get(_x)" and set the value of "_x" at start
         for (int i = 0; i < placeholders.Length; i++)
         {
             var placeholder = placeholders[i].Trim();
-            value = value.Replace("$" + placeholder, p[i].Value, OIC);
+            var paramValue = p[i].Value;
+            if (paramValue == "") paramValue = NULL;
+            value = $"{SET_TOKEN}_{placeholder},{paramValue}) " + value;
+            value = value.Replace("$" + placeholder, $"{GET_TOKEN}_{placeholder})", OIC);
         }
-        var userResult = Process(grod, value);
+        var userScript = CreateScript(value);
+        var userResult = new List<GrifMessage>();
+        ProcessScript(grod, userScript, userResult);
         return userResult;
     }
 

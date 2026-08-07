@@ -143,12 +143,6 @@ public partial class Dags
                 case EXEC_TOKEN:
                     Exec_Exec(grod, script, p, result);
                     break;
-                case ISFALSE_TOKEN:
-                    Exec_IsFalse(grod, script, p, result);
-                    break;
-                case FALSE_TOKEN:
-                    Exec_IsFalse(grod, script, p, result);
-                    break;
                 case FLIPBIT_TOKEN:
                     Exec_Flipbit(grod, script, p, result);
                     break;
@@ -209,11 +203,20 @@ public partial class Dags
                 case ISBOOL_TOKEN:
                     Exec_IsBool(grod, script, p, result);
                     break;
+                case ISFALSE_TOKEN:
+                    Exec_IsFalse(grod, script, p, result);
+                    break;
+                case ISNULL_TOKEN:
+                    Exec_IsNull(grod, script, p, result);
+                    break;
                 case ISNUMBER_TOKEN:
                     Exec_IsNumber(grod, script, p, result);
                     break;
                 case ISSCRIPT_TOKEN:
                     Exec_IsScript(grod, script, p, result);
+                    break;
+                case ISTRUE_TOKEN:
+                    Exec_IsTrue(grod, script, p, result);
                     break;
                 case KEYEXISTS_TOKEN:
                     Exec_KeyExists(grod, script, p, result);
@@ -271,12 +274,6 @@ public partial class Dags
                     break;
                 case NEGTO_TOKEN:
                     Exec_NegTo(grod, script, p, result);
-                    break;
-                case ISNULL_TOKEN:
-                    Exec_IsNull(grod, script, p, result);
-                    break;
-                case NULL_TOKEN:
-                    Exec_IsNull(grod, script, p, result);
                     break;
                 case ONGOLABEL_TOKEN:
                     Exec_OnGoLabel(grod, script, p, result);
@@ -337,12 +334,6 @@ public partial class Dags
                     break;
                 case TRIM_TOKEN:
                     Exec_Trim(grod, script, p, result);
-                    break;
-                case ISTRUE_TOKEN:
-                    Exec_IsTrue(grod, script, p, result);
-                    break;
-                case TRUE_TOKEN:
-                    Exec_IsTrue(grod, script, p, result);
                     break;
                 case UPPER_TOKEN:
                     Exec_Upper(grod, script, p, result);

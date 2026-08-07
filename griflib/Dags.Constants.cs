@@ -31,7 +31,6 @@ public partial class Dags
     public const string ENDWHILE_TOKEN = "@endwhile";
     public const string EQ_TOKEN = "@eq(";
     public const string EXEC_TOKEN = "@exec(";
-    public const string FALSE_TOKEN = "@false(";
     public const string FLIPBIT_TOKEN = "@flipbit(";
     public const string FOREACHKEY_TOKEN = "@foreachkey(";
     public const string FOREACHLIST_TOKEN = "@foreachlist(";
@@ -80,7 +79,6 @@ public partial class Dags
     public const string NE_TOKEN = "@ne(";
     public const string NL_TOKEN = "@nl";
     public const string NOT_TOKEN = "@not";
-    public const string NULL_TOKEN = "@null(";
     public const string ONGOLABEL_TOKEN = "@ongolabel(";
     public const string OR_TOKEN = "@or";
     public const string RAND_TOKEN = "@rand(";
@@ -104,7 +102,6 @@ public partial class Dags
     public const string TOBINARY_TOKEN = "@tobinary(";
     public const string TOHEX_TOKEN = "@tohex(";
     public const string TRIM_TOKEN = "@trim(";
-    public const string TRUE_TOKEN = "@true(";
     public const string UPPER_TOKEN = "@upper(";
     public const string WHILE_TOKEN = "@while";
     public const string WRITELINE_TOKEN = "@writeline(";

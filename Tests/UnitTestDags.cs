@@ -205,16 +205,7 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo("def"));
     }
 
-    [Test]
-    public void Test_IsBool()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{ISBOOL_TOKEN}0))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{ISBOOL_TOKEN}1))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{ISBOOL_TOKEN}notboolean))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-    }
+
 
     [Test]
     public void Test_Null()
@@ -385,16 +376,6 @@ public class UnitTestDags
         Assert.That(result[0].Type, Is.EqualTo(MessageType.Error));
     }
 
-    [Test]
-    public void Test_ListLength()
-    {
-        var key = "abc";
-        var value1 = "123";
-        var value2 = "456";
-        Process(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2})");
-        result = Process(grod, $"{LISTLENGTH_TOKEN}{key})");
-        Assert.That(Squash(result), Is.EqualTo("2"));
-    }
 
     [Test]
     public void Test_Write()

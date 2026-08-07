@@ -170,8 +170,13 @@ public partial class Dags
 
     private static void Exec_Debug(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        CheckParameterCount(p, 1);
-        AddDebugMessage(grod, result, p[0].Value);
+        CheckParameterAtLeastOne(p);
+        var debugValue = "";
+        foreach (var item in p)
+        {
+            debugValue += item.Value;
+        }
+        AddDebugMessage(grod, result, debugValue);
     }
 
     private static void Exec_Div(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)

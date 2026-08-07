@@ -6,19 +6,32 @@ namespace Tests;
 
 public class TestDags
 {
+    #region Setup ###DONE###
+
+    private readonly Grod grod = new("test");
+    private List<GrifMessage> result = [];
+
     [SetUp]
     public void Setup()
     {
-        // This method is called before each test.
-        // You can initialize any shared resources here.
+        grod.Clear(true);
+        result.Clear();
     }
 
+    private static List<GrifMessage> ProcessTest(Grod grod, string script)
+    {
+        Assert.DoesNotThrow(() => QuickValidate(script));
+        return Process(grod, script);
+    }
+
+    #endregion
+
     [Test]
-    public void TestProcess()
+    public void TestProcessTest()
     {
         Grod grod = new("testGrod");
         string script = $"{WRITE_TOKEN}abc)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "abc") }));
     }
 
@@ -27,16 +40,25 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{WRITE_TOKEN}abc){WRITE_TOKEN}def)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "abc"), new(MessageType.Text, "def") }));
     }
 
     [Test]
     public void TestWriteError()
     {
-        Grod grod = new("testGrod");
-        string script = $"{WRITE_TOKEN}abc";
-        Assert.Throws<ArgumentException>(() => Process(grod, script));
+        var value = "abc";
+        // missing end paren
+        var script = $"{WRITE_TOKEN}{value}";
+        try
+        {
+            var result = ProcessTest(grod, script);
+            Assert.Fail("FAIL - Did not throw an error");
+        }
+        catch (Exception)
+        {
+            Assert.Pass("PASS - Did throw an error");
+        }
     }
 
     [Test]
@@ -45,7 +67,7 @@ public class TestDags
         Grod grod = new("testGrod");
         grod.Set("key1", "value1");
         string script = $"{GET_TOKEN}key1)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Internal, "value1") }));
     }
 
@@ -55,7 +77,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Condition met") }));
     }
 
@@ -65,7 +87,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {NOT_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Condition met") }));
     }
 
@@ -75,7 +97,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ELSE_TOKEN} {WRITE_TOKEN}\"Condition not met\") {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Condition not met") }));
     }
 
@@ -85,7 +107,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}\"Condition met\") {ELSEIF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}\"Second condition met\") {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Second condition met") }));
     }
 
@@ -95,7 +117,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {TRUE} {THEN_TOKEN} {IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}Answer1) {ELSE_TOKEN} {WRITE_TOKEN}Answer2) {ENDIF_TOKEN} {ELSEIF_TOKEN} {FALSE} {THEN_TOKEN} {IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}Answer3) {ELSE_TOKEN} {WRITE_TOKEN}Answer4) {ENDIF_TOKEN} {ELSE_TOKEN} {WRITE_TOKEN}Answer5) {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Answer1") }));
     }
 
@@ -105,7 +127,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {TRUE} {THEN_TOKEN} {IF_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}Answer1) {ELSE_TOKEN} {WRITE_TOKEN}Answer2) {ENDIF_TOKEN} {ELSEIF_TOKEN} {FALSE} {THEN_TOKEN} {IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}Answer3) {ELSE_TOKEN} {WRITE_TOKEN}Answer4) {ENDIF_TOKEN} {ELSE_TOKEN} {WRITE_TOKEN}Answer5) {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Answer2") }));
     }
 
@@ -115,7 +137,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {FALSE} {THEN_TOKEN} {IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}Answer1) {ELSE_TOKEN} {WRITE_TOKEN}Answer2) {ENDIF_TOKEN} {ELSEIF_TOKEN} {TRUE} {THEN_TOKEN} {IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}Answer3) {ELSE_TOKEN} {WRITE_TOKEN}Answer4) {ENDIF_TOKEN} {ELSE_TOKEN} {WRITE_TOKEN}Answer5) {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Answer3") }));
     }
 
@@ -125,7 +147,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {FALSE} {THEN_TOKEN} {IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}Answer1) {ELSE_TOKEN} {WRITE_TOKEN}Answer2) {ENDIF_TOKEN} {ELSEIF_TOKEN} {TRUE} {THEN_TOKEN} {IF_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}Answer3) {ELSE_TOKEN} {WRITE_TOKEN}Answer4) {ENDIF_TOKEN} {ELSE_TOKEN} {WRITE_TOKEN}Answer5) {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Answer4") }));
     }
 
@@ -135,7 +157,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {FALSE} {THEN_TOKEN} {IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}Answer1) {ELSE_TOKEN} {WRITE_TOKEN}Answer2) {ENDIF_TOKEN} {ELSEIF_TOKEN} {FALSE} {THEN_TOKEN} {IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}Answer3) {ELSE_TOKEN} {WRITE_TOKEN}Answer4) {ENDIF_TOKEN} {ELSE_TOKEN} {WRITE_TOKEN}Answer5) {ENDIF_TOKEN}";
         grod.Set("key1", "value1");
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Answer5") }));
     }
 
@@ -144,7 +166,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {NE_TOKEN}1,2) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -153,7 +175,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {NE_TOKEN}null,2) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -162,7 +184,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {NE_TOKEN}abc,xyz) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -171,7 +193,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {GT_TOKEN}2,1) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -180,7 +202,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {GT_TOKEN}2,null) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -189,7 +211,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {GT_TOKEN}xyz,abc) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -198,7 +220,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {GE_TOKEN}1,1) {AND_TOKEN} {GE_TOKEN}2,1) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -207,7 +229,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {GE_TOKEN}null,null) {AND_TOKEN} {GE_TOKEN}2,null) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -216,7 +238,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {GE_TOKEN}abc,abc) {AND_TOKEN} {GE_TOKEN}xyz,abc) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -225,7 +247,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {LT_TOKEN}1,2) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -234,7 +256,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {LT_TOKEN}null,2) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -243,7 +265,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {LT_TOKEN}abc,xyz) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -252,7 +274,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {LE_TOKEN}1,1) {AND_TOKEN} {LE_TOKEN}1,2) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -261,7 +283,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {LE_TOKEN}null,null) {AND_TOKEN} {LE_TOKEN}null,2) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -270,7 +292,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{IF_TOKEN} {LE_TOKEN}abc,abc) {AND_TOKEN} {LE_TOKEN}abc,xyz) {THEN_TOKEN} {WRITE_TOKEN}answer) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "answer") }));
     }
 
@@ -280,7 +302,7 @@ public class TestDags
         Grod grod = new("testGrod");
         grod.Set("key1", "value1");
         string script = $"{WRITE_TOKEN}{GET_TOKEN}key1))";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "value1") }));
     }
 
@@ -291,7 +313,7 @@ public class TestDags
         grod.Set("key1", "value1");
         grod.Set("key2", "key1");
         string script = $"{WRITE_TOKEN}{GET_TOKEN}{GET_TOKEN}key2)))";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "value1") }));
     }
 
@@ -300,7 +322,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = "@unknown()";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         var expected = "Unknown token: @unknown(";
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Not.Empty);
@@ -312,13 +334,71 @@ public class TestDags
     }
 
     [Test]
-    public void TestUserDefinedScript()
+    public void Test_UserDefinedScript_NoParams()
     {
-        Grod grod = new("testGrod");
-        grod.Set("@myScript", $"{WRITE_TOKEN}\"Hello from user-defined script!\")");
-        string script = "@myScript";
-        var result = Process(grod, script);
-        Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Hello from user-defined script!") }));
+        var key = "@myScript";
+        var value = "Hello from user-defined script!";
+        var script = $"{WRITE_TOKEN}\"{value}\")";
+        var expectedValue = "Hello from user-defined script!";
+        grod.Set(key, script);
+        var result = ProcessTest(grod, key);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_UserDefinedScript_Params()
+    {
+        var key = "@myScript(x,y,z)";
+        var value = $"{WRITE_TOKEN}$x,$y,$z)";
+        grod.Set(key, value);
+        var xValue = "100";
+        var yValue = "abc";
+        var zValue = "mc2";
+        var script = $"@myScript({xValue},{yValue},{zValue})";
+        var result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(3));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(xValue));
+        Assert.That(result[1].Value, Is.EqualTo(yValue));
+        Assert.That(result[2].Value, Is.EqualTo(zValue));
+    }
+
+    [Test]
+    public void Test_UserDefinedScript_OptionalParams()
+    {
+        var key = "@myScript(x,y,z)";
+        var value = $"{WRITE_TOKEN}$x,$y,$z)";
+        grod.Set(key, value);
+        var xValue = "100";
+        var yValue = "abc";
+        var script = $"@myScript({xValue},{yValue})";
+        var result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(3));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(xValue));
+        Assert.That(result[1].Value, Is.EqualTo(yValue));
+        Assert.That(result[2].Value, Is.Empty);
+    }
+
+    [Test]
+    public void Test_UserDefinedScript_ModifiedParams()
+    {
+        var key = "@myScript(x,y,z)";
+        var repValue = "555";
+        var value = $"{SET_TOKEN}_y,{repValue}) {WRITE_TOKEN}$x,$y,$z)";
+        grod.Set(key, value);
+        var xValue = "100";
+        var yValue = "abc";
+        var zValue = "mc2";
+        var script = $"@myScript({xValue},{yValue},{zValue})";
+        var result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(3));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(xValue));
+        Assert.That(result[1].Value, Is.EqualTo(repValue));
+        Assert.That(result[2].Value, Is.EqualTo(zValue));
     }
 
     [Test]
@@ -326,7 +406,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{DIV_TOKEN}6,0)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         var expected = "Division by zero is not allowed.";
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Not.Empty);
@@ -342,7 +422,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = "@invalidcommand()";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         var expected = "Unknown token: @invalidcommand(";
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Not.Empty);
@@ -358,7 +438,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = "";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage>()));
     }
 
@@ -367,7 +447,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = "   ";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage>() { new(MessageType.Text, script) }));
     }
 
@@ -376,7 +456,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{COMMENT_TOKEN}\"This is a comment\n\") {WRITE_TOKEN}Hello) {COMMENT_TOKEN}\"Another comment\") {WRITE_TOKEN}World)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Hello"), new(MessageType.Text, "World") }));
     }
 
@@ -387,7 +467,7 @@ public class TestDags
         grod.Set("key1", "value1");
         grod.Set("key2", $"{GET_TOKEN}key1)");
         string script = $"{GETVALUE_TOKEN}key2)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Internal, "value1") }));
     }
 
@@ -396,7 +476,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{GETVALUE_TOKEN}nonexistent)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Internal, "") }));
     }
 
@@ -408,7 +488,7 @@ public class TestDags
         grod.Set("key2", $"{GET_TOKEN}key1)");
         grod.Set("key3", $"{GET_TOKEN}key2)");
         string script = $"{GETVALUE_TOKEN}key3)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Internal, "value1") }));
     }
 
@@ -419,7 +499,7 @@ public class TestDags
         grod.Set("a", "10");
         grod.Set("b", "20");
         string script = $"{IF_TOKEN} {GT_TOKEN}{GET_TOKEN}a),5) {AND_TOKEN} {LT_TOKEN}{GET_TOKEN}b),30) {THEN_TOKEN} {WRITE_TOKEN}{ADD_TOKEN}{GET_TOKEN}a),{GET_TOKEN}b))) {ELSE_TOKEN} {WRITE_TOKEN}Out of range) {ENDIF_TOKEN}";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "30") }));
     }
 
@@ -428,7 +508,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{COMMENT_TOKEN}\"This is a comment\"){WRITE_TOKEN}Hello)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Hello") }));
     }
 
@@ -437,7 +517,7 @@ public class TestDags
     {
         Grod grod = new("testGrod");
         string script = $"{COMMENT_TOKEN}\"This is a comment\nwith a newline\"){WRITE_TOKEN}Hello)";
-        var result = Process(grod, script);
+        var result = ProcessTest(grod, script);
         Assert.That(result, Is.EqualTo(new List<GrifMessage> { new(MessageType.Text, "Hello") }));
     }
 

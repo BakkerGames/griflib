@@ -42,22 +42,7 @@ public partial class Dags
                 if (IsScript(item.Value))
                 {
                     var script = CreateScript(item.Value);
-                    do
-                    {
-                        var answer = ProcessOneCommand(grod, script);
-                        if (answer.Count > 0)
-                        {
-                            result.AddRange(answer);
-                        }
-                        if (result.Any(x => x.Type == MessageType.Error))
-                        {
-                            break;
-                        }
-                        if (script.ReturnFlag)
-                        {
-                            break;
-                        }
-                    } while (script.Index < script.Tokens.Length);
+                    ProcessScript(grod, script, result);
                     continue;
                 }
                 // plain text
@@ -76,5 +61,25 @@ public partial class Dags
             throw new Exception($"Unsupported DagsType: {item.Type}");
         }
         return result;
+    }
+
+    public static void ProcessScript(Grod grod, ScriptObj script, List<GrifMessage> result)
+    {
+        do
+        {
+            var answer = ProcessOneCommand(grod, script);
+            if (answer.Count > 0)
+            {
+                result.AddRange(answer);
+            }
+            if (script.ReturnFlag)
+            {
+                break;
+            }
+            if (result.Any(x => x.Type == MessageType.Error))
+            {
+                break;
+            }
+        } while (script.Index < script.Tokens.Length);
     }
 }
