@@ -9,10 +9,6 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
 {
     #region private definitions
 
-    // Lists of string representations for Boolean true and false values
-    private readonly string[] _truthyList = [TRUE, "t", "yes", "y", "1", "-1"];
-    private readonly string[] _falseyList = [FALSE, "f", "no", "n", "0"];
-
     // Internal storage for key-value pairs, using case-insensitive keys
     private readonly Dictionary<string, string> _data = new(OICR);
 
@@ -100,27 +96,31 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     }
 
     /// <summary>
-    /// Retrieves the value associated with the specified key and attempts to convert it to a Boolean value.
-    /// Returns "false" if null, "null", or missing.
+    /// Retrieves the value associated with the specified key and converts it to a Boolean value.
+    /// Returns "false" if empty, "null", "false", or "0".
+    /// Returns "true" if "true", "1", or "-1".
     /// </summary>
     public bool GetBool(string key, bool recursive)
     {
         var value = Get(key, recursive);
-        if (value == "" || value.Equals(NULL, OIC))
+        if (string.IsNullOrEmpty(value) || value.Equals(NULL, OIC) || value.Equals(FALSE, OIC))
         {
             return false;
         }
-        if (_truthyList.Contains(value, OICR))
+        if (value.Equals(TRUE, OIC))
         {
             return true;
         }
-        if (_falseyList.Contains(value, OICR))
+        if (long.TryParse(value, out long numValue))
         {
-            return false;
-        }
-        if (bool.TryParse(value, out bool boolValue))
-        {
-            return boolValue;
+            if (numValue == 0)
+            {
+                return false;
+            }
+            if (numValue == 1 || numValue == -1)
+            {
+                return true;
+            }
         }
         throw new FormatException($"Value for key '{key}' is not a valid boolean.");
     }

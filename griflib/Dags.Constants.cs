@@ -58,7 +58,6 @@ public partial class Dags
     public const string ISNUMBER_TOKEN = "@isnumber(";
     public const string ISSCRIPT_TOKEN = "@isscript(";
     public const string ISTRUE_TOKEN = "@istrue(";
-    public const string KEYEXISTS_TOKEN = "@keyexists(";
     public const string LABEL_TOKEN = "@label(";
     public const string LEN_TOKEN = "@len(";
     public const string LE_TOKEN = "@le(";

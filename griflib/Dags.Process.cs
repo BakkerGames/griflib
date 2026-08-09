@@ -218,9 +218,6 @@ public partial class Dags
                 case ISTRUE_TOKEN:
                     Exec_IsTrue(grod, script, p, result);
                     break;
-                case KEYEXISTS_TOKEN:
-                    Exec_KeyExists(grod, script, p, result);
-                    break;
                 case LABEL_TOKEN:
                     Exec_Label(grod, script, p, result);
                     break;

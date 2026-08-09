@@ -219,19 +219,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_KeyExists()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{KEYEXISTS_TOKEN}test.value))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{SET_TOKEN}test.value,null) {WRITE_TOKEN}{KEYEXISTS_TOKEN}test.value))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{SET_TOKEN}test.value,abc) {WRITE_TOKEN}{KEYEXISTS_TOKEN}test.value))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{SET_TOKEN}test.value,{NULL}) {WRITE_TOKEN}{KEYEXISTS_TOKEN}test.value))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-    }
-
-    [Test]
     public void Test_IsScript()
     {
         result = Process(grod, $"{SET_TOKEN}test.value,abc) {WRITE_TOKEN}{ISSCRIPT_TOKEN}test.value))");
