@@ -11,6 +11,14 @@ public class MoreTests
     }
 
     [Test]
+    public void Test_Version()
+    {
+        var value = Common.Version;
+        var notExpected = "1.0.0.0";
+        Assert.That(value, Is.Not.EqualTo(notExpected));
+    }
+
+    [Test]
     public void TestReturn()
     {
         Grod grod = new("testGrod");

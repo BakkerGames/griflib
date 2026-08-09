@@ -1,5 +1,4 @@
-﻿using System.Text;
-using static GrifLib.Common;
+﻿using static GrifLib.Common;
 
 namespace GrifLib;
 
@@ -11,8 +10,8 @@ public partial class Dags
     private static void HandleFor(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // @for(i,<start>,<end inclusive>)=...$i...@endfor
-        var iterator = PARAM_CHAR + p[0].Value;
-        var startIndex = script.Index;
+        var indexStart = script.Index;
+        var indexEnd = 0;
         var level = 0;
         do
         {
@@ -25,50 +24,38 @@ public partial class Dags
             {
                 if (level <= 0)
                 {
+                    indexEnd = script.Index - 1;
                     break;
                 }
                 level--;
             }
         } while (script.Index < script.Tokens.Length);
-        var endIndex = script.Index - 2;
+        if (indexEnd == 0)
+        {
+            result.Add(new GrifMessage(MessageType.Error, $"{ENDFOR_TOKEN} not found"));
+            return;
+        }
         var int1 = long.Parse(p[1].Value);
         var int2 = long.Parse(p[2].Value);
         for (long value = int1; value <= int2; value++)
         {
-            List<string> loopTokens = [];
-            for (int i = startIndex; i <= endIndex; i++)
-            {
-                var token = script.Tokens[i];
-                if (token.Contains(iterator, OIC))
-                {
-                    token = token.Replace(iterator, value.ToString());
-                }
-                loopTokens.Add(token);
-            }
-            ScriptObj loopScript = new()
-            {
-                Tokens = [.. loopTokens],
-                Index = 0,
-                LocalData = script.LocalData,
-            };
+            script.LocalData.Set($"{LOCAL_CHAR}{p[0].Value}", value);
+            script.Index = indexStart;
             do
             {
-                var answer = ProcessOneCommand(grod, loopScript);
+                var answer = ProcessOneCommand(grod, script);
                 if (answer.Count > 0)
                 {
                     result.AddRange(answer);
                 }
-                if (loopScript.ReturnFlag)
+                if (script.ReturnFlag)
                 {
-                    script.ReturnFlag = true;
-                    break;
+                    return;
                 }
-            } while (loopScript.Index < loopScript.Tokens.Length);
-            if (script.ReturnFlag)
-            {
-                break;
-            }
+            } while (script.Index < indexEnd);
         }
+        // skip @endfor
+        script.Index = indexEnd + 1;
     }
 
     /// <summary>
@@ -76,8 +63,8 @@ public partial class Dags
     /// </summary>
     private static void HandleForEachKey(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        // @foreachkey(i,prefix,[suffix])=...$i...@endforeachkey
-        var newTokens = new StringBuilder();
+        var indexStart = script.Index;
+        var indexEnd = 0;
         var level = 0;
         do
         {
@@ -90,16 +77,17 @@ public partial class Dags
             {
                 if (level <= 0)
                 {
+                    indexEnd = script.Index - 1;
                     break;
                 }
                 level--;
             }
-            if (newTokens.Length > 0)
-            {
-                newTokens.Append(' ');
-            }
-            newTokens.Append(token);
         } while (script.Index < script.Tokens.Length);
+        if (indexEnd == 0)
+        {
+            result.Add(new GrifMessage(MessageType.Error, $"{ENDFOREACHKEY_TOKEN} not found"));
+            return;
+        }
         var keys = grod.Keys(p[1].Value, true, true);
         foreach (string key in keys)
         {
@@ -112,22 +100,23 @@ public partial class Dags
                 }
                 value = value[..^p[2].Value.Length];
             }
-            var loopText = newTokens.ToString().Replace($"{PARAM_CHAR}{p[0].Value}", value);
-            var loopScript = CreateScript(loopText);
-            loopScript.LocalData = script.LocalData;
+            script.LocalData.Set($"{LOCAL_CHAR}{p[0].Value}", value);
+            script.Index = indexStart;
             do
             {
-                var answer = ProcessOneCommand(grod, loopScript);
+                var answer = ProcessOneCommand(grod, script);
                 if (answer.Count > 0)
                 {
                     result.AddRange(answer);
                 }
-                if (loopScript.ReturnFlag)
+                if (script.ReturnFlag)
                 {
-                    break;
+                    return;
                 }
-            } while (loopScript.Index < loopScript.Tokens.Length);
+            } while (script.Index < indexEnd);
         }
+        // skip @endforeachkey
+        script.Index = indexEnd + 1;
     }
 
     /// <summary>
@@ -136,7 +125,8 @@ public partial class Dags
     private static void HandleForEachList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // @foreachlist(x,listname)=...$x...@endforeachlist
-        var newTokens = new StringBuilder();
+        var indexStart = script.Index;
+        var indexEnd = 0;
         var level = 0;
         do
         {
@@ -149,40 +139,43 @@ public partial class Dags
             {
                 if (level <= 0)
                 {
+                    indexEnd = script.Index - 1;
                     break;
                 }
                 level--;
             }
-            if (newTokens.Length > 0)
-            {
-                newTokens.Append(' ');
-            }
-            newTokens.Append(token);
         } while (script.Index < script.Tokens.Length);
+        if (indexEnd == 0)
+        {
+            result.Add(new GrifMessage(MessageType.Error, $"{ENDFOREACHLIST_TOKEN} not found"));
+            return;
+        }
         // p[1] holds the name of the list
         var list = GetGlobalOrLocal(grod, script, p[1].Value, true);
-        if (!string.IsNullOrWhiteSpace(list))
+        if (string.IsNullOrWhiteSpace(list))
         {
-            var items = SplitList(list);
-            foreach (string value in items)
-            {
-                var value2 = FixListItemOut(value);
-                var loopText = newTokens.ToString().Replace($"{PARAM_CHAR}{p[0].Value}", value2);
-                var loopScript = CreateScript(loopText);
-                loopScript.LocalData = script.LocalData;
-                do
-                {
-                    var answer = ProcessOneCommand(grod, loopScript);
-                    if (answer.Count > 0)
-                    {
-                        result.AddRange(answer);
-                    }
-                    if (loopScript.ReturnFlag)
-                    {
-                        break;
-                    }
-                } while (loopScript.Index < loopScript.Tokens.Length);
-            }
+            return;
         }
+        var items = SplitList(list);
+        foreach (string item in items)
+        {
+            var value = FixListItemOut(item);
+            script.LocalData.Set($"{LOCAL_CHAR}{p[0].Value}", value);
+            script.Index = indexStart;
+            do
+            {
+                var answer = ProcessOneCommand(grod, script);
+                if (answer.Count > 0)
+                {
+                    result.AddRange(answer);
+                }
+                if (script.ReturnFlag)
+                {
+                    return;
+                }
+            } while (script.Index < indexEnd);
+        }
+        // skip @endforeachlist
+        script.Index = indexEnd + 1;
     }
 }

@@ -7,9 +7,11 @@ public partial class Dags
 {
     public static ScriptObj CreateScript(string script)
     {
+        var tokens = SplitTokens(script);
+        tokens = ExpandLocalParameters(tokens);
         return new ScriptObj
         {
-            Tokens = SplitTokens(script),
+            Tokens = tokens,
             Index = 0
         };
     }
@@ -1218,6 +1220,26 @@ public partial class Dags
         {
             result.Add(new GrifMessage(MessageType.Debug, message));
         }
+    }
+
+    private static string[] ExpandLocalParameters(string[] tokens)
+    {
+        var newList = new List<string>();
+        for (int i = 0; i < tokens.Length; i++)
+        {
+            if (tokens[i].StartsWith(PARAM_CHAR))
+            {
+                // Change "$x" to "@get(_x)"
+                newList.Add(GET_TOKEN);
+                newList.Add($"{LOCAL_CHAR}{tokens[i][1..]}");
+                newList.Add(")");
+            }
+            else
+            {
+                newList.Add(tokens[i]);
+            }
+        }
+        return [.. newList];
     }
 
     #endregion

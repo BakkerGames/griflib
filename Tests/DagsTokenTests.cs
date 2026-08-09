@@ -1035,21 +1035,32 @@ public class DagsTokenTests
         var value2 = "200";
         ProcessTest(grod, $"{SET_TOKEN}{key1},{value1}) {SET_TOKEN}{key2},{value2})");
 
-        var expectedValue1 = "1";
-        var expectedValue2 = "2";
-        result = ProcessTest(grod, $"{FOREACHKEY_TOKEN}x,\"{basekey}\") {WRITE_TOKEN}$x) {ENDFOREACHKEY_TOKEN}");
+        var expectedValue1A = "1";
+        var expectedValue1B = "2";
+        var script1 = $"{FOREACHKEY_TOKEN}x,\"{basekey}\") {WRITE_TOKEN}{PARAM_CHAR}x) {ENDFOREACHKEY_TOKEN}";
+        result = ProcessTest(grod, script1);
         Assert.That(result, Has.Count.EqualTo(2));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
-        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
-        Assert.That(result[1].Value, Is.EqualTo(expectedValue2));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1A));
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue1B));
 
-        var expectedValue3 = "100";
-        var expectedValue4 = "200";
-        result = ProcessTest(grod, $"{FOREACHKEY_TOKEN}x,\"{basekey}\") {GET_TOKEN}{basekey}$x) {ENDFOREACHKEY_TOKEN}");
+        var expectedValue2A = "100";
+        var expectedValue2B = "200";
+        var script2 = $"{FOREACHKEY_TOKEN}x,\"{basekey}\") {GET_TOKEN}{CONCAT_TOKEN}{basekey},{GET_TOKEN}{LOCAL_CHAR}x))) {ENDFOREACHKEY_TOKEN}";
+        result = ProcessTest(grod, script2);
         Assert.That(result, Has.Count.EqualTo(2));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
-        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
-        Assert.That(result[1].Value, Is.EqualTo(expectedValue4));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2A));
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue2B));
+
+        var expectedValue3A = "key.1";
+        var expectedValue3B = "key.2";
+        var script3 = $"{FOREACHKEY_TOKEN}x,\"{basekey}\") {CONCAT_TOKEN}{basekey},{GET_TOKEN}{LOCAL_CHAR}x)) {ENDFOREACHKEY_TOKEN}";
+        result = ProcessTest(grod, script3);
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue3A));
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue3B));
     }
 
     #endregion
@@ -1069,13 +1080,20 @@ public class DagsTokenTests
         ProcessTest(grod, $"{SETLIST_TOKEN}{key},1,{value1})");
         ProcessTest(grod, $"{SETLIST_TOKEN}{key},2,{value2})");
         ProcessTest(grod, $"{SETLIST_TOKEN}{key},3,{value3})");
-        result = ProcessTest(grod, $"{FOREACHLIST_TOKEN}x,{key}) {WRITE_TOKEN}$x) {ENDFOREACHLIST_TOKEN}");
-        // first item is "", and @write() does nothing
-        Assert.That(result, Has.Count.EqualTo(3));
+        var expectedValue = $"null,{value1},{value2},{value3}";
+        result = ProcessTest(grod, $"{GET_TOKEN}{key})");
+        Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
-        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
-        Assert.That(result[1].Value, Is.EqualTo(expectedValue2));
-        Assert.That(result[2].Value, Is.EqualTo(expectedValue3));
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+
+        var script = $"{FOREACHLIST_TOKEN}x,{key}) {WRITE_TOKEN}{GET_TOKEN}{LOCAL_CHAR}x)) {ENDFOREACHLIST_TOKEN}";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(4));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.Empty);
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue1));
+        Assert.That(result[2].Value, Is.EqualTo(expectedValue2));
+        Assert.That(result[3].Value, Is.EqualTo(expectedValue3));
     }
 
     #endregion
@@ -1084,6 +1102,19 @@ public class DagsTokenTests
     #endregion
 
     #region @for
+
+    [Test]
+    public void Test_FOR()
+    {
+        var startValue = "1";
+        var endValue = "10";
+        var expectedCount = 10;
+        var script = $"{FOR_TOKEN}x,{startValue},{endValue}) {WRITE_TOKEN}{GET_TOKEN}{LOCAL_CHAR}x)) {ENDFOR_TOKEN}";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(expectedCount));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+    }
+
     #endregion
 
     #region @frombinary ###DONE###

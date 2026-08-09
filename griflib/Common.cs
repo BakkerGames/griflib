@@ -5,7 +5,14 @@ public static partial class Common
     /// <summary>
     /// Gets the current version of the library.
     /// </summary>
-    public static string Version { get { return "2.2026.807.0"; } }
+    public static string Version
+    {
+        get
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            return assembly.GetName().Version?.ToString() ?? "1.0.0.0";
+        }
+    }
 
     /// <summary>
     /// String comparison: OrdinalIgnoreCase
