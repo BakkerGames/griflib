@@ -14,7 +14,7 @@ public partial class Dags
         {
             return ColorizeText(script, TextColorEnum.Default);
         }
-        ScriptObj scriptObj = CreateScript(script);
+        var scriptObj = CreateSimpleScript(script);
         return ColorizeScript(scriptObj);
     }
 

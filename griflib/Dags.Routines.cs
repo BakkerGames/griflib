@@ -5,10 +5,26 @@ namespace GrifLib;
 
 public partial class Dags
 {
+    /// <summary>
+    /// Creates a ScriptObj with local parameters expanded
+    /// </summary>
     public static ScriptObj CreateScript(string script)
     {
         var tokens = SplitTokens(script);
         tokens = ExpandLocalParameters(tokens);
+        return new ScriptObj
+        {
+            Tokens = tokens,
+            Index = 0
+        };
+    }
+
+    /// <summary>
+    /// Creates a ScriptObj with local parameters unchanged
+    /// </summary>
+    public static ScriptObj CreateSimpleScript(string script)
+    {
+        var tokens = SplitTokens(script);
         return new ScriptObj
         {
             Tokens = tokens,
@@ -196,7 +212,7 @@ public partial class Dags
         bool forLine = false;
         bool forEachKeyLine = false;
         bool forEachListLine = false;
-        var script = CreateScript(scriptText);
+        var script = CreateSimpleScript(scriptText);
 
         foreach (string s in script.Tokens)
         {
@@ -302,7 +318,7 @@ public partial class Dags
             return scriptText ?? "";
         }
         StringBuilder result = new();
-        var script = CreateScript(scriptText);
+        var script = CreateSimpleScript(scriptText);
         char lastChar = ',';
         bool addSpace;
         foreach (string s in script.Tokens)
