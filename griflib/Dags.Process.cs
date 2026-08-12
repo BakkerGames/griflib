@@ -52,15 +52,22 @@ public partial class Dags
                     case WHILE_TOKEN:
                         Exec_While(grod, script, pEmpty, result);
                         break;
-                    case AND_TOKEN:
-                    case DO_TOKEN:
-                    case ELSEIF_TOKEN:
                     case ELSE_TOKEN:
+                        Exec_Else(grod, script, pEmpty, result);
+                        break;
+                    case ELSEIF_TOKEN:
+                        Exec_ElseIf(grod, script, pEmpty, result);
+                        break;
+                    case ENDIF_TOKEN:
+                        Exec_EndIf(grod, script, pEmpty, result);
+                        break;
+                    case ENDFOR_TOKEN:
                     case ENDFOREACHKEY_TOKEN:
                     case ENDFOREACHLIST_TOKEN:
-                    case ENDFOR_TOKEN:
-                    case ENDIF_TOKEN:
                     case ENDWHILE_TOKEN:
+
+                    case AND_TOKEN:
+                    case DO_TOKEN:
                     case NOT_TOKEN:
                     case OR_TOKEN:
                     case THEN_TOKEN:
