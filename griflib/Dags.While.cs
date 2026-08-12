@@ -1,4 +1,5 @@
-﻿using static GrifLib.Common;
+﻿using System.ComponentModel.DataAnnotations;
+using static GrifLib.Common;
 
 namespace GrifLib;
 
@@ -19,6 +20,7 @@ public partial class Dags
         bool notFlag;
         string token;
         int whileStart = script.Index;
+        int whileEnd = 0;
         bool whileOver = false;
         while (!whileOver)
         {
@@ -109,6 +111,13 @@ public partial class Dags
                     throw new SystemException($"Unknown token in {WHILE_TOKEN}: {token}");
                 }
             }
+            if (whileEnd == 0)
+            {
+                var saveIndex = script.Index;
+                SkipToEndWhile(script);
+                whileEnd = script.Index;
+                script.Index = saveIndex;
+            }
             // process all commands in this section
             while (script.Index < script.Tokens.Length)
             {
@@ -121,6 +130,14 @@ public partial class Dags
                 if (script.ReturnFlag)
                 {
                     return result;
+                }
+                if (script.GoLabelFlag)
+                {
+                    if (script.Index < whileStart || script.Index > whileEnd)
+                    {
+                        // jumping out of block
+                        return result;
+                    }
                 }
             }
         }

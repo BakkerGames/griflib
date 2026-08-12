@@ -52,6 +52,14 @@ public partial class Dags
                 {
                     return;
                 }
+                if (script.GoLabelFlag)
+                {
+                    if (script.Index < indexStart || script.Index > indexEnd)
+                    {
+                        // jumping out of block
+                        return;
+                    }
+                }
             } while (script.Index < indexEnd);
         }
         // skip @endfor
@@ -113,6 +121,14 @@ public partial class Dags
                 {
                     return;
                 }
+                if (script.GoLabelFlag)
+                {
+                    if (script.Index < indexStart || script.Index > indexEnd)
+                    {
+                        // jumping out of block
+                        return;
+                    }
+                }
             } while (script.Index < indexEnd);
         }
         // skip @endforeachkey
@@ -172,6 +188,14 @@ public partial class Dags
                 if (script.ReturnFlag)
                 {
                     return;
+                }
+                if (script.GoLabelFlag)
+                {
+                    if (script.Index < indexStart || script.Index > indexEnd)
+                    {
+                        // jumping out of block
+                        return;
+                    }
                 }
             } while (script.Index < indexEnd);
         }

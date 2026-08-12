@@ -110,6 +110,10 @@ public partial class Dags
                 throw new SystemException($"Unknown token in {IF_TOKEN}: {token}");
             }
         }
+        var indexStart = script.Index;
+        SkipToElseEndif(script);
+        var indexEnd = script.Index;
+        script.Index = indexStart;
         // process all commands in this section
         List<GrifMessage> result = [];
         while (script.Index < script.Tokens.Length)
@@ -124,6 +128,14 @@ public partial class Dags
             if (script.ReturnFlag)
             {
                 return result;
+            }
+            if (script.GoLabelFlag)
+            {
+                if (script.Index < indexStart || script.Index > indexEnd)
+                {
+                    // jumping out of block
+                    return result;
+                }
             }
         }
         throw new SystemException(_invalidIfSyntax);

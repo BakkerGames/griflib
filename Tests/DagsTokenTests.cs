@@ -1,4 +1,5 @@
-﻿using GrifLib;
+﻿using System.ComponentModel.DataAnnotations;
+using GrifLib;
 using static GrifLib.Common;
 using static GrifLib.Dags;
 
@@ -1548,6 +1549,46 @@ public class DagsTokenTests
     #endregion
 
     #region @golabel
+
+    [Test]
+    public void Test_GOLABEL()
+    {
+        var value1 = "abc";
+        var value2 = "def";
+        var value3 = "zyx";
+        var labelName = "1";
+        var expectedValue1 = value1;
+        var expectedValue2 = value3;
+        var script = $"{WRITE_TOKEN}{value1}) {GOLABEL_TOKEN}{labelName}) {WRITE_TOKEN}{value2}) {LABEL_TOKEN}{labelName}) {WRITE_TOKEN}{value3})";
+        result = Process(grod, script);
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue2));
+    }
+
+    [Test]
+    public void Test_GOLABEL_Back()
+    {
+        var value1 = "abc";
+        var value2 = "def";
+        var value3 = "zyx";
+        var labelName = "1";
+        var localVar = "_x";
+        var expectedValue1 = value1;
+        var expectedValue2 = value2;
+        var expectedValue3 = value3;
+        var script = $"{SET_TOKEN}{localVar},0) {WRITE_TOKEN}{value1}) {LABEL_TOKEN}{labelName}) {WRITE_TOKEN}{value2}) {ADDTO_TOKEN}{localVar},1) {IF_TOKEN} {LT_TOKEN}{GET_TOKEN}{localVar}),3) {THEN_TOKEN} {GOLABEL_TOKEN}{labelName}) {ENDIF_TOKEN} {WRITE_TOKEN}{value3})";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(5));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue2));
+        Assert.That(result[2].Value, Is.EqualTo(expectedValue2));
+        Assert.That(result[3].Value, Is.EqualTo(expectedValue2));
+        Assert.That(result[4].Value, Is.EqualTo(expectedValue3));
+    }
+
     #endregion
 
     #region @gt ###DONE###

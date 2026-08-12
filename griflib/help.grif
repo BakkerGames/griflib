@@ -74,7 +74,7 @@
 @ge(x,y)
 	Returns "true" if "x" is greater than or equal to "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "y" is null, the answer is "true" since null is less than all other values. If "x" is null and "y" is not null, the answer is "false".
 @get(key)
-	Gets the value for "key".
+	Gets the value for "key". If the value is a script, it is not executed and returned as-is.
 @getarray(key,y,x)
 	Gets the value in array "key" at position row "y", column "x". Arrays use "row,column" notation. Returns "null" if "y,x" is beyond the end of the array. Throws an error if "y" or "x" is negative.
 @getbit(x,b)
@@ -85,14 +85,14 @@
 	Get the value sent from calling program sent in "#INCHANNEL;".
 @getlist(key,x)
 	Gets the value in list "key" at position "x". Returns "null" if "x" is beyond the end of the list. Throws an error if "x" is negative.
-@getvalue(
-	todo
+@getvalue(key)
+	Gets the value for "key". If the value is a script, it is executed and the final value is returned.
 @golabel(x)
-	Jumps to @label(x). If there are multiple labels with the same names, it always jumps to the first one.
+	Jumps to @label(x).\n\nUse with caution: Jumping within a block of statements or out of an @if/@for.../@while block works, but jumping into another block of statements or into a deeper level may have unexpected results.
 @gt(x,y)
 	Returns "true" if "x" is greater than "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "x" is not null and "y" is null, the answer is "true" since null is less than all other values. If "x" is null the answer is "false".
 @if
-	Begins an "@if" block. The full format of an "@if" block is: "@if <conditions> @then <statements> [@elseif <conditions> @then <statements> ...] [@else <statements>] @endif". There can be any number of @elseif sections. "<conditions>" consist of one or more values or functions which return truthy or falsey values. Multiple conditions are connected with "@and" or "@or", and may start with "@not" to reverse the value. "<statements>" are one or more "@" functions. "@if" may be nested within other "@if" <statement> blocks.
+	Begins an "@if" block. The full format of an "@if" block is: "@if <conditions> @then <statements> [@elseif <conditions> @then <statements> ...] [@else <statements>] @endif". There can be any number of @elseif sections. "<conditions>" consist of one or more values or functions which return truthy or falsey values. Multiple conditions are connected with "@and" or "@or", and may start with "@not" to reverse the value. "<statements>" are a block of one or more "@" functions. "@if" may be nested within other "@if" <statement> blocks.
 @inlist(key,value)
 	Returns true/false if list "key" contains an item "value". Case is ignored. Same as "@listcontains".
 @insertatlist(
@@ -154,7 +154,7 @@
 @ongolabel(value,label1,label2...)
 	Goes to a specific label based on the value. If value=1, control is passed to @label(label1), value=2 to @label(label2), and so on. If the value is less than 1 or more than the number of labels, or if the label is not found, control just drops through to the next command.
 @or
-	In "@if" or "@while", this separates multiple conditions. If the previous condition is true, it short-circuits and returns true. It does not check the rest of the conditions but jumps to @then. Otherwise it continues on and checks the next condition.
+	In "@if" or "@while", this separates multiple conditions. If the previous condition is true, it short-circuits and returns true. It does not check the rest of the conditions but jumps to @then/@do. Otherwise it continues on and checks the next condition.
 @rand(value)
 	Returns true or false if a random integer value from 0 to 99 is less than "value". Used for percentage tests, so "@rand(50)" will be true about 50% of the time. "@rand(0)" is always false and "@rand(100)" is always true.
 @removeatlist(
@@ -176,7 +176,7 @@
 @setchar(
 	todo
 @setlayer(layer,key,value)
-	For a named GROD layer, sets "key" to "value". If the named layer does not exists, one is added as the parent of the current layer. This is the way to change values on layers other than the top GROD layer. See "@set()".
+	For a named GROD layer, sets "key" to "value". If the named layer does not exists, one is added under the current top layer. This is the way to change values on layers other than the top GROD layer. See "@set()".
 @setlist(
 	todo
 @setoutchannel(
@@ -206,7 +206,7 @@
 @writeline(value1,value2,...)
 	Writes out the concatination of value1+value2+..., with a newline at the end. Note that this is returned as a list of separate values, not a single string.
 Lists and Arrays
-	A list is stored as a set of values separated by commas, such as "1,2,3". The key is the name of the list. The first item is at position 0, so "@getlist(name,0)" would return "1" in this example.\nArrays are stored as a set of lists, one for each row in the array. The "y" parameter indicates the row, and "x" the position in that row's list. The keys for each array row has the foramt "name.row.y", with "name" as the name of the array and "y" as the row number. Arrays are sparse, with any empty rows not even stored.
+	A list is stored as a set of values separated by commas, such as "1,2,3". The key is the name of the list. The first item is at position 0, so "@getlist(name,0)" would return "1" in this example.\n\nArrays are stored as a set of lists, one for each row in the array. The "y" parameter indicates the row, and "x" the position in that row's list. The keys for each array row have the foramt "name.row.y", with "name" as the name of the array and "y" as the row number. Arrays are sparse, with any empty rows not stored and items beyond the end of a row returning "".
 Scripts
 	A script is a value which starts with "@" as the start of some function key. There can be one or many statements, such as @if blocks, @for blocks, etc. The statements will process until it reaches the end of the script, or it reaches a "@return" statement, or it throws an error.\n\nThe complete set of all results from the script are returned together, not individually as they occur.\n\nScripts do not need to be formatted, but they will be when stored in a GRIF file for human readability. In a JSON file, they are stored as an unformatted string.\n\nWithin a script, using a key which starts with underline ("_") signifies a local variable only available in that copy of the script. If another copy of the same script is started, it won't have the same values.\n\nScripts are parsed from the string value into a collection of tokens which is held in memory while processing, then discarded. You can alter a running script stored in the dictionary, but it won't take effect until the next time it is run.
 User-defined functions

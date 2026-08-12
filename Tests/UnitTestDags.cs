@@ -162,13 +162,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_GoLabel()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}abc) {GOLABEL_TOKEN}1) {WRITE_TOKEN}def) {LABEL_TOKEN}1) {WRITE_TOKEN}xyz)");
-        Assert.That(Squash(result), Is.EqualTo("abcxyz"));
-    }
-
-    [Test]
     public void Test_If()
     {
         result = Process(grod, $"{IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}abc) {ELSE_TOKEN} {WRITE_TOKEN}def) {ENDIF_TOKEN}");

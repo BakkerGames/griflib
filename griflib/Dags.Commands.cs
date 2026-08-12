@@ -430,7 +430,8 @@ public partial class Dags
                 && script.Tokens[i + 1] == p[0].Value
                 && script.Tokens[i + 2] == ")")
             {
-                script.Index = i + 3;
+                script.Index = i;
+                script.GoLabelFlag = true;
             }
         }
     }
@@ -573,6 +574,7 @@ public partial class Dags
     private static void Exec_Label(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
+        script.GoLabelFlag = false;
     }
 
     private static void Exec_Len(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -815,7 +817,8 @@ public partial class Dags
                     && script.Tokens[i + 1] == value
                     && script.Tokens[i + 2] == ")")
                 {
-                    script.Index = i + 3;
+                    script.Index = i;
+                    script.GoLabelFlag = true;
                 }
             }
         }

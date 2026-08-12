@@ -6,7 +6,9 @@ public class ScriptObj
 
     public int Index { get; set; } = 0;
 
+    public Grod LocalData { get; set; } = new();
+
     public bool ReturnFlag { get; set; } = false;
 
-    public Grod LocalData { get; set; } = new();
+    public bool GoLabelFlag { get; set; } = false;
 }
