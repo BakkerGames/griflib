@@ -497,9 +497,11 @@ public class DagsTokenTests
     public void Test_CLEARARRAY()
     {
         var key = "abc";
+        var y = 2;
+        var x = 3;
         var value = "123";
         var expectedValue = "";
-        result = ProcessTest(grod, $"{SETARRAY_TOKEN}{key},2,3,{value}) {CLEARARRAY_TOKEN}{key}) {GETARRAY_TOKEN}{key},2,3)");
+        result = ProcessTest(grod, $"{SETARRAY_TOKEN}{key},{y},{x},{value}) {CLEARARRAY_TOKEN}{key}) {GETARRAY_TOKEN}{key},{y},{x})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue));
@@ -1026,7 +1028,7 @@ public class DagsTokenTests
     #region @foreachkey ###DONE###
 
     [Test]
-    public void Test_ForEachKey()
+    public void Test_FOREACHKEY()
     {
         var basekey = "key.";
         var key1 = $"{basekey}1";
@@ -1098,10 +1100,36 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @format
+    #region @format ###DONE###
+
+    [Test]
+    public void Test_FORMAT()
+    {
+        var value0 = "1";
+        var value1 = "2";
+        var value2 = "3";
+        var expectedValue1 = "1-2-3";
+        result = ProcessTest(grod, $"{WRITE_TOKEN}{FORMAT_TOKEN}\"{{0}}-{{1}}-{{2}}\",{value0},{value1},{value2}))");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var expectedValue2 = "3-2-1";
+        result = ProcessTest(grod, $"{WRITE_TOKEN}{FORMAT_TOKEN}\"{{2}}-{{1}}-{{0}}\",{value0},{value1},{value2}))");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+
+        var expectedValue3 = "1-2-{2}";
+        result = ProcessTest(grod, $"{WRITE_TOKEN}{FORMAT_TOKEN}\"{{0}}-{{1}}-{{2}}\",{value0},{value1}))");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+    }
+
     #endregion
 
-    #region @for
+    #region @for ###DONE###
 
     [Test]
     public void Test_FOR()
@@ -1189,7 +1217,39 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @getarray
+    #region @getarray ###DONE###
+
+    [Test]
+    public void Test_GetArray()
+    {
+        var key = "abc";
+        var y = 2;
+        var x = 3;
+        var value = "123";
+        var expectedValue1 = "123";
+        var script1 = $"{SETARRAY_TOKEN}{key},{y},{x},{value})";
+        ProcessTest(grod, script1);
+        result = ProcessTest(grod, $"{GETARRAY_TOKEN}{key},{y},{x})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var expectedValue2 = "";
+        var script2 = $"{GET_TOKEN}{key})";
+        result = ProcessTest(grod, script2);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+
+        // each array line is a list with the key "{name}.row.{y}"
+        var expectedValue3 = $"{NULL},{NULL},{NULL},{value}";
+        var script3 = $"{GET_TOKEN}{key}{ARRAY_ROW_CHAR}{y})";
+        result = ProcessTest(grod, script3);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+    }
+
     #endregion
 
     #region @getbit ###DONE###
@@ -1969,7 +2029,7 @@ public class DagsTokenTests
         var value1 = "123";
         var value2 = "456";
         var expectedValue = "2";
-        Process(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2})");
+        ProcessTest(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2})");
         result = ProcessTest(grod, $"{LISTLENGTH_TOKEN}{key})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -3216,7 +3276,31 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @setarray
+    #region @setarray ###DONE###
+
+    [Test]
+    public void Test_SetArray()
+    {
+        var key = "abc";
+        var y = 2;
+        var x = 3;
+        var value = "123";
+        var expectedValue1 = "123";
+        var script1 = $"{SETARRAY_TOKEN}{key},{y},{x},{value})";
+        ProcessTest(grod, script1);
+        result = ProcessTest(grod, $"{GETARRAY_TOKEN}{key},{y},{x})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        // each array line is a list with the key "{name}.row.{y}"
+        var expectedValue3 = $"{NULL},{NULL},{NULL},{value}";
+        var script3 = $"{GET_TOKEN}{key}{ARRAY_ROW_CHAR}{y})";
+        result = ProcessTest(grod, script3);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+    }
     #endregion
 
     #region @setbit ###DONE###

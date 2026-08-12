@@ -37,6 +37,7 @@ public static partial class Common
     public const string COMMA_CHAR = "\\u002c";
     public const char LOCAL_CHAR = '_';
     public const char PARAM_CHAR = '$';
+    public const string ARRAY_ROW_CHAR = ".row.";
 
     // File and application constants
     public const string APP_NAME = "GRIF";

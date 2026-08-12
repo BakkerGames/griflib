@@ -125,7 +125,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo("3"));
     }
 
-
     [Test]
     public void Test_Function()
     {
@@ -140,27 +139,6 @@ public class UnitTestDags
         Process(grod, $"{SET_TOKEN}\"@boo(x)\",\"{WRITE_TOKEN}$x)\")");
         result = Process(grod, "@boo(eek!)");
         Assert.That(Squash(result), Is.EqualTo("eek!"));
-    }
-
-    [Test]
-    public void Test_For()
-    {
-        result = Process(grod, $"{FOR_TOKEN}x,1,3) {WRITE_TOKEN}$x) {ENDFOR_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("123"));
-    }
-
-
-
-
-    [Test]
-    public void Test_Format()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{FORMAT_TOKEN}\"{{0}}-{{1}}-{{2}}\",1,2,3))");
-        Assert.That(Squash(result), Is.EqualTo("1-2-3"));
-        result = Process(grod, $"{WRITE_TOKEN}{FORMAT_TOKEN}\"{{2}}-{{1}}-{{0}}\",1,2,3))");
-        Assert.That(Squash(result), Is.EqualTo("3-2-1"));
-        result = Process(grod, $"{WRITE_TOKEN}{FORMAT_TOKEN}\"{{0}}-{{1}}-{{2}}\",1,2))");
-        Assert.That(Squash(result), Is.EqualTo("1-2-{2}"));
     }
 
     [Test]
@@ -324,15 +302,6 @@ public class UnitTestDags
     }
 
 
-    [Test]
-    public void Test_GetArray()
-    {
-        var key = "abc";
-        var value = "123";
-        Process(grod, $"{SETARRAY_TOKEN}{key},2,3,{value})");
-        result = Process(grod, $"{GETARRAY_TOKEN}{key},2,3)");
-        Assert.That(Squash(result), Is.EqualTo(value));
-    }
 
     [Test]
     public void Test_GetList()

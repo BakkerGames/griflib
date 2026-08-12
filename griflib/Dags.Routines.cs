@@ -564,7 +564,7 @@ public partial class Dags
         }
         if (inQuote)
         {
-            throw new ArgumentException("Missing end quotee");
+            throw new ArgumentException("Missing end quote");
         }
         if (depth > 0)
         {
@@ -963,7 +963,7 @@ public partial class Dags
         {
             throw new SystemException("Key cannot be null or empty.");
         }
-        var list = grod.Keys(key + ":", true, true);
+        var list = grod.Keys($"{key}{ARRAY_ROW_CHAR}", true, true);
         foreach (var item in list)
         {
             SetGlobalOrLocal(grod, script, item, NULL);
@@ -1015,7 +1015,7 @@ public partial class Dags
         {
             throw new SystemException($"Array indexes cannot be negative: {key}: {y},{x}");
         }
-        var itemKey = $"{key}:{y}";
+        var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
         return GetListItem(grod, script, itemKey, x);
     }
 
@@ -1032,7 +1032,7 @@ public partial class Dags
         {
             throw new SystemException($"Array indexes cannot be negative: {key}: {y},{x}");
         }
-        var itemKey = $"{key}:{y}";
+        var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
         SetListItem(grod, script, itemKey, x, value);
     }
 
@@ -1230,6 +1230,9 @@ public partial class Dags
         return IsTrue(answer[0].Value);
     }
 
+    /// <summary>
+    /// Add a debug message if the debug flag is true.
+    /// </summary>
     private static void AddDebugMessage(Grod grod, List<GrifMessage> result, string message)
     {
         if (IsTrue(grod.Get(DEBUG_FLAG, true)))
@@ -1238,6 +1241,9 @@ public partial class Dags
         }
     }
 
+    /// <summary>
+    /// Expand local parameters "$x" into "@get(_x)".
+    /// </summary>
     private static string[] ExpandLocalParameters(string[] tokens)
     {
         var newList = new List<string>();
@@ -1245,7 +1251,6 @@ public partial class Dags
         {
             if (tokens[i].StartsWith(PARAM_CHAR))
             {
-                // Change "$x" to "@get(_x)"
                 newList.Add(GET_TOKEN);
                 newList.Add($"{LOCAL_CHAR}{tokens[i][1..]}");
                 newList.Add(")");

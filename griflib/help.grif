@@ -76,7 +76,7 @@
 @get(key)
 	Gets the value for "key".
 @getarray(key,y,x)
-	Gets the value in array "key" at position "y,x". Arrays use "row,column" notation. Returns "null" if "y,x" is beyond the end of the array. Throws an error if "y" or "x" is negative.
+	Gets the value in array "key" at position row "y", column "x". Arrays use "row,column" notation. Returns "null" if "y,x" is beyond the end of the array. Throws an error if "y" or "x" is negative.
 @getbit(x,b)
 	Returns the bit "b" in "x", with b = 0 to 30. Lowest bit is on the right. Throws an error if either are not numeric, below zero, or "b" is over 30.
 @getchar(
@@ -169,8 +169,8 @@
 	Runs the script stored at "key". If the value is not a script, it is output as text.
 @set(key,value)
 	Sets the value for "key" to "value". This happens on the top GROD layer. See "@setlayer()".
-@setarray(
-	todo
+@setarray(key,y,x,value)
+	Sets the value in array "key" at position row "y", column "x". Arrays use "row,column" notation. Fills any preceeding values with "null" if "y,x" is beyond the end of the array. Throws an error if "y" or "x" is negative.
 @setbit(x,b)
 	Sets the bit "b" in "x" to 1, with b = 0 to 30. Lowest bit is on the right. Returns an error if either are not numeric, below zero, or "b" is over 30.
 @setchar(
@@ -205,6 +205,8 @@
 	Writes out the concatination of value1+value2+... Note that this is returned as a list of separate values, not a single string.
 @writeline(value1,value2,...)
 	Writes out the concatination of value1+value2+..., with a newline at the end. Note that this is returned as a list of separate values, not a single string.
+Lists and Arrays
+	A list is stored as a set of values separated by commas, such as "1,2,3". The key is the name of the list. The first item is at position 0, so "@getlist(name,0)" would return "1" in this example.\nArrays are stored as a set of lists, one for each row in the array. The "y" parameter indicates the row, and "x" the position in that row's list. The keys for each array row has the foramt "name.row.y", with "name" as the name of the array and "y" as the row number. Arrays are sparse, with any empty rows not even stored.
 Scripts
 	A script is a value which starts with "@" as the start of some function key. There can be one or many statements, such as @if blocks, @for blocks, etc. The statements will process until it reaches the end of the script, or it reaches a "@return" statement, or it throws an error.\n\nThe complete set of all results from the script are returned together, not individually as they occur.\n\nScripts do not need to be formatted, but they will be when stored in a GRIF file for human readability. In a JSON file, they are stored as an unformatted string.\n\nWithin a script, using a key which starts with underline ("_") signifies a local variable only available in that copy of the script. If another copy of the same script is started, it won't have the same values.\n\nScripts are parsed from the string value into a collection of tokens which is held in memory while processing, then discarded. You can alter a running script stored in the dictionary, but it won't take effect until the next time it is run.
 User-defined functions
