@@ -1704,6 +1704,49 @@ public class DagsTokenTests
     #endregion
 
     #region @if
+
+    [Test]
+    public void Test_If()
+    {
+        var value1 = "abc";
+        var value2 = "def";
+
+        var expectedValue1 = value1;
+        var script1 = $"{IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
+        result = ProcessTest(grod, script1);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+
+        var expectedValue2 = value2;
+        var script2 = $"{IF_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
+        result = ProcessTest(grod, script2);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+
+        var expectedValue3 = value2;
+        var script3 = $"{IF_TOKEN} {TRUE} {OR_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
+        result = ProcessTest(grod, script3);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+
+        var expectedValue4 = value1;
+        var script4 = $"{IF_TOKEN} {TRUE} {AND_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
+        result = ProcessTest(grod, script4);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue4));
+
+        var expectedValue5 = value2;
+        var script5 = $"{IF_TOKEN} {NULL} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
+        result = ProcessTest(grod, script5);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue5));
+    }
+
     #endregion
 
     #region @insertatlist

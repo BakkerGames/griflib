@@ -17,7 +17,6 @@ public partial class Dags
     {
         // conditions
         List<GrifMessage> result = [];
-        bool notFlag;
         string token;
         int whileStart = script.Index;
         int whileEnd = 0;
@@ -27,13 +26,6 @@ public partial class Dags
             script.Index = whileStart;
             while (script.Index < script.Tokens.Length)
             {
-                notFlag = false;
-                while (script.Index < script.Tokens.Length &&
-                    script.Tokens[script.Index].Equals(NOT_TOKEN, OIC))
-                {
-                    notFlag = !notFlag;
-                    script.Index++;
-                }
                 var cond = GetCondition(grod, script);
                 if (script.ReturnFlag)
                 {
@@ -42,10 +34,6 @@ public partial class Dags
                 if (script.Index >= script.Tokens.Length)
                 {
                     throw new SystemException(_invalidWhileSyntax);
-                }
-                if (notFlag)
-                {
-                    cond = !cond;
                 }
                 token = script.Tokens[script.Index++].ToLower();
                 if (token == DO_TOKEN)

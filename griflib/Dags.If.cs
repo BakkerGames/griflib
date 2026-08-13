@@ -15,17 +15,9 @@ public partial class Dags
     private static List<GrifMessage> ProcessIf(Grod grod, ScriptObj script)
     {
         // conditions
-        bool notFlag;
         string token;
         while (script.Index < script.Tokens.Length)
         {
-            notFlag = false;
-            while (script.Index < script.Tokens.Length &&
-                script.Tokens[script.Index].Equals(NOT_TOKEN, OIC))
-            {
-                notFlag = !notFlag;
-                script.Index++;
-            }
             var cond = GetCondition(grod, script);
             if (script.ReturnFlag)
             {
@@ -34,10 +26,6 @@ public partial class Dags
             if (script.Index >= script.Tokens.Length)
             {
                 throw new SystemException(_invalidIfSyntax);
-            }
-            if (notFlag)
-            {
-                cond = !cond;
             }
             token = script.Tokens[script.Index++].ToLower();
             if (token == THEN_TOKEN)
@@ -110,35 +98,35 @@ public partial class Dags
                 throw new SystemException($"Unknown token in {IF_TOKEN}: {token}");
             }
         }
-        //var indexStart = script.Index;
-        //SkipToElseEndif(script);
-        //var indexEnd = script.Index;
-        //script.Index = indexStart;
-        //// process all commands in this section
-        //List<GrifMessage> result = [];
-        //while (script.Index < script.Tokens.Length)
-        //{
-        //    token = script.Tokens[script.Index].ToLower();
-        //    if (token == ELSE_TOKEN || token == ELSEIF_TOKEN || token == ENDIF_TOKEN)
-        //    {
-        //        SkipOverEndif(script);
-        //        return result;
-        //    }
-        //    result.AddRange(ProcessOneCommand(grod, script));
-        //    if (script.ReturnFlag)
-        //    {
-        //        return result;
-        //    }
-        //    if (script.GoLabelFlag)
-        //    {
-        //        if (script.Index < indexStart || script.Index > indexEnd)
-        //        {
-        //            // jumping out of block
-        //            return result;
-        //        }
-        //    }
-        //}
-        //throw new SystemException(_invalidIfSyntax);
+        var indexStart = script.Index;
+        SkipToElseEndif(script);
+        var indexEnd = script.Index;
+        script.Index = indexStart;
+        // process all commands in this section
+        List<GrifMessage> result = [];
+        while (script.Index < script.Tokens.Length)
+        {
+            token = script.Tokens[script.Index].ToLower();
+            if (token == ELSE_TOKEN || token == ELSEIF_TOKEN || token == ENDIF_TOKEN)
+            {
+                SkipOverEndif(script);
+                return result;
+            }
+            result.AddRange(ProcessOneCommand(grod, script));
+            if (script.ReturnFlag)
+            {
+                return result;
+            }
+            if (script.GoLabelFlag)
+            {
+                if (script.Index < indexStart || script.Index > indexEnd)
+                {
+                    // jumping out of block
+                    return result;
+                }
+            }
+        }
+        throw new SystemException(_invalidIfSyntax);
     }
 
     /// <summary>

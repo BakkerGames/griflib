@@ -1209,6 +1209,12 @@ public partial class Dags
     /// </summary>
     private static bool GetCondition(Grod grod, ScriptObj script)
     {
+        var notFlag = false;
+        if (script.Tokens[script.Index].Equals(NOT_TOKEN, OIC))
+        {
+            notFlag = true;
+            script.Index++;
+        }
         var answer = ProcessOneCommand(grod, script);
         if (script.ReturnFlag)
         {
@@ -1227,7 +1233,12 @@ public partial class Dags
         {
             throw new SystemException("Invalid condition");
         }
-        return IsTrue(answer[0].Value);
+        var cond = IsTrue(answer[0].Value);
+        if (notFlag)
+        {
+            cond = !cond;
+        }
+        return cond;
     }
 
     /// <summary>

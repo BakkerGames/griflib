@@ -161,21 +161,7 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo("123"));
     }
 
-    [Test]
-    public void Test_If()
-    {
-        result = Process(grod, $"{IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}abc) {ELSE_TOKEN} {WRITE_TOKEN}def) {ENDIF_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("abc"));
-        result = Process(grod, $"{IF_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}abc) {ELSE_TOKEN} {WRITE_TOKEN}def) {ENDIF_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("def"));
-        result = Process(grod, $"{IF_TOKEN} {TRUE} {OR_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}abc) {ELSE_TOKEN} {WRITE_TOKEN}def) {ENDIF_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("abc"));
-        result = Process(grod, $"{IF_TOKEN} {TRUE} {AND_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}abc) {ELSE_TOKEN} {WRITE_TOKEN}def) {ENDIF_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("def"));
-        result = Process(grod, $"{IF_TOKEN} null {THEN_TOKEN} {WRITE_TOKEN}abc) {ELSE_TOKEN} {WRITE_TOKEN}def) {ENDIF_TOKEN}");
-        Assert.That(Squash(result), Is.EqualTo("def"));
-    }
-
+    
 
 
     [Test]

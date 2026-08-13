@@ -205,21 +205,6 @@ public partial class Dags
         SetGlobalOrLocal(grod, script, p[0].Value, long1.ToString());
     }
 
-    private static void Exec_Else(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
-    {
-        SkipOverEndif(script);
-    }
-
-    private static void Exec_ElseIf(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
-    {
-        SkipOverEndif(script);
-    }
-
-    private static void Exec_EndIf(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
-    {
-        // nothing to do, already skipped @endif
-    }
-
     private static void Exec_Equals(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);
