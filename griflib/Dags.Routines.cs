@@ -8,12 +8,13 @@ public partial class Dags
     /// <summary>
     /// Creates a ScriptObj with local parameters expanded
     /// </summary>
-    public static ScriptObj CreateScript(string script)
+    public static ScriptObj CreateScript(string script, string? name = null)
     {
         var tokens = SplitTokens(script);
         tokens = ExpandLocalParameters(tokens);
         return new ScriptObj
         {
+            Name = name,
             Tokens = tokens,
             Index = 0
         };
@@ -902,7 +903,7 @@ public partial class Dags
             value = $"{SET_TOKEN}_{placeholder},{paramValue}) " + value;
             value = value.Replace("$" + placeholder, $"{GET_TOKEN}_{placeholder})", OIC);
         }
-        var userScript = CreateScript(value);
+        var userScript = CreateScript(value, key);
         var userResult = new List<GrifMessage>();
         ProcessScript(grod, userScript, userResult);
         return userResult;

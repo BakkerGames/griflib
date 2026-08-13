@@ -874,8 +874,8 @@ public partial class Dags
         var value = GetGlobalOrLocal(grod, script, p[0].Value, true);
         if (!string.IsNullOrWhiteSpace(value))
         {
-            var scriptResult = Process(grod, value);
-            result.AddRange(scriptResult);
+            var newScript = CreateScript(value, p[0].Value);
+            ProcessScript(grod, newScript, result);
         }
     }
 
