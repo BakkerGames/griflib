@@ -78,7 +78,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo(value));
     }
 
-
     [Test]
     public void Test_SetList()
     {
@@ -160,9 +159,6 @@ public class UnitTestDags
         result = Process(grod, $"{WRITE_TOKEN}{GETVALUE_TOKEN}v1))");
         Assert.That(Squash(result), Is.EqualTo("123"));
     }
-
-    
-
 
     [Test]
     public void Test_Null()
@@ -280,8 +276,6 @@ public class UnitTestDags
         Assert.That(Squash(result), Is.EqualTo(value1));
     }
 
-
-
     [Test]
     public void Test_GetList()
     {
@@ -310,7 +304,6 @@ public class UnitTestDags
         result = Process(grod, $"{ISNUMBER_TOKEN}{value3})");
         Assert.That(result[0].Type, Is.EqualTo(MessageType.Error));
     }
-
 
     [Test]
     public void Test_Write()

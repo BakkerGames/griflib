@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using static GrifLib.Common;
+﻿using static GrifLib.Common;
 
 namespace GrifLib;
 

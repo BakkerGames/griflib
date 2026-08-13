@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using GrifLib;
+﻿using GrifLib;
 using static GrifLib.Common;
 using static GrifLib.Dags;
 
@@ -1548,7 +1547,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @golabel
+    #region @golabel ###DONE###
 
     [Test]
     public void Test_GOLABEL()
@@ -1703,43 +1702,43 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @if
+    #region @if ###DONE###
 
     [Test]
-    public void Test_If()
+    public void Test_IF()
     {
         var value1 = "abc";
         var value2 = "def";
 
-        var expectedValue1 = value1;
+        var expectedValue1 = "abc";
         var script1 = $"{IF_TOKEN} {TRUE} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
         result = ProcessTest(grod, script1);
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
 
-        var expectedValue2 = value2;
+        var expectedValue2 = "def";
         var script2 = $"{IF_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
         result = ProcessTest(grod, script2);
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
 
-        var expectedValue3 = value2;
+        var expectedValue3 = "abc";
         var script3 = $"{IF_TOKEN} {TRUE} {OR_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
         result = ProcessTest(grod, script3);
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
 
-        var expectedValue4 = value1;
+        var expectedValue4 = "def";
         var script4 = $"{IF_TOKEN} {TRUE} {AND_TOKEN} {FALSE} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
         result = ProcessTest(grod, script4);
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue4));
 
-        var expectedValue5 = value2;
+        var expectedValue5 = "def";
         var script5 = $"{IF_TOKEN} {NULL} {THEN_TOKEN} {WRITE_TOKEN}{value1}) {ELSE_TOKEN} {WRITE_TOKEN}{value2}) {ENDIF_TOKEN}";
         result = ProcessTest(grod, script5);
         Assert.That(result, Has.Count.EqualTo(1));
@@ -1789,7 +1788,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @isfalse
+    #region @isfalse ###DONE###
 
     [Test]
     public void Test_ISFALSE_1()
@@ -2104,7 +2103,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @listlength
+    #region @listlength ###DONE###
 
     [Test]
     public void Test_LISTLENGTH()
@@ -2327,7 +2326,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @min
+    #region @min ###DONE###
 
     [Test]
     public void Test_MIN()
@@ -3170,10 +3169,121 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @null
-    #endregion
-
     #region @ongolabel
+
+    [Test]
+    public void Test_ONGOLABEL_One()
+    {
+        var key = "key";
+        var value = "1";
+        var label1 = "label_1";
+        var label2 = "label_2";
+        var label3 = "label_3";
+        var expectedValue = "one";
+        var script = @$"
+            {SET_TOKEN}{key},{value})
+            {ONGOLABEL_TOKEN}{GET_TOKEN}{key}),{label1},{label2},{label3})
+            {WRITE_TOKEN}""None!"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label1}) {WRITE_TOKEN}""one"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label2}) {WRITE_TOKEN}""two"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label3}) {WRITE_TOKEN}""three"") {RETURN_TOKEN}
+        ";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_ONGOLABEL_Two()
+    {
+        var key = "key";
+        var value = "2";
+        var label1 = "label_1";
+        var label2 = "label_2";
+        var label3 = "label_3";
+        var expectedValue = "two";
+        var script = @$"
+            {SET_TOKEN}{key},{value})
+            {ONGOLABEL_TOKEN}{GET_TOKEN}{key}),{label1},{label2},{label3})
+            {WRITE_TOKEN}""None!"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label1}) {WRITE_TOKEN}""one"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label2}) {WRITE_TOKEN}""two"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label3}) {WRITE_TOKEN}""three"") {RETURN_TOKEN}
+        ";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_ONGOLABEL_Three()
+    {
+        var key = "key";
+        var value = "3";
+        var label1 = "label_1";
+        var label2 = "label_2";
+        var label3 = "label_3";
+        var expectedValue = "three";
+        var script = @$"
+            {SET_TOKEN}{key},{value})
+            {ONGOLABEL_TOKEN}{GET_TOKEN}{key}),{label1},{label2},{label3})
+            {WRITE_TOKEN}""None!"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label1}) {WRITE_TOKEN}""one"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label2}) {WRITE_TOKEN}""two"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label3}) {WRITE_TOKEN}""three"") {RETURN_TOKEN}
+        ";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_ONGOLABEL_None()
+    {
+        var key = "key";
+        var value = "0";
+        var label1 = "label_1";
+        var label2 = "label_2";
+        var label3 = "label_3";
+        var expectedValue = "None!";
+        var script = @$"
+            {SET_TOKEN}{key},{value})
+            {ONGOLABEL_TOKEN}{GET_TOKEN}{key}),{label1},{label2},{label3})
+            {WRITE_TOKEN}""None!"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label1}) {WRITE_TOKEN}""one"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label2}) {WRITE_TOKEN}""two"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label3}) {WRITE_TOKEN}""three"") {RETURN_TOKEN}
+        ";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_ONGOLABEL_Error()
+    {
+        var key = "key";
+        var value = "abc";
+        var label1 = "label_1";
+        var label2 = "label_2";
+        var label3 = "label_3";
+        var script = @$"
+            {SET_TOKEN}{key},{value})
+            {ONGOLABEL_TOKEN}{GET_TOKEN}{key}),{label1},{label2},{label3})
+            {WRITE_TOKEN}""None!"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label1}) {WRITE_TOKEN}""one"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label2}) {WRITE_TOKEN}""two"") {RETURN_TOKEN}
+            {LABEL_TOKEN}{label3}) {WRITE_TOKEN}""three"") {RETURN_TOKEN}
+        ";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
     #endregion
 
     #region @or ###DONE###
@@ -3689,9 +3799,6 @@ public class DagsTokenTests
         Assert.That(result[0].Value, Is.EqualTo(expectedValue));
     }
 
-    #endregion
-
-    #region @then
     #endregion
 
     #region @tobinary ###DONE###
