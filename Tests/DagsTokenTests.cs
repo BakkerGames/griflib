@@ -211,6 +211,19 @@ public class DagsTokenTests
         Assert.That(result[0].Value, Is.EqualTo(expectedValue));
     }
 
+
+    [Test]
+    public void Test_ADDLIST_Comma()
+    {
+        var key = "key";
+        var value = "abc,def";
+        var expectedValue = "abc,def";
+        result = ProcessTest(grod, $"{ADDLIST_TOKEN}{key},\"{value}\") {GETLIST_TOKEN}{key},0)");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @addto ###DONE###
@@ -1429,10 +1442,124 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @getlist
+    #region @getlist ###DONE###
+
+    [Test]
+    public void Test_GETLIST()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var value3 = "xyz";
+        var listValue = $"\"null,{value1},{value2},{value3}\"";
+        var result = ProcessTest(grod, $"{SET_TOKEN}{key},{listValue})");
+
+        var script1 = $"{GETLIST_TOKEN}{key},1)";
+        var expectedValue1 = "123";
+        var result1 = ProcessTest(grod, script1);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_GETLIST_Null()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var value3 = "xyz";
+        var listValue = $"\"null,{value1},{value2},{value3}\"";
+        var result = ProcessTest(grod, $"{SET_TOKEN}{key},{listValue})");
+
+        var script1 = $"{GETLIST_TOKEN}{key},0)";
+        var expectedValue1 = "";
+        var result1 = ProcessTest(grod, script1);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_GETLIST_PastEnd()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var value3 = "xyz";
+        var listValue = $"\"null,{value1},{value2},{value3}\"";
+        var result = ProcessTest(grod, $"{SET_TOKEN}{key},{listValue})");
+
+        var script1 = $"{GETLIST_TOKEN}{key},10)";
+        var expectedValue1 = "";
+        var result1 = ProcessTest(grod, script1);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_GETLIST_NegIndex()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var value3 = "xyz";
+        var listValue = $"\"null,{value1},{value2},{value3}\"";
+        var result = ProcessTest(grod, $"{SET_TOKEN}{key},{listValue})");
+
+        var script1 = $"{GETLIST_TOKEN}{key},-10)";
+        var result1 = ProcessTest(grod, script1);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
     #endregion
 
-    #region @getvalue
+    #region @getvalue ###DONE###
+
+    [Test]
+    public void Test_GETVALUE_Script()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var scriptValue = $"\"@add({value1},{value2})\"";
+        var result = ProcessTest(grod, $"{SET_TOKEN}{key},{scriptValue})");
+        var expectedValue = "579";
+        var script = $"{GETVALUE_TOKEN}{key})";
+        var result1 = ProcessTest(grod, script);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_GETVALUE_Text()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var result = ProcessTest(grod, $"{SET_TOKEN}{key},{value1})");
+        var expectedValue = "123";
+        var script = $"{GETVALUE_TOKEN}{key})";
+        var result1 = ProcessTest(grod, script);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_GETVALUE_Null()
+    {
+        var key = "abc";
+        var expectedValue = "";
+        var script = $"{GETVALUE_TOKEN}{key})";
+        var result1 = ProcessTest(grod, script);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @ge ###DONE###
@@ -1748,7 +1875,93 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @insertatlist
+    #region @insertatlist ###DONE###
+
+    [Test]
+    public void Test_INSERTATLIST()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var value3 = "xyz";
+        var listValue = $"\"null,{value1},{value2},{value3}\"";
+        var result = ProcessTest(grod, $"{SET_TOKEN}{key},{listValue})");
+
+        var value4 = "Hello!";
+        var position = "2";
+        var expectedValue1 = "Hello!";
+        var script1 = $"{INSERTATLIST_TOKEN}{key},{position},\"{value4}\") {GETLIST_TOKEN}{key},{position})";
+        var result1 = ProcessTest(grod, script1);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_INSERTATLIST_Before()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var value3 = "xyz";
+        var listValue = $"\"null,{value1},{value2},{value3}\"";
+        var result = ProcessTest(grod, $"{SET_TOKEN}{key},{listValue})");
+
+        var value4 = "Hello!";
+        var position1 = "2";
+        var position2 = "1";
+        var expectedValue1 = "123";
+        var script1 = $"{INSERTATLIST_TOKEN}{key},{position1},\"{value4}\") {GETLIST_TOKEN}{key},{position2})";
+        var result1 = ProcessTest(grod, script1);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_INSERTATLIST_After()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var value3 = "xyz";
+        var listValue = $"\"null,{value1},{value2},{value3}\"";
+        var result = ProcessTest(grod, $"{SET_TOKEN}{key},{listValue})");
+
+        var value4 = "Hello!";
+        var position1 = "2";
+        var position2 = "3";
+        var expectedValue1 = "456";
+        var script1 = $"{INSERTATLIST_TOKEN}{key},{position1},\"{value4}\") {GETLIST_TOKEN}{key},{position2})";
+        var result1 = ProcessTest(grod, script1);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_INSERTATLIST_Comma()
+    {
+        var key = "abc";
+        var value0 = NULL;
+        var value1 = "123,zzz";
+        var value2 = "456";
+        var value3 = "xyz";
+        var result = ProcessTest(grod, $"{ADDLIST_TOKEN}{key},{value0})");
+        result.AddRange(ProcessTest(grod, $"{ADDLIST_TOKEN}{key},\"{value1}\")"));
+        result.AddRange(ProcessTest(grod, $"{ADDLIST_TOKEN}{key},{value2})"));
+        result.AddRange(ProcessTest(grod, $"{ADDLIST_TOKEN}{key},{value3})"));
+        var value4 = "Hello!";
+        var position1 = "2";
+        var position2 = "1";
+        var expectedValue1 = "123,zzz";
+        var script1 = $"{INSERTATLIST_TOKEN}{key},{position1},\"{value4}\") {GETLIST_TOKEN}{key},{position2})";
+        var result1 = ProcessTest(grod, script1);
+        Assert.That(result1, Has.Count.EqualTo(1));
+        Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result1[0].Value, Is.EqualTo(expectedValue1));
+    }
+
     #endregion
 
     #region @isbool ###DONE###

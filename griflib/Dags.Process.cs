@@ -13,7 +13,6 @@ public partial class Dags
     private static List<GrifMessage> ProcessOneCommand(Grod grod, ScriptObj script)
     {
         List<GrifMessage> result = [];
-        string value;
         try
         {
             if (script.Index >= script.Tokens.Length)
@@ -66,14 +65,8 @@ public partial class Dags
                     case THEN_TOKEN:
                         throw new SystemException($"Token found out of context: {token}");
                     default:
-                        value = GetGlobalOrLocal(grod, script, token, true);
-                        if (!IsNull(value))
-                        {
-                            var userResult = Process(grod, value);
-                            result.AddRange(userResult);
-                            break;
-                        }
-                        throw new SystemException($"Unknown token: {token}");
+                        Exec_UserDefinedNoParams(grod, script, token, result);
+                        break;
                 }
                 return result;
             }
@@ -342,8 +335,7 @@ public partial class Dags
                     Exec_WriteLine(grod, script, p, result);
                     break;
                 default:
-                    var userResult = GetUserDefinedFunctionValues(grod, script, token, p);
-                    result.AddRange(userResult);
+                    Exec_UserDefined(grod, script, token, p, result);
                     break;
             }
             return result;

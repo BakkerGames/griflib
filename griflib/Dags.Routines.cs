@@ -629,6 +629,27 @@ public partial class Dags
         return items;
     }
 
+    public static string JoinList(List<string> items)
+    {
+        var sb = new StringBuilder();
+        if (items.Count == 0)
+        {
+            sb.Append(NULL);
+        }
+        else
+        {
+            foreach (var item in items)
+            {
+                if (sb.Length > 0)
+                {
+                    sb.Append(',');
+                }
+                sb.Append(FixListItemIn(item));
+            }
+        }
+        return sb.ToString();
+    }
+
     /// <summary>
     /// Splits a comma-delimited string into an array of items, changing "" to NULL.
     /// </summary>
@@ -865,51 +886,6 @@ public partial class Dags
     }
 
     /// <summary>
-    /// Get user-defined function values.
-    /// </summary>
-    private static List<GrifMessage> GetUserDefinedFunctionValues(Grod grod, ScriptObj script, string token, List<GrifMessage> p)
-    {
-        var keys = grod.Keys(token, true, true);
-        if (keys.Count == 0)
-        {
-            throw new SystemException($"Unknown token: {token}");
-        }
-        if (keys.Count > 1)
-        {
-            throw new SystemException($"Multiple definitions found for {token}");
-        }
-        var key = keys[0];
-        if (!key.EndsWith(')'))
-        {
-            throw new SystemException($"Invalid key format: {key}");
-        }
-        var placeholders = key[(key.IndexOf('(') + 1)..^1].Split(',');
-        // allow optional parameters in definition. set them all to NULL ("").
-        while (placeholders.Length > p.Count)
-        {
-            p.Add(new GrifMessage(MessageType.Internal, NULL));
-        }
-        var value = GetGlobalOrLocal(grod, script, key, true);
-        if (IsNull(value))
-        {
-            throw new SystemException($"User-defined function not found: {key}");
-        }
-        // change placeholders "$x" to "@get(_x)" and set the value of "_x" at start
-        for (int i = 0; i < placeholders.Length; i++)
-        {
-            var placeholder = placeholders[i].Trim();
-            var paramValue = p[i].Value;
-            if (paramValue == "") paramValue = NULL;
-            value = $"{SET_TOKEN}_{placeholder},{paramValue}) " + value;
-            value = value.Replace("$" + placeholder, $"{GET_TOKEN}_{placeholder})", OIC);
-        }
-        var userScript = CreateScript(value, key);
-        var userResult = new List<GrifMessage>();
-        ProcessScript(grod, userScript, userResult);
-        return userResult;
-    }
-
-    /// <summary>
     /// Return "true" or "false" string based on the boolean value.
     /// </summary>
     private static string TrueFalse(bool value)
@@ -1004,6 +980,22 @@ public partial class Dags
     }
 
     /// <summary>
+    /// Fix a list item for output by restoring commas and handling nulls.
+    /// </summary>
+    private static string FixListItemOutNull(string value)
+    {
+        if (IsNull(value))
+        {
+            return NULL;
+        }
+        if (value!.Contains(COMMA_CHAR))
+        {
+            value = value.Replace(COMMA_CHAR, ",");
+        }
+        return value;
+    }
+
+    /// <summary>
     /// Get an item from a 2D array stored in the Grod.
     /// </summary>
     private static string GetArrayItem(Grod grod, ScriptObj script, string key, long y, long x)
@@ -1087,7 +1079,7 @@ public partial class Dags
             items.Add(NULL);
         }
         items[(int)x] = FixListItemIn(value);
-        SetGlobalOrLocal(grod, script, key, string.Join(',', items));
+        SetGlobalOrLocal(grod, script, key, JoinList(items));
     }
 
     private static bool InList(Grod grod, ScriptObj script, string key, string value)
@@ -1140,7 +1132,7 @@ public partial class Dags
             items.Add(NULL);
         }
         items.Insert((int)x, FixListItemIn(value));
-        SetGlobalOrLocal(grod, script, key, string.Join(',', items));
+        SetGlobalOrLocal(grod, script, key, JoinList(items));
     }
 
     /// <summary>
@@ -1167,7 +1159,7 @@ public partial class Dags
             return; // Nothing to remove
         }
         items.RemoveAt((int)x);
-        SetGlobalOrLocal(grod, script, key, string.Join(',', items));
+        SetGlobalOrLocal(grod, script, key, JoinList(items));
     }
 
     /// <summary>

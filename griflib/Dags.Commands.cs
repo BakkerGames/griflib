@@ -1076,4 +1076,60 @@ public partial class Dags
         }
         result.Add(new GrifMessage(MessageType.Text, NL_CHAR));
     }
+
+    private static void Exec_UserDefinedNoParams(Grod grod, ScriptObj script, string token, List<GrifMessage> result)
+    {
+        // user-defined script name without parameters
+        var value = GetGlobalOrLocal(grod, script, token, true);
+        if (IsNull(value))
+        {
+            throw new SystemException($"Unknown token: {token}");
+        }
+        var newScript = CreateScript(value, token);
+        ProcessScript(grod, newScript, result);
+    }
+
+    private static void Exec_UserDefined(Grod grod, ScriptObj script, string token, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        var keys = grod.Keys(token, true, true);
+        if (keys.Count == 0)
+        {
+            throw new SystemException($"Unknown token: {token})");
+        }
+        if (keys.Count > 1)
+        {
+            throw new SystemException($"Multiple definitions found for {token})");
+        }
+        var key = keys[0];
+        if (!key.EndsWith(')'))
+        {
+            throw new SystemException($"Invalid key format: {key}");
+        }
+        var placeholders = key[(key.IndexOf('(') + 1)..^1].Split(',');
+        if (placeholders.Length < p.Count)
+        {
+            throw new SystemException($"Too many parameters specified for {token})");
+        }
+        // allow optional parameters in definition. set them all to NULL ("").
+        while (placeholders.Length > p.Count)
+        {
+            p.Add(new GrifMessage(MessageType.Internal, NULL));
+        }
+        var value = GetGlobalOrLocal(grod, script, key, true);
+        if (IsNull(value))
+        {
+            throw new SystemException($"User-defined function not found: {key}");
+        }
+        // change placeholders "$x" to "@get(_x)" and set the value of "_x" at start
+        for (int i = 0; i < placeholders.Length; i++)
+        {
+            var placeholder = placeholders[i].Trim();
+            var paramValue = p[i].Value;
+            if (paramValue == "") paramValue = NULL;
+            value = $"{SET_TOKEN}_{placeholder},{paramValue}) " + value;
+            value = value.Replace("$" + placeholder, $"{GET_TOKEN}_{placeholder})", OIC);
+        }
+        var userScript = CreateScript(value, key);
+        ProcessScript(grod, userScript, result);
+    }
 }
