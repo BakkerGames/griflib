@@ -804,6 +804,20 @@ public partial class Dags
         }
     }
 
+    private static void Exec_NotFunction(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterCount(p, 1);
+        try
+        {
+            var boolAnswer = IsTrue(p[0].Value);
+            result.Add(new GrifMessage(MessageType.Internal, TrueFalse(!boolAnswer)));
+        }
+        catch (Exception)
+        {
+            result.Add(new GrifMessage(MessageType.Internal, NULL));
+        }
+    }
+
     private static void Exec_OnGoLabel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterAtLeastOne(p);
@@ -918,9 +932,13 @@ public partial class Dags
         {
             throw new SystemException("Index out of range");
         }
-        if (IsNull(p[2].Value) || IsNull(p[2].Value))
+        if (IsNull(p[2].Value))
         {
             throw new SystemException("Character not supplied");
+        }
+        if (p[2].Value.Length > 1)
+        {
+            throw new SystemException("Replacement is too long");
         }
         var value = p[0].Value;
         if (int1 == value.Length)

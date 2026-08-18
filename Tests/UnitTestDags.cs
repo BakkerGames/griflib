@@ -79,16 +79,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_SetList()
-    {
-        var key = "abc";
-        var value = "123";
-        Process(grod, $"{SETLIST_TOKEN}{key},1,{value})");
-        result = Process(grod, $"{GETLIST_TOKEN}{key},1)");
-        Assert.That(Squash(result), Is.EqualTo(value));
-    }
-
-    [Test]
     public void Test_SetList_Null()
     {
         var key = "abc";
@@ -141,85 +131,12 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_GetInChannel()
-    {
-        grod.Set(INCHANNEL, "abc");
-        result = Process(grod, $"{WRITE_TOKEN}{GETINCHANNEL_TOKEN})");
-        Assert.That(Squash(result), Is.EqualTo("abc"));
-        result = Process(grod, $"{WRITE_TOKEN}{GETINCHANNEL_TOKEN})");
-        Assert.That(Squash(result), Is.EqualTo(""));
-    }
-
-    [Test]
-    public void Test_GetValue()
-    {
-        Process(grod, $"{SET_TOKEN}v1,\"{GET_TOKEN}v2)\") {SET_TOKEN}v2,123)");
-        result = Process(grod, $"{GET_TOKEN}v1)");
-        Assert.That(Squash(result), Is.EqualTo($"{GET_TOKEN}v2)"));
-        result = Process(grod, $"{WRITE_TOKEN}{GETVALUE_TOKEN}v1))");
-        Assert.That(Squash(result), Is.EqualTo("123"));
-    }
-
-    [Test]
-    public void Test_Null()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{ISNULL_TOKEN}null))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{WRITE_TOKEN}{ISNULL_TOKEN}abc))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{WRITE_TOKEN}{ISNULL_TOKEN}{GET_TOKEN}value)))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-    }
-
-    [Test]
-    public void Test_IsScript()
-    {
-        result = Process(grod, $"{SET_TOKEN}test.value,abc) {WRITE_TOKEN}{ISSCRIPT_TOKEN}test.value))");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{SET_TOKEN}test.value,\"{GET_TOKEN}value)\") {WRITE_TOKEN}{ISSCRIPT_TOKEN}test.value))");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-    }
-
-    [Test]
-    public void Test_NL()
-    {
-        result = Process(grod, NL_TOKEN);
-        Assert.That(Squash(result), Is.EqualTo(NL_CHAR));
-    }
-
-    [Test]
-    public void Test_Replace()
-    {
-        result = Process(grod, $"{WRITE_TOKEN}{REPLACE_TOKEN}abcdef,d,x))");
-        Assert.That(Squash(result), Is.EqualTo("abcxef"));
-    }
-
-    [Test]
     public void Test_Rnd()
     {
         result = Process(grod, $"{SET_TOKEN}value,{RND_TOKEN}20))");
         result = Process(grod, $"{GET_TOKEN}value)");
         var r1 = long.Parse(Squash(result));
         Assert.That(r1 >= 0 && r1 < 20);
-    }
-
-    [Test]
-    public void Test_Script()
-    {
-        result = Process(grod, $"{SET_TOKEN}script1,\"{WRITE_TOKEN}abc)\")");
-        result = Process(grod, $"{SCRIPT_TOKEN}script1)");
-        Assert.That(Squash(result), Is.EqualTo("abc"));
-    }
-
-    [Test]
-    public void Test_SetOutChannel()
-    {
-        result = Process(grod, $"{SETOUTCHANNEL_TOKEN}abc)");
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(result[0].Type, Is.EqualTo(MessageType.OutChannel));
-            Assert.That(result[0].Value, Is.EqualTo("abc"));
-        }
     }
 
     [Test]
@@ -265,47 +182,6 @@ public class UnitTestDags
     }
 
     [Test]
-    public void Test_Return()
-    {
-        var key = "abc";
-        var value1 = "123";
-        var value2 = "456";
-        result = Process(grod, $"{SET_TOKEN}{key},{value1}) {RETURN_TOKEN} {SET_TOKEN}{key},{value2})");
-        Assert.That(result, Is.Empty);
-        result = Process(grod, $"{GET_TOKEN}{key})");
-        Assert.That(Squash(result), Is.EqualTo(value1));
-    }
-
-    [Test]
-    public void Test_GetList()
-    {
-        var key = "abc";
-        var value1 = "123";
-        var value2 = "456";
-        Process(grod, $"{ADDLIST_TOKEN}{key},{value1}) {ADDLIST_TOKEN}{key},{value2})");
-        result = Process(grod, $"{GETLIST_TOKEN}{key},0)");
-        Assert.That(Squash(result), Is.EqualTo(value1));
-        result = Process(grod, $"{GETLIST_TOKEN}{key},1)");
-        Assert.That(Squash(result), Is.EqualTo(value2));
-        result = Process(grod, $"{GETLIST_TOKEN}{key},2)");
-        Assert.That(Squash(result), Is.EqualTo(""));
-    }
-
-    [Test]
-    public void Test_IsNumber()
-    {
-        var value1 = "123";
-        var value2 = "abc";
-        var value3 = "";
-        result = Process(grod, $"{ISNUMBER_TOKEN}{value1})");
-        Assert.That(Squash(result), Is.EqualTo(TRUE));
-        result = Process(grod, $"{ISNUMBER_TOKEN}{value2})");
-        Assert.That(Squash(result), Is.EqualTo(FALSE));
-        result = Process(grod, $"{ISNUMBER_TOKEN}{value3})");
-        Assert.That(result[0].Type, Is.EqualTo(MessageType.Error));
-    }
-
-    [Test]
     public void Test_Write()
     {
         var value1 = "123";
@@ -321,17 +197,6 @@ public class UnitTestDags
         // @writeline result ends with two characters, '\' and 'n'.
         // This is the expected behavior. See Test_NL().
         Assert.That(Squash(result), Is.EqualTo(value1 + NL_CHAR));
-    }
-
-    [Test]
-    public void Test_Len()
-    {
-        result = Process(grod, $"{LEN_TOKEN}abcabc)");
-        Assert.That(Squash(result), Is.EqualTo("6"));
-        result = Process(grod, $"{LEN_TOKEN}\"\")");
-        Assert.That(Squash(result), Is.EqualTo("0"));
-        result = Process(grod, $"{LEN_TOKEN}{NULL})");
-        Assert.That(Squash(result), Is.EqualTo("0"));
     }
 
     [Test]

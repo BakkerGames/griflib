@@ -8,7 +8,7 @@
 @addto(key,x)
 	Adds the integer value of "x" to the value in "key" and saves back to "key". If "x" is "" or value in "key" is "" or null, uses 0. Returns an error if either are not numeric or "x" is null.
 @and
-	In @if or @while, this separates multiple conditions. If the previous condition is false, it short-circuits and returns false. It does not check the rest of the conditions but jumps to the next @elseif, @else, or @endif. Otherwise it continues on and checks the next condition.
+	In @if or @while, this separates multiple conditions. If the previous condition is false, it short-circuits and returns false. It does not check the rest of the conditions but jumps to the next @elseif, @else, or @endif, or @endwhile. Otherwise it continues on and checks the next condition.
 @bitwiseand(x,y)
 	Returns a bitwise AND of integer values "x" and "y". For example, @bitwiseand(7,2) = 2, since 7 = 111 binary and 2 = 010 binary and the result is 010 binary. Returns an error if either are not numeric or are less than zero.
 @bitwiseor(x,y)
@@ -79,8 +79,8 @@
 	Gets the value in array "key" at position row "y", column "x". Arrays use "row,column" notation. Returns "null" if "y,x" is beyond the end of the array. Throws an error if "y" or "x" is negative.
 @getbit(x,b)
 	Returns the bit "b" in "x", with b = 0 to 30. Lowest bit is on the right. Throws an error if either are not numeric, below zero, or "b" is over 30.
-@getchar(
-	todo
+@getchar(x,y)
+	Returns the character at position "y" in string "x". If "y" is past the end of "x", returns a space " ". If "x" is null, it returns "".
 @getinchannel
 	Get the value sent from calling program sent in "#INCHANNEL;".
 @getlist(key,x)
@@ -95,8 +95,8 @@
 	Begins an "@if" block. The full format of an "@if" block is: "@if <conditions> @then <statements> [@elseif <conditions> @then <statements> ...] [@else <statements>] @endif". There can be any number of @elseif sections. "<conditions>" consist of one or more values or functions which return truthy or falsey values. Multiple conditions are connected with "@and" or "@or", and may start with "@not" to reverse the value. "<statements>" are a block of one or more "@" functions. "@if" may be nested within other "@if" <statement> blocks.
 @inlist(key,value)
 	Returns true/false if list "key" contains an item "value". Case is ignored. Same as "@listcontains".
-@insertatlist(
-	todo
+@insertatlist(listname,x,y)
+	Inserts the value "y" at position "x" in the list "listname", pushing all other values out by one. If position "x" is past the end of the list, extra null values are added to pad it out.
 @isbool(x)
 	Returns "true" if "x" is truthy or falsey, or "false" otherwise. Truthy values are "true", "t", "yes", "y", "1", "-1", ignoring case. Falsey values are "false", "f", "no", "n", "0", and "", ignoring case. "null" is neither truthy or falsey and will return "false".
 @isfalse(x)
@@ -113,8 +113,8 @@
 	A label named "x" within a script. This is the target of "@golabel(x)" or an "@ongolabel(value,..,x,...)" command. Execution will continue with the command after the label. "x" must be a constant value, not a script. If there is more than one label with the same name, the first one is always used.
 @le(x,y)
 	Returns "true" if "x" is less than or equal to "y". If both are numeric, they are compared as numbers, otherwise they are compared as strings. If "x" is null, the answer is "true". If "x" is not null and "y" is null, the answer is "false".
-@len(
-	todo
+@len(x)
+	Returns the length of the string "x". If "x" is null, returns 0.
 @listcontains(key,value)
 	Returns true/false if list "key" contains an item "value". Case is ignored. Same as "@inlist".
 @listcontainsall(key1,key2)
@@ -149,18 +149,18 @@
 	Add a newline character to the result.
 @not
 	In "@if" or "@while", negates the following condition.
-@null(x)
-	Returns "true" if "x" is null or an empty string, "false" otherwise. Identical to "@isnull(x)".
+@not(x)
+	Returns the opposite boolean value of "x", so "false" returns "true" and "true" returns "false". Returns "null" for any error.
 @ongolabel(value,label1,label2...)
 	Goes to a specific label based on the value. If value=1, control is passed to @label(label1), value=2 to @label(label2), and so on. If the value is less than 1 or more than the number of labels, or if the label is not found, control just drops through to the next command.
 @or
 	In "@if" or "@while", this separates multiple conditions. If the previous condition is true, it short-circuits and returns true. It does not check the rest of the conditions but jumps to @then/@do. Otherwise it continues on and checks the next condition.
 @rand(value)
 	Returns true or false if a random integer value from 0 to 99 is less than "value". Used for percentage tests, so "@rand(50)" will be true about 50% of the time. "@rand(0)" is always false and "@rand(100)" is always true.
-@removeatlist(
-	todo
-@replace(
-	todo
+@removeatlist(listname,x)
+	Removes the item at position "x" from the list. Nothing happens if "x" is past the end of the list.
+@replace(x,y,z)
+	Finds the string "y" inside of string "x" and replaces it with string "z". Returns the result. If "y" occurs more than once, all are replaced.
 @return
 	Exit the current script immediately, returning any results.
 @rnd(value)
@@ -173,20 +173,20 @@
 	Sets the value in array "key" at position row "y", column "x". Arrays use "row,column" notation. Fills any preceeding values with "null" if "y,x" is beyond the end of the array. Throws an error if "y" or "x" is negative.
 @setbit(x,b)
 	Sets the bit "b" in "x" to 1, with b = 0 to 30. Lowest bit is on the right. Returns an error if either are not numeric, below zero, or "b" is over 30.
-@setchar(
-	todo
+@setchar(x,y,z)
+	Sets the character at position "y" in the string "x" to the character "z". Adds padding spaces if "y" is past the end of the string.
 @setlayer(layer,key,value)
 	For a named GROD layer, sets "key" to "value". If the named layer does not exists, one is added under the current top layer. This is the way to change values on layers other than the top GROD layer. See "@set()".
-@setlist(
-	todo
-@setoutchannel(
-	todo
+@setlist(listname,x,y)
+	Replaces the value at position "x" in list "listname" with the value "y". Pads with nulls if "x" is past the end of the list.
+@setoutchannel(x,y)
+	Sends a message with the value "x" to the calling program. It is up to the calling program to handle the message or ignore it. It can have a second parameter "y" which will send another value in the ExtraValue position, or it can be left off.
 @sub(x,y)
 	Returns the value of integer "x" minus integer "y". If "x" or "y" is "", uses 0. Returns an error if either are not numeric or null.
-@substring(
-	todo
-@subto(
-	todo
+@substring(x,y,z)
+	Gets a substring of the string "x" starting at position "y". If "z" is not specified, returns the rest of the string. If "z" is specified, it is the length of the substring to return.
+@subto(key,x)
+	Subtracts the integer value of "x" from the value in "key" and saves back to "key". If "x" is "" or value in "key" is "" or null, uses 0. Returns an error if either are not numeric or "x" is null.
 @swap(key1,key2)
 	Swaps the values between key1 and key2.
 @then
@@ -200,7 +200,7 @@
 @upper(x)
 	Converts all the alphabetic characters in string x to uppercase.
 @while
-	todo
+	Starts a @while loop. The @while is followed by one or more conditions ending with "@do". The following statements are run until reaching an "@endwhile", where it loops back to the conditions to check again. If the conditions are false the first time through, none of the statements are run and it skips after the "@endwhile".
 @write(value1,value2,...)
 	Writes out the concatination of value1+value2+... Note that this is returned as a list of separate values, not a single string.
 @writeline(value1,value2,...)

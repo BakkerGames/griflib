@@ -265,6 +265,9 @@ public partial class Dags
                 case NEGTO_TOKEN:
                     Exec_NegTo(grod, script, p, result);
                     break;
+                case NOTFUNCTION_TOKEN:
+                    Exec_NotFunction(grod, script, p, result);
+                    break;
                 case ONGOLABEL_TOKEN:
                     Exec_OnGoLabel(grod, script, p, result);
                     break;
