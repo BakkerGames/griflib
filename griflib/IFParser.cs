@@ -464,17 +464,22 @@ public static class IFParser
         var message = grod.Get(DONT_UNDERSTAND, true);
         if (string.IsNullOrEmpty(message))
         {
-            message = $"I don't understand \"{inputText}\".";
-        }
-        message = string.Format(message, inputText);
-        if (!message.EndsWith(NL_CHAR))
-        {
-            message += NL_CHAR;
+            message = "I don't understand \"{0}\".";
         }
         if (IsScript(message))
         {
+            grod.Set($"{INPUT_PREFIX}full",inputText);
             var result = Process(grod, message);
             return result;
+        }
+        message = string.Format(message, inputText);
+        if (grod.GetBool(UPPERCASE, true))
+        {
+            message = message.ToUpper();
+        }
+        if (!message.EndsWith(NL_CHAR, OIC))
+        {
+            message += NL_CHAR;
         }
         return [new GrifMessage(MessageType.Text, message)];
     }
