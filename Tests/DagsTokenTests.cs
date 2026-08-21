@@ -4529,5 +4529,20 @@ public class DagsTokenTests
         Assert.That(result[1].Value, Is.EqualTo(NL_CHAR));
     }
 
+    [Test]
+    public void Test_WRITELINE_Script()
+    {
+        var key = "key";
+        var value = "@if @pct(50) @then @goto(5) @else @goto(6) @endif";
+        var expectedValue = value;
+        grod.Set(key, value);
+        string script = $"{WRITELINE_TOKEN}{GET_TOKEN}{key}))";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+        Assert.That(result[1].Value, Is.EqualTo(NL_CHAR));
+    }
+
     #endregion
 }

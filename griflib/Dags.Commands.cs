@@ -1079,8 +1079,7 @@ public partial class Dags
         // don't need to check parameter count
         foreach (var item in p) // concatenate all parameters
         {
-            var value = GetValue(grod, item.Value);
-            result.Add(new GrifMessage(MessageType.Text, value, item.ExtraValue));
+            result.Add(new GrifMessage(MessageType.Text, item.Value, item.ExtraValue));
         }
     }
 
@@ -1089,8 +1088,7 @@ public partial class Dags
         // don't need to check parameter count
         foreach (var item in p) // concatenate all parameters
         {
-            var value = GetValue(grod, item.Value);
-            result.Add(new GrifMessage(MessageType.Text, value, item.ExtraValue));
+            result.Add(new GrifMessage(MessageType.Text, item.Value, item.ExtraValue));
         }
         result.Add(new GrifMessage(MessageType.Text, NL_CHAR));
     }
