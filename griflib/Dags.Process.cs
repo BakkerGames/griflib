@@ -197,9 +197,11 @@ public partial class Dags
                     Exec_IsBool(grod, script, p, result);
                     break;
                 case ISFALSE_TOKEN:
+                case FALSE_ALIAS:
                     Exec_IsFalse(grod, script, p, result);
                     break;
                 case ISNULL_TOKEN:
+                case NULL_ALIAS:
                     Exec_IsNull(grod, script, p, result);
                     break;
                 case ISNUMBER_TOKEN:
@@ -209,6 +211,7 @@ public partial class Dags
                     Exec_IsScript(grod, script, p, result);
                     break;
                 case ISTRUE_TOKEN:
+                case TRUE_ALIAS:
                     Exec_IsTrue(grod, script, p, result);
                     break;
                 case LABEL_TOKEN:

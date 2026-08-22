@@ -902,12 +902,30 @@ public partial class Dags
         {
             return false; // Treat null as false
         }
-        return value!.ToLower() switch
+        if (string.IsNullOrEmpty(value) ||
+            value.Equals(NULL, OIC) ||
+            value.Equals(FALSE, OIC) ||
+            value.StartsWith("n", OIC))
         {
-            TRUE or "t" or "yes" or "y" or "1" or "-1" => true,
-            FALSE or "f" or "no" or "n" or "0" => false,
-            _ => throw new SystemException($"Non-boolean value: {value}"),
-        };
+            return false;
+        }
+        if (value.Equals(TRUE, OIC) ||
+            value.StartsWith("y", OIC))
+        {
+            return true;
+        }
+        if (long.TryParse(value, out long numValue))
+        {
+            if (numValue == 0)
+            {
+                return false;
+            }
+            if (numValue == 1 || numValue == -1)
+            {
+                return true;
+            }
+        }
+        throw new SystemException($"Non-boolean value: {value}");
     }
 
     /// <summary>

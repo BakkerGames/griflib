@@ -518,9 +518,9 @@ public partial class Dags
             var boolAnswer = IsTrue(p[0].Value);
             result.Add(new GrifMessage(MessageType.Internal, TrueFalse(!boolAnswer)));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            result.Add(new GrifMessage(MessageType.Internal, TrueFalse(false)));
+            result.Add(new GrifMessage(MessageType.Error, ex.Message));
         }
     }
 
@@ -565,9 +565,9 @@ public partial class Dags
             var boolAnswer = IsTrue(p[0].Value);
             result.Add(new GrifMessage(MessageType.Internal, TrueFalse(boolAnswer)));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            result.Add(new GrifMessage(MessageType.Internal, TrueFalse(false)));
+            result.Add(new GrifMessage(MessageType.Error, ex.Message));
         }
     }
 
@@ -1137,13 +1137,12 @@ public partial class Dags
             throw new SystemException($"User-defined function not found: {key}");
         }
         // change placeholders "$x" to "@get(_x)" and set the value of "_x" at start
-        for (int i = 0; i < placeholders.Length; i++)
+        for (int i = placeholders.Length - 1; i >= 0; i--)
         {
             var placeholder = placeholders[i].Trim();
             var paramValue = p[i].Value;
             if (paramValue == "") paramValue = NULL;
             value = $"{SET_TOKEN}_{placeholder},{paramValue}) " + value;
-            value = value.Replace("$" + placeholder, $"{GET_TOKEN}_{placeholder})", OIC);
         }
         var userScript = CreateScript(value, key);
         ProcessScript(grod, userScript, result);

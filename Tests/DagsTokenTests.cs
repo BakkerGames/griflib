@@ -2045,7 +2045,7 @@ public class DagsTokenTests
     [Test]
     public void Test_ISBOOL_NotBoolean()
     {
-        var value3 = "notboolean";
+        var value3 = "zzz";
         var expectedValue3 = FALSE;
         result = ProcessTest(grod, $"{WRITE_TOKEN}{ISBOOL_TOKEN}{value3}))");
         Assert.That(result, Has.Count.EqualTo(1));
@@ -2082,15 +2082,37 @@ public class DagsTokenTests
     }
 
     [Test]
+    public void Test_ISFALSE_Yes()
+    {
+        var value1 = "yes";
+        var expectedValue1 = FALSE;
+        var script1 = $"{ISFALSE_TOKEN}{value1})";
+        result = ProcessTest(grod, script1);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_ISFALSE_No()
+    {
+        var value2 = "no";
+        var expectedValue2 = TRUE;
+        var script2 = $"{ISFALSE_TOKEN}{value2})";
+        result = ProcessTest(grod, script2);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+    }
+
+    [Test]
     public void Test_ISFALSE_ABC()
     {
         var value3 = "abc";
-        var expectedValue3 = FALSE;
         var script3 = $"{ISFALSE_TOKEN}{value3})";
         result = ProcessTest(grod, script3);
         Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
-        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
     }
 
     [Test]
@@ -2103,30 +2125,6 @@ public class DagsTokenTests
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue4));
-    }
-
-    [Test]
-    public void Test_ISFALSE_Yes()
-    {
-        var value5 = "yes";
-        var expectedValue5 = FALSE;
-        var script5 = $"{ISFALSE_TOKEN}{value5})";
-        result = ProcessTest(grod, script5);
-        Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
-        Assert.That(result[0].Value, Is.EqualTo(expectedValue5));
-    }
-
-    [Test]
-    public void Test_ISFALSE_No()
-    {
-        var value6 = "no";
-        var expectedValue6 = TRUE;
-        var script6 = $"{ISFALSE_TOKEN}{value6})";
-        result = ProcessTest(grod, script6);
-        Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
-        Assert.That(result[0].Value, Is.EqualTo(expectedValue6));
     }
 
     #endregion
@@ -2232,15 +2230,37 @@ public class DagsTokenTests
     }
 
     [Test]
-    public void Test_ISTRUE_abc()
+    public void Test_ISTRUE_Yes()
+    {
+        var value1 = "yes";
+        var expectedValue1 = TRUE;
+        var script1 = $"{ISTRUE_TOKEN}{value1})";
+        result = ProcessTest(grod, script1);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_ISTRUE_No()
+    {
+        var value2 = "no";
+        var expectedValue2 = FALSE;
+        var script2 = $"{ISTRUE_TOKEN}{value2})";
+        result = ProcessTest(grod, script2);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+    }
+
+    [Test]
+    public void Test_ISTRUE_ABC()
     {
         var value3 = "abc";
-        var expectedValue3 = FALSE;
         var script3 = $"{ISTRUE_TOKEN}{value3})";
         result = ProcessTest(grod, script3);
         Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
-        Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
     }
 
     [Test]

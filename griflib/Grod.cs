@@ -97,17 +97,21 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
 
     /// <summary>
     /// Retrieves the value associated with the specified key and converts it to a Boolean value.
-    /// Returns "false" if empty, "null", "false", or "0".
-    /// Returns "true" if "true", "1", or "-1".
+    /// Returns "false" if empty, "null", "false", "0", or starts with "n".
+    /// Returns "true" if "true", "1", "-1", or starts with "y".
     /// </summary>
     public bool GetBool(string key, bool recursive)
     {
         var value = Get(key, recursive);
-        if (string.IsNullOrEmpty(value) || value.Equals(NULL, OIC) || value.Equals(FALSE, OIC))
+        if (string.IsNullOrEmpty(value) ||
+            value.Equals(NULL, OIC) ||
+            value.Equals(FALSE, OIC) ||
+            value.StartsWith("n", OIC))
         {
             return false;
         }
-        if (value.Equals(TRUE, OIC))
+        if (value.Equals(TRUE, OIC) ||
+            value.StartsWith("y", OIC))
         {
             return true;
         }

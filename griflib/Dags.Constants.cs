@@ -106,4 +106,9 @@ public partial class Dags
     public const string WHILE_TOKEN = "@while";
     public const string WRITELINE_TOKEN = "@writeline(";
     public const string WRITE_TOKEN = "@write(";
+
+    // aliases
+    public const string TRUE_ALIAS = "@true(";
+    public const string FALSE_ALIAS = "@false(";
+    public const string NULL_ALIAS = "@null(";
 }
