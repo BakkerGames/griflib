@@ -3894,6 +3894,19 @@ public class DagsTokenTests
         Assert.That(result[0].Value, Is.EqualTo(expectedValue));
     }
 
+    [Test]
+    public void Test_SCRIPT_NotScript()
+    {
+        var key = "script1";
+        var value = "abc";
+        var expectedValue = value;
+        result = ProcessTest(grod, $"{SET_TOKEN}{key},\"{value}\")");
+        result = ProcessTest(grod, $"{SCRIPT_TOKEN}{key})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @set ###DONE###

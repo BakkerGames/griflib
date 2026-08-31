@@ -888,8 +888,15 @@ public partial class Dags
         var value = GetGlobalOrLocal(grod, script, p[0].Value, true);
         if (!string.IsNullOrWhiteSpace(value))
         {
-            var newScript = CreateScript(value, p[0].Value);
-            ProcessScript(grod, newScript, result);
+            if (!IsScript(value))
+            {
+                result.Add(new GrifMessage(MessageType.Text, value));
+            }
+            else
+            {
+                var newScript = CreateScript(value, p[0].Value);
+                ProcessScript(grod, newScript, result);
+            }
         }
     }
 
