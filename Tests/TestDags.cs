@@ -321,9 +321,9 @@ public class TestDags
     public void TestUnknownToken()
     {
         Grod grod = new("testGrod");
-        string script = "@unknown()";
+        string script = "@unknown";
         var result = ProcessTest(grod, script);
-        var expected = "Unknown token: @unknown(";
+        var expected = "@unknown: User-defined function is null";
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Not.Empty);
         using (Assert.EnterMultipleScope())
@@ -423,7 +423,7 @@ public class TestDags
         Grod grod = new("testGrod");
         string script = "@invalidcommand()";
         var result = ProcessTest(grod, script);
-        var expected = "Unknown token: @invalidcommand(";
+        var expected = "@invalidcommand(): User-defined function not found";
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Not.Empty);
         using (Assert.EnterMultipleScope())

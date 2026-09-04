@@ -329,9 +329,13 @@ public static class IO
             {
                 continue;
             }
-            if (string.IsNullOrEmpty(Path.GetDirectoryName(tempLine)))
+            if (!Directory.Exists(tempLine) && !File.Exists(tempLine))
             {
-                tempLine = Path.Combine(path, tempLine);
+                var newPath = Path.Combine(path, tempLine);
+                if (Directory.Exists(newPath) || File.Exists(newPath))
+                {
+                    tempLine = newPath;
+                }
             }
             if (Directory.Exists(tempLine))
             {

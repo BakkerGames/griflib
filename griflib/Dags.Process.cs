@@ -361,6 +361,7 @@ public partial class Dags
                 extraInfo.AppendLine($"{i}: {token}");
             }
             result.Add(new GrifMessage(MessageType.Error, error, extraInfo.ToString()));
+            script.ReturnFlag = true;
             return result;
         }
     }

@@ -152,7 +152,7 @@ public partial class Dags
                 }
                 else
                 {
-                    throw new SystemException($"Unknown time zone parameter {p[1].Value}");
+                    throw new SystemException($"{DATETIME_TOKEN}): Unknown time zone parameter {p[1].Value}");
                 }
             }
             else
@@ -164,7 +164,7 @@ public partial class Dags
         }
         catch (Exception)
         {
-            throw new SystemException($"Error converting date format {p[0].Value}");
+            throw new SystemException($"{DATETIME_TOKEN}): Error converting date format {p[0].Value}");
         }
     }
 
@@ -186,7 +186,7 @@ public partial class Dags
         var long2 = GetNumberValue(p[1].Value);
         if (long2 == 0)
         {
-            throw new SystemException("Division by zero is not allowed.");
+            throw new SystemException($"{DIV_TOKEN}): Division by zero is not allowed.");
         }
         long1 /= long2;
         result.Add(new GrifMessage(MessageType.Internal, long1.ToString()));
@@ -199,7 +199,7 @@ public partial class Dags
         var long2 = GetNumberValue(p[1].Value);
         if (long2 == 0)
         {
-            throw new SystemException("Division by zero is not allowed.");
+            throw new SystemException($"{DIVTO_TOKEN}): Division by zero is not allowed.");
         }
         long1 /= long2;
         SetGlobalOrLocal(grod, script, p[0].Value, long1.ToString());
@@ -325,7 +325,7 @@ public partial class Dags
         CheckParameterCount(p, 3);
         if (string.IsNullOrWhiteSpace(p[0].Value))
         {
-            throw new SystemException("Array name cannot be blank");
+            throw new SystemException($"{GETARRAY_TOKEN}): Array name cannot be blank");
         }
         var long1 = GetNumberValue(p[1].Value);
         var long2 = GetNumberValue(p[2].Value);
@@ -356,7 +356,7 @@ public partial class Dags
         var int1 = (int)GetNumberValue(p[1].Value);
         if (int1 < 0)
         {
-            throw new SystemException("Index out of range");
+            throw new SystemException($"{GETCHAR_TOKEN}): Index out of range");
         }
         var value = p[0].Value;
         if (IsNull(value))
@@ -407,7 +407,7 @@ public partial class Dags
         CheckParameterCount(p, 2);
         if (string.IsNullOrWhiteSpace(p[0].Value))
         {
-            throw new SystemException("List name cannot be blank");
+            throw new SystemException($"{GETLIST_TOKEN}): List name cannot be blank");
         }
         var long1 = GetNumberValue(p[1].Value);
         var value = GetListItem(grod, script, p[0].Value, long1);
@@ -513,15 +513,8 @@ public partial class Dags
     private static void Exec_IsFalse(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
-        try
-        {
-            var boolAnswer = IsTrue(p[0].Value);
-            result.Add(new GrifMessage(MessageType.Internal, TrueFalse(!boolAnswer)));
-        }
-        catch (Exception ex)
-        {
-            result.Add(new GrifMessage(MessageType.Error, ex.Message));
-        }
+        var boolAnswer = IsTrue(p[0].Value);
+        result.Add(new GrifMessage(MessageType.Internal, TrueFalse(!boolAnswer)));
     }
 
     private static void Exec_IsNull(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -560,15 +553,8 @@ public partial class Dags
     private static void Exec_IsTrue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
-        try
-        {
-            var boolAnswer = IsTrue(p[0].Value);
-            result.Add(new GrifMessage(MessageType.Internal, TrueFalse(boolAnswer)));
-        }
-        catch (Exception ex)
-        {
-            result.Add(new GrifMessage(MessageType.Error, ex.Message));
-        }
+        var boolAnswer = IsTrue(p[0].Value);
+        result.Add(new GrifMessage(MessageType.Internal, TrueFalse(boolAnswer)));
     }
 
     private static void Exec_Label(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -911,7 +897,7 @@ public partial class Dags
         CheckParameterCount(p, 4);
         if (string.IsNullOrWhiteSpace(p[0].Value))
         {
-            throw new SystemException("Array name cannot be blank");
+            throw new SystemException($"{SETARRAY_TOKEN}): Array name cannot be blank");
         }
         var long1 = GetNumberValue(p[1].Value); // y
         var long2 = GetNumberValue(p[2].Value); // x
@@ -937,15 +923,15 @@ public partial class Dags
         var int1 = (int)GetNumberValue(p[1].Value);
         if (int1 < 0)
         {
-            throw new SystemException("Index out of range");
+            throw new SystemException($"{SETCHAR_TOKEN}): Index out of range");
         }
         if (IsNull(p[2].Value))
         {
-            throw new SystemException("Character not supplied");
+            throw new SystemException($"{SETCHAR_TOKEN}): Character not supplied");
         }
         if (p[2].Value.Length > 1)
         {
-            throw new SystemException("Replacement is too long");
+            throw new SystemException($"{SETCHAR_TOKEN}): Replacement is too long");
         }
         var value = p[0].Value;
         if (int1 == value.Length)
@@ -1106,7 +1092,7 @@ public partial class Dags
         var value = GetGlobalOrLocal(grod, script, token, true);
         if (IsNull(value))
         {
-            throw new SystemException($"Unknown token: {token}");
+            throw new SystemException($"{token}: User-defined function is null");
         }
         var newScript = CreateScript(value, token);
         ProcessScript(grod, newScript, result);
@@ -1117,21 +1103,21 @@ public partial class Dags
         var keys = grod.Keys(token, true, true);
         if (keys.Count == 0)
         {
-            throw new SystemException($"Unknown token: {token})");
+            throw new SystemException($"{token}): User-defined function not found");
         }
         if (keys.Count > 1)
         {
-            throw new SystemException($"Multiple definitions found for {token})");
+            throw new SystemException($"{token}): Multiple definitions found for user-defined function");
         }
         var key = keys[0];
         if (!key.EndsWith(')'))
         {
-            throw new SystemException($"Invalid key format: {key}");
+            throw new SystemException($"{key}: Invalid key format");
         }
         var placeholders = key[(key.IndexOf('(') + 1)..^1].Split(',');
         if (placeholders.Length < p.Count)
         {
-            throw new SystemException($"Too many parameters specified for {token})");
+            throw new SystemException($"{token}): Too many parameters specified");
         }
         // allow optional parameters in definition. set them all to NULL ("").
         while (placeholders.Length > p.Count)
@@ -1141,7 +1127,7 @@ public partial class Dags
         var value = GetGlobalOrLocal(grod, script, key, true);
         if (IsNull(value))
         {
-            throw new SystemException($"User-defined function not found: {key}");
+            throw new SystemException($"{key}: User-defined function is null");
         }
         // change placeholders "$x" to "@get(_x)" and set the value of "_x" at start
         for (int i = placeholders.Length - 1; i >= 0; i--)
