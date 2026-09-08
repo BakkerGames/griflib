@@ -437,15 +437,15 @@ public class IFGame
                 };
                 _overlayGrod.Parent = tempGrod;
             }
-            tempGrod.FilePath ??= Path.Combine(_saveBasePath, grodName + DATA_EXTENSION);
-            if (!File.Exists(tempGrod.FilePath))
-            {
-                throw new Exception($"Grod file not found: {tempGrod.FilePath}");
-            }
-            var existingList = ReadGrif(tempGrod.FilePath);
             tempGrod.Clear(false);
-            tempGrod.AddItems(existingList);
             tempGrod.Changed = false;
+            tempGrod.FilePath ??= Path.Combine(_saveBasePath, grodName + DATA_EXTENSION);
+            if (File.Exists(tempGrod.FilePath))
+            {
+                var existingList = ReadGrif(tempGrod.FilePath);
+                tempGrod.AddItems(existingList);
+                tempGrod.Changed = false;
+            }
             return false;
         }
 
@@ -459,13 +459,9 @@ public class IFGame
             var tempGrod = _overlayGrod.GetGrod(grodName);
             if (tempGrod == null)
             {
-                throw new Exception("Grod name not found in stack.");
+                return false;
             }
             tempGrod.FilePath ??= Path.Combine(_saveBasePath, grodName + DATA_EXTENSION);
-            if (!File.Exists(tempGrod.FilePath))
-            {
-                throw new Exception($"Grod file not found: {tempGrod.FilePath}");
-            }
             var savefile = tempGrod.FilePath;
             var itemList = tempGrod.Items(false, true);
             WriteGrif(savefile, itemList, true);
