@@ -80,6 +80,11 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, longAnswer.ToString()));
     }
 
+    private static void Exec_Break(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        script.BreakFlag = true;
+    }
+
     private static void Exec_ClearArray(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
@@ -136,6 +141,11 @@ public partial class Dags
             result.Add(new GrifMessage(MessageType.Internal, FALSE));
         }
         result.Add(new GrifMessage(MessageType.Internal, TrueFalse(p[0].Value.Contains(p[1].Value, OIC))));
+    }
+
+    private static void Exec_Continue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        script.ContinueFlag = true;
     }
 
     private static void Exec_DateTime(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -852,6 +862,14 @@ public partial class Dags
 
     private static void Exec_Return(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
+        script.Index = script.Tokens.Length;
+        script.ReturnFlag = true; // End processing
+    }
+
+    private static void Exec_ReturnValue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterCount(p, 1);
+        result.Add(new GrifMessage(MessageType.Internal, p[0].Value));
         script.Index = script.Tokens.Length;
         script.ReturnFlag = true; // End processing
     }

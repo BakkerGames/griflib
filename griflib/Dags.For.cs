@@ -10,8 +10,8 @@ public partial class Dags
     private static void HandleFor(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // @for(i,<start>,<end inclusive>)=...$i...@endfor
-        var indexStart = script.Index;
-        var indexEnd = 0;
+        var forStart = script.Index;
+        var forEnd = 0;
         var level = 0;
         do
         {
@@ -24,13 +24,13 @@ public partial class Dags
             {
                 if (level <= 0)
                 {
-                    indexEnd = script.Index - 1;
+                    forEnd = script.Index - 1;
                     break;
                 }
                 level--;
             }
         } while (script.Index < script.Tokens.Length);
-        if (indexEnd == 0)
+        if (forEnd == 0)
         {
             result.Add(new GrifMessage(MessageType.Error, $"{ENDFOR_TOKEN} not found"));
             return;
@@ -40,13 +40,21 @@ public partial class Dags
         for (long value = int1; value <= int2; value++)
         {
             script.LocalData.Set($"{LOCAL_CHAR}{p[0].Value}", value);
-            script.Index = indexStart;
+            script.Index = forStart;
             do
             {
-                var answer = ProcessOneCommand(grod, script);
-                if (answer.Count > 0)
+                result.AddRange(ProcessOneCommand(grod, script));
+                if (script.BreakFlag)
                 {
-                    result.AddRange(answer);
+                    script.BreakFlag = false;
+                    script.Index = forEnd + 1;
+                    return;
+                }
+                if (script.ContinueFlag)
+                {
+                    script.ContinueFlag = false;
+                    script.Index = forStart;
+                    break;
                 }
                 if (script.ReturnFlag)
                 {
@@ -54,16 +62,16 @@ public partial class Dags
                 }
                 if (script.GoLabelFlag)
                 {
-                    if (script.Index < indexStart || script.Index > indexEnd)
+                    if (script.Index < forStart || script.Index > forEnd)
                     {
                         // jumping out of block
                         return;
                     }
                 }
-            } while (script.Index < indexEnd);
+            } while (script.Index < forEnd);
         }
         // skip @endfor
-        script.Index = indexEnd + 1;
+        script.Index = forEnd + 1;
     }
 
     /// <summary>
@@ -71,8 +79,8 @@ public partial class Dags
     /// </summary>
     private static void HandleForEachKey(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        var indexStart = script.Index;
-        var indexEnd = 0;
+        var foreachStart = script.Index;
+        var foreachEnd = 0;
         var level = 0;
         do
         {
@@ -85,13 +93,13 @@ public partial class Dags
             {
                 if (level <= 0)
                 {
-                    indexEnd = script.Index - 1;
+                    foreachEnd = script.Index - 1;
                     break;
                 }
                 level--;
             }
         } while (script.Index < script.Tokens.Length);
-        if (indexEnd == 0)
+        if (foreachEnd == 0)
         {
             result.Add(new GrifMessage(MessageType.Error, $"{ENDFOREACHKEY_TOKEN} not found"));
             return;
@@ -109,13 +117,21 @@ public partial class Dags
                 value = value[..^p[2].Value.Length];
             }
             script.LocalData.Set($"{LOCAL_CHAR}{p[0].Value}", value);
-            script.Index = indexStart;
+            script.Index = foreachStart;
             do
             {
-                var answer = ProcessOneCommand(grod, script);
-                if (answer.Count > 0)
+                result.AddRange(ProcessOneCommand(grod, script));
+                if (script.BreakFlag)
                 {
-                    result.AddRange(answer);
+                    script.BreakFlag = false;
+                    script.Index = foreachEnd + 1;
+                    return;
+                }
+                if (script.ContinueFlag)
+                {
+                    script.ContinueFlag = false;
+                    script.Index = foreachStart;
+                    break;
                 }
                 if (script.ReturnFlag)
                 {
@@ -123,16 +139,16 @@ public partial class Dags
                 }
                 if (script.GoLabelFlag)
                 {
-                    if (script.Index < indexStart || script.Index > indexEnd)
+                    if (script.Index < foreachStart || script.Index > foreachEnd)
                     {
                         // jumping out of block
                         return;
                     }
                 }
-            } while (script.Index < indexEnd);
+            } while (script.Index < foreachEnd);
         }
         // skip @endforeachkey
-        script.Index = indexEnd + 1;
+        script.Index = foreachEnd + 1;
     }
 
     /// <summary>
@@ -141,8 +157,8 @@ public partial class Dags
     private static void HandleForEachList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         // @foreachlist(x,listname)=...$x...@endforeachlist
-        var indexStart = script.Index;
-        var indexEnd = 0;
+        var foreachlistStart = script.Index;
+        var foreachlistEnd = 0;
         var level = 0;
         do
         {
@@ -155,13 +171,13 @@ public partial class Dags
             {
                 if (level <= 0)
                 {
-                    indexEnd = script.Index - 1;
+                    foreachlistEnd = script.Index - 1;
                     break;
                 }
                 level--;
             }
         } while (script.Index < script.Tokens.Length);
-        if (indexEnd == 0)
+        if (foreachlistEnd == 0)
         {
             result.Add(new GrifMessage(MessageType.Error, $"{ENDFOREACHLIST_TOKEN} not found"));
             return;
@@ -177,13 +193,21 @@ public partial class Dags
         {
             var value = FixListItemOut(item);
             script.LocalData.Set($"{LOCAL_CHAR}{p[0].Value}", value);
-            script.Index = indexStart;
+            script.Index = foreachlistStart;
             do
             {
-                var answer = ProcessOneCommand(grod, script);
-                if (answer.Count > 0)
+                result.AddRange(ProcessOneCommand(grod, script));
+                if (script.BreakFlag)
                 {
-                    result.AddRange(answer);
+                    script.BreakFlag = false;
+                    script.Index = foreachlistEnd + 1;
+                    return;
+                }
+                if (script.ContinueFlag)
+                {
+                    script.ContinueFlag = false;
+                    script.Index = foreachlistStart;
+                    break;
                 }
                 if (script.ReturnFlag)
                 {
@@ -191,15 +215,15 @@ public partial class Dags
                 }
                 if (script.GoLabelFlag)
                 {
-                    if (script.Index < indexStart || script.Index > indexEnd)
+                    if (script.Index < foreachlistStart || script.Index > foreachlistEnd)
                     {
                         // jumping out of block
                         return;
                     }
                 }
-            } while (script.Index < indexEnd);
+            } while (script.Index < foreachlistEnd);
         }
         // skip @endforeachlist
-        script.Index = indexEnd + 1;
+        script.Index = foreachlistEnd + 1;
     }
 }

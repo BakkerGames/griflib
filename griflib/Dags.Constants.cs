@@ -11,12 +11,14 @@ public partial class Dags
     public const string BITWISEAND_TOKEN = "@bitwiseand(";
     public const string BITWISEOR_TOKEN = "@bitwiseor(";
     public const string BITWISEXOR_TOKEN = "@bitwisexor(";
+    public const string BREAK_TOKEN = "@break";
     public const string CLEARARRAY_TOKEN = "@cleararray(";
     public const string CLEARBIT_TOKEN = "@clearbit(";
     public const string CLEARLIST_TOKEN = "@clearlist(";
     public const string COMMENT_TOKEN = "@comment(";
     public const string CONCAT_TOKEN = "@concat(";
     public const string CONTAINS_TOKEN = "@contains(";
+    public const string CONTINUE_TOKEN = "@continue";
     public const string DATETIME_TOKEN = "@datetime(";
     public const string DEBUG_TOKEN = "@debug(";
     public const string DIVTO_TOKEN = "@divto(";
@@ -85,6 +87,7 @@ public partial class Dags
     public const string REMOVEATLIST_TOKEN = "@removeatlist(";
     public const string REPLACE_TOKEN = "@replace(";
     public const string RETURN_TOKEN = "@return";
+    public const string RETURNVALUE_TOKEN = "@returnvalue(";
     public const string RND_TOKEN = "@rnd(";
     public const string SCRIPT_TOKEN = "@script(";
     public const string SET_TOKEN = "@set(";

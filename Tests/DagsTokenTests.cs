@@ -1078,6 +1078,48 @@ public class DagsTokenTests
         Assert.That(result[1].Value, Is.EqualTo(expectedValue3B));
     }
 
+    [Test]
+    public void Test_FOREACHKEY_BREAK()
+    {
+        var basekey = "key.";
+        var key1 = $"{basekey}1";
+        var key2 = $"{basekey}2";
+        var key3 = $"{basekey}3";
+        var value1 = "100";
+        var value2 = "200";
+        var value3 = "300";
+        ProcessTest(grod, $"{SET_TOKEN}{key1},{value1}) {SET_TOKEN}{key2},{value2}) {SET_TOKEN}{key3},{value3})");
+
+        var expectedValue1A = "1";
+        var script1 = $"{FOREACHKEY_TOKEN}x,\"{basekey}\") {IF_TOKEN} {EQ_TOKEN}{PARAM_CHAR}x,2) {THEN_TOKEN} {BREAK_TOKEN} {ENDIF_TOKEN} {WRITE_TOKEN}{PARAM_CHAR}x) {ENDFOREACHKEY_TOKEN}";
+        result = ProcessTest(grod, script1);
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1A));
+    }
+
+    [Test]
+    public void Test_FOREACHKEY_CONTINUE()
+    {
+        var basekey = "key.";
+        var key1 = $"{basekey}1";
+        var key2 = $"{basekey}2";
+        var key3 = $"{basekey}3";
+        var value1 = "100";
+        var value2 = "200";
+        var value3 = "300";
+        ProcessTest(grod, $"{SET_TOKEN}{key1},{value1}) {SET_TOKEN}{key2},{value2}) {SET_TOKEN}{key3},{value3})");
+
+        var expectedValue1A = "1";
+        var expectedValue1C = "3";
+        var script1 = $"{FOREACHKEY_TOKEN}x,\"{basekey}\") {IF_TOKEN} {EQ_TOKEN}{PARAM_CHAR}x,2) {THEN_TOKEN} {CONTINUE_TOKEN} {ENDIF_TOKEN} {WRITE_TOKEN}{PARAM_CHAR}x) {ENDFOREACHKEY_TOKEN}";
+        result = ProcessTest(grod, script1);
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1A));
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue1C));
+    }
+
     #endregion
 
     #region @foreachlist ###DONE###
@@ -1109,6 +1151,58 @@ public class DagsTokenTests
         Assert.That(result[1].Value, Is.EqualTo(expectedValue1));
         Assert.That(result[2].Value, Is.EqualTo(expectedValue2));
         Assert.That(result[3].Value, Is.EqualTo(expectedValue3));
+    }
+
+    [Test]
+    public void Test_FOREACHLIST_BREAK()
+    {
+        var key = "key";
+        var value1 = "10";
+        var value2 = "20";
+        var value3 = "30";
+        var expectedValue1 = "10";
+        ProcessTest(grod, $"{SETLIST_TOKEN}{key},1,{value1})");
+        ProcessTest(grod, $"{SETLIST_TOKEN}{key},2,{value2})");
+        ProcessTest(grod, $"{SETLIST_TOKEN}{key},3,{value3})");
+        var expectedValue = $"null,{value1},{value2},{value3}";
+        result = ProcessTest(grod, $"{GET_TOKEN}{key})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+
+        var script = $"{FOREACHLIST_TOKEN}x,{key}) {IF_TOKEN} {EQ_TOKEN}{PARAM_CHAR}x,{value2}) {THEN_TOKEN} {BREAK_TOKEN} {ENDIF_TOKEN} {WRITE_TOKEN}{PARAM_CHAR}x) {ENDFOREACHLIST_TOKEN}";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.Empty);
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_FOREACHLIST_CONTINUE()
+    {
+        var key = "key";
+        var value1 = "10";
+        var value2 = "20";
+        var value3 = "30";
+        var expectedValue1 = "10";
+        var expectedValue3 = "30";
+        ProcessTest(grod, $"{SETLIST_TOKEN}{key},1,{value1})");
+        ProcessTest(grod, $"{SETLIST_TOKEN}{key},2,{value2})");
+        ProcessTest(grod, $"{SETLIST_TOKEN}{key},3,{value3})");
+        var expectedValue = $"null,{value1},{value2},{value3}";
+        result = ProcessTest(grod, $"{GET_TOKEN}{key})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+
+        var script = $"{FOREACHLIST_TOKEN}x,{key}) {IF_TOKEN} {EQ_TOKEN}{PARAM_CHAR}x,{value2}) {THEN_TOKEN} {CONTINUE_TOKEN} {ENDIF_TOKEN} {WRITE_TOKEN}{PARAM_CHAR}x) {ENDFOREACHLIST_TOKEN}";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(3));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.Empty);
+        Assert.That(result[1].Value, Is.EqualTo(expectedValue1));
+        Assert.That(result[2].Value, Is.EqualTo(expectedValue3));
     }
 
     #endregion
@@ -1150,7 +1244,31 @@ public class DagsTokenTests
         var startValue = "1";
         var endValue = "10";
         var expectedCount = 10;
-        var script = $"{FOR_TOKEN}x,{startValue},{endValue}) {WRITE_TOKEN}{GET_TOKEN}{LOCAL_CHAR}x)) {ENDFOR_TOKEN}";
+        var script = $"{FOR_TOKEN}x,{startValue},{endValue}) {WRITE_TOKEN}{PARAM_CHAR}x) {ENDFOR_TOKEN}";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(expectedCount));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+    }
+
+    [Test]
+    public void Test_FOR_BREAK()
+    {
+        var startValue = "1";
+        var endValue = "10";
+        var expectedCount = 5;
+        var script = $"{FOR_TOKEN}x,{startValue},{endValue}) {IF_TOKEN} {EQ_TOKEN}{PARAM_CHAR}x,6) {THEN_TOKEN} {BREAK_TOKEN} {ENDIF_TOKEN} {WRITE_TOKEN}{PARAM_CHAR}x) {ENDFOR_TOKEN}";
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(expectedCount));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+    }
+
+    [Test]
+    public void Test_FOR_CONTINUE()
+    {
+        var startValue = "1";
+        var endValue = "10";
+        var expectedCount = 9;
+        var script = $"{FOR_TOKEN}x,{startValue},{endValue}) {IF_TOKEN} {EQ_TOKEN}{PARAM_CHAR}x,6) {THEN_TOKEN} {CONTINUE_TOKEN} {ENDIF_TOKEN} {WRITE_TOKEN}{PARAM_CHAR}x) {ENDFOR_TOKEN}";
         result = ProcessTest(grod, script);
         Assert.That(result, Has.Count.EqualTo(expectedCount));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -3802,7 +3920,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @replace
+    #region @replace ###DONE###
 
     [Test]
     public void Test_Replace()
@@ -3831,6 +3949,23 @@ public class DagsTokenTests
         result = ProcessTest(grod, $"{SET_TOKEN}{key},{value1}) {RETURN_TOKEN} {SET_TOKEN}{key},{value2})");
         Assert.That(result, Is.Empty);
         result = ProcessTest(grod, $"{GET_TOKEN}{key})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    #endregion
+
+    #region @return(value) ###DONE###
+
+    [Test]
+    public void Test_RETURNVALUE()
+    {
+        var key = "abc";
+        var value1 = "123";
+        var value2 = "456";
+        var expectedValue = value1;
+        result = ProcessTest(grod, $"{SET_TOKEN}{key},{value1}) {RETURNVALUE_TOKEN}{GET_TOKEN}{key})) {SET_TOKEN}{key},{value2})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue));
@@ -3879,7 +4014,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @script
+    #region @script ###DONE###
 
     [Test]
     public void Test_SCRIPT()
@@ -4444,6 +4579,55 @@ public class DagsTokenTests
         };
         result = ProcessTest(grod, script);
         Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result, Is.EqualTo(answer));
+    }
+
+    [Test]
+    public void Test_WHILE_BREAK()
+    {
+        var script = @"
+            @set(_a,0)
+            @while @lt(@get(_a),3) @do
+                @addto(_a,1)
+                @if @eq(@get(_a),2) @then
+                    @break
+                @endif
+                @write(@get(_a))
+            @endwhile
+            @write(""xyz"")
+            ";
+        var answer = new List<GrifMessage> {
+            new(MessageType.Text, "1"),
+            new(MessageType.Text, "xyz")
+        };
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result, Is.EqualTo(answer));
+    }
+
+    [Test]
+    public void Test_WHILE_Continue()
+    {
+        var script = @"
+            @set(_a,0)
+            @while @lt(@get(_a),3) @do
+                @addto(_a,1)
+                @if @eq(@get(_a),2) @then
+                    @continue
+                @endif
+                @write(@get(_a))
+            @endwhile
+            @write(""xyz"")
+            ";
+        var answer = new List<GrifMessage> {
+            new(MessageType.Text, "1"),
+            new(MessageType.Text, "3"),
+            new(MessageType.Text, "xyz"),
+        };
+        result = ProcessTest(grod, script);
+        Assert.That(result, Has.Count.EqualTo(3));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result, Is.EqualTo(answer));
     }

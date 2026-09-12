@@ -36,6 +36,12 @@ public partial class Dags
             {
                 switch (token.ToLower())
                 {
+                    case BREAK_TOKEN:
+                        Exec_Break(grod, script, pEmpty, result);
+                        break;
+                    case CONTINUE_TOKEN:
+                        Exec_Continue(grod, script, pEmpty, result);
+                        break;
                     case IF_TOKEN:
                         Exec_If(grod, script, pEmpty, result);
                         break;
@@ -282,6 +288,9 @@ public partial class Dags
                     break;
                 case REPLACE_TOKEN:
                     Exec_Replace(grod, script, p, result);
+                    break;
+                case RETURNVALUE_TOKEN:
+                    Exec_ReturnValue(grod, script, p, result);
                     break;
                 case RND_TOKEN:
                     Exec_Rnd(grod, script, p, result);

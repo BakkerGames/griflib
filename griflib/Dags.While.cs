@@ -16,10 +16,11 @@ public partial class Dags
     {
         // conditions
         List<GrifMessage> result = [];
-        string token;
         int whileStart = script.Index;
-        int whileEnd = 0;
+        SkipToEndWhile(script);
+        var whileEnd = script.Index;
         bool whileOver = false;
+        string token;
         while (!whileOver)
         {
             script.Index = whileStart;
@@ -98,22 +99,22 @@ public partial class Dags
                     throw new SystemException($"Unknown token in {WHILE_TOKEN}: {token}");
                 }
             }
-            if (whileEnd == 0)
-            {
-                var saveIndex = script.Index;
-                SkipToEndWhile(script);
-                whileEnd = script.Index;
-                script.Index = saveIndex;
-            }
             // process all commands in this section
-            while (script.Index < script.Tokens.Length)
+            while (script.Index < whileEnd)
             {
-                token = script.Tokens[script.Index].ToLower();
-                if (token == ENDWHILE_TOKEN)
+                result.AddRange(ProcessOneCommand(grod, script));
+                if (script.BreakFlag)
                 {
+                    script.BreakFlag = false;
+                    script.Index = whileEnd + 1;
+                    return result;
+                }
+                if (script.ContinueFlag)
+                {
+                    script.ContinueFlag = false;
+                    script.Index = whileStart;
                     break;
                 }
-                result.AddRange(ProcessOneCommand(grod, script));
                 if (script.ReturnFlag)
                 {
                     return result;

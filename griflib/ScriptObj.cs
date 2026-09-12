@@ -13,4 +13,8 @@ public class ScriptObj
     public bool ReturnFlag { get; set; } = false;
 
     public bool GoLabelFlag { get; set; } = false;
+
+    public bool BreakFlag { get; set; } = false;
+
+    public bool ContinueFlag { get; set; } = false;
 }
