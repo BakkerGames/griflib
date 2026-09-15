@@ -287,11 +287,11 @@ public class IFGame
     }
 
     /// <summary>
-    /// Advances the game state by processing background scripts and enqueuing resulting output messages.
+    /// Advances the game state by processing background scripts and enqueuing resulting output messages. Scripts are run in sorted order.
     /// </summary>
     private void AdvanceGameState()
     {
-        var keys = _overlayGrod.Keys(BACKGROUND_PREFIX, true, false);
+        var keys = _overlayGrod.Keys(BACKGROUND_PREFIX, true, true);
         foreach (var key in keys)
         {
             var script = $"{SCRIPT_TOKEN}{key})";
