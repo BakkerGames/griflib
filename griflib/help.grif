@@ -163,6 +163,8 @@
 	Finds the string "y" inside of string "x" and replaces it with string "z". Returns the result. If "y" occurs more than once, all are replaced.
 @return
 	Exit the current script immediately, returning any results.
+@returnvalue(x)
+	Exit the current script immediately. Add value "x" to the end of the results and return them. Usually "x" would be the only value returned.
 @rnd(value)
 	Returns a random integer value from 0 to "value" minus one. "@rnd(0)" is always zero.
 @script(key)
