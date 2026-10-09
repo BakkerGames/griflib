@@ -130,6 +130,9 @@ public partial class Dags
                 case DEBUG_TOKEN:
                     Exec_Debug(grod, script, p, result);
                     break;
+                case DEFMAP_TOKEN:
+                    Exec_DefMap(grod, script, p, result);
+                    break;
                 case DIV_TOKEN:
                     Exec_Div(grod, script, p, result);
                     break;
@@ -183,6 +186,9 @@ public partial class Dags
                     break;
                 case GETLIST_TOKEN:
                     Exec_GetList(grod, script, p, result);
+                    break;
+                case GETMAP_TOKEN:
+                    Exec_GetMap(grod, script, p, result);
                     break;
                 case GETVALUE_TOKEN:
                     Exec_GetValue(grod, script, p, result);
@@ -315,6 +321,9 @@ public partial class Dags
                     break;
                 case SETLIST_TOKEN:
                     Exec_SetList(grod, script, p, result);
+                    break;
+                case SETMAP_TOKEN:
+                    Exec_SetMap(grod, script, p, result);
                     break;
                 case SETOUTCHANNEL_TOKEN:
                     Exec_SetOutChannel(grod, script, p, result);

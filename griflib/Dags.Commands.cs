@@ -189,6 +189,35 @@ public partial class Dags
         AddDebugMessage(grod, result, debugValue);
     }
 
+    private static void Exec_DefMap(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterCount(p, 3);
+        if (string.IsNullOrWhiteSpace(p[0].Value))
+        {
+            throw new SystemException($"{DEFMAP_TOKEN}): Map name cannot be blank");
+        }
+        var key = p[0].Value;
+        var height = GetNumberValue(p[1].Value);
+        var width = GetNumberValue(p[2].Value);
+        if (height <= 0 || width <= 0)
+        {
+            throw new SystemException($"Map dimensions cannot be zero or negative: {key}: {height},{width}");
+        }
+        grod.Set($"{key}.height", height);
+        grod.Set($"{key}.width", width);
+        var row = new StringBuilder();
+        for (int x = 0; x < width; x++)
+        {
+            if (x > 0) row.Append(',');
+            row.Append('0');
+        }
+        for (int y = 0; y < height; y++)
+        {
+            var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
+            grod.Set(itemKey, row.ToString());
+        }
+    }
+
     private static void Exec_Div(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 2);

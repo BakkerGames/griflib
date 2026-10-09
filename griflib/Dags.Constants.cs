@@ -21,6 +21,7 @@ public partial class Dags
     public const string CONTINUE_TOKEN = "@continue";
     public const string DATETIME_TOKEN = "@datetime(";
     public const string DEBUG_TOKEN = "@debug(";
+    public const string DEFMAP_TOKEN = "@defmap(";
     public const string DIVTO_TOKEN = "@divto(";
     public const string DIV_TOKEN = "@div(";
     public const string DO_TOKEN = "@do";
@@ -47,6 +48,7 @@ public partial class Dags
     public const string GETINCHANNEL_TOKEN = "@getinchannel";
     public const string GETLAYER_TOKEN = "@getlayer(";
     public const string GETLIST_TOKEN = "@getlist(";
+    public const string GETMAP_TOKEN = "@getmap(";
     public const string GETVALUE_TOKEN = "@getvalue(";
     public const string GE_TOKEN = "@ge(";
     public const string GOLABEL_TOKEN = "@golabel(";
@@ -96,6 +98,7 @@ public partial class Dags
     public const string SETCHAR_TOKEN = "@setchar(";
     public const string SETLAYER_TOKEN = "@setlayer(";
     public const string SETLIST_TOKEN = "@setlist(";
+    public const string SETMAP_TOKEN = "@setmap(";
     public const string SETOUTCHANNEL_TOKEN = "@setoutchannel(";
     public const string SUBSTRING_TOKEN = "@substring(";
     public const string SUBTO_TOKEN = "@subto(";
