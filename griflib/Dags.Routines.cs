@@ -853,6 +853,17 @@ public partial class Dags
     }
 
     /// <summary>
+    /// Check that there is at least min parameters.
+    /// </summary>
+    private static void CheckParameterAtLeast(List<GrifMessage> p, long min)
+    {
+        if (p.Count < min)
+        {
+            throw new ArgumentException($"Expected at least {min} parameters, but got {p.Count}");
+        }
+    }
+
+    /// <summary>
     /// Check that the parameter count is between min and max.
     /// </summary>
     private static void CheckParmeterCountBetween(List<GrifMessage> p, long min, long max)

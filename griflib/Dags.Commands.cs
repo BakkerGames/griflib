@@ -453,6 +453,23 @@ public partial class Dags
         result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
+    private static void Exec_GetMap(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterCount(p, 1);
+        if (string.IsNullOrWhiteSpace(p[0].Value))
+        {
+            throw new SystemException($"{DEFMAP_TOKEN}): Map name cannot be blank");
+        }
+        var key = p[0].Value;
+        var height = grod.GetNumber($"{key}.height", true);
+        var width = grod.GetNumber($"{key}.width", true);
+        for (int y = 0; y < height; y++)
+        {
+            var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
+            result.Add(new GrifMessage(MessageType.Internal, grod.Get(itemKey, true), y.ToString()));
+        }
+    }
+
     private static void Exec_GetValue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 1);
@@ -1022,6 +1039,24 @@ public partial class Dags
         CheckParameterCount(p, 3);
         var long1 = GetNumberValue(p[1].Value);
         SetListItem(grod, script, p[0].Value, long1, p[2].Value);
+    }
+
+    private static void Exec_SetMap(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterAtLeastOne(p);
+        if (string.IsNullOrWhiteSpace(p[0].Value))
+        {
+            throw new SystemException($"{DEFMAP_TOKEN}): Map name cannot be blank");
+        }
+        var key = p[0].Value;
+        var height = grod.GetNumber($"{key}.height", true);
+        var width = grod.GetNumber($"{key}.width", true);
+        CheckParmeterCountBetween(p, height + 1, height + 1);
+        for (int y = 0; y < height; y++)
+        {
+            var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
+            grod.Set(itemKey, p[y + 1].Value);
+        }
     }
 
     private static void Exec_SetOutChannel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
