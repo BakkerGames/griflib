@@ -188,7 +188,7 @@
 @setlist(listname,x,y)
 	Replaces the value at position "x" in list "listname" with the value "y". Pads with nulls if "x" is past the end of the list.
 @setmap(key,map)
-	Sets all the rows in the map structure "key" from the parameter "map" as one value. Rows are separated by a newline ("\n", either one or two characters) and items separated by commas. Validates that the number of rows matches the map height and that the number of items in each row matches the map width. Does not perform numeric validation on each item.
+	Sets all the rows in the map structure "key" from the parameter "map" as one value. Rows are separated by a newline ("\n", either one or two characters) and items separated by commas. The parameter "map" needs to be surrounded by quotes. Validates that the number of rows matches the map height and that the number of items in each row matches the map width. Does not perform numeric validation on each item.
 @setmapitem(key,y,x,value)
 	Sets the item at (y,x) in the map structure "key" to "value". Throws an error if (y,x) is out of bounds or if the value is not numeric.
 @setoutchannel(x,y)

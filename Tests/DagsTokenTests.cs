@@ -711,6 +711,61 @@ public class DagsTokenTests
 
     #endregion
 
+    #region @defmap
+
+    [Test]
+    public void Test_DefMap()
+    {
+        var key = "key";
+        var height = "2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var expectedValue1 = "2";
+        result = ProcessTest(grod, $"{GET_TOKEN}{key}{MAP_HEIGHT_SUFFIX})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+        var expectedValue2 = "3";
+        result = ProcessTest(grod, $"{GET_TOKEN}{key}{MAP_WIDTH_SUFFIX})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+        for (long y = 0; y < 2; y++)
+        {
+            var expectedValue3 = "0,0,0";
+            result = ProcessTest(grod, $"{GET_TOKEN}{key}{MAP_ROW_MIDFIX}{y})");
+            Assert.That(result, Has.Count.EqualTo(1));
+            Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+            Assert.That(result[0].Value, Is.EqualTo(expectedValue3));
+        }
+    }
+
+    [Test]
+    public void Test_DefMap_Invalid_Height_Width()
+    {
+        var key = "key";
+        var height = "-2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
+
+    [Test]
+    public void Test_DefMap_Zero_Height_Width()
+    {
+        var key = "key";
+        var height = "0";
+        var width = "0";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
+    #endregion
+
     #region @divto ###DONE###
 
     [Test]
@@ -1643,6 +1698,71 @@ public class DagsTokenTests
         var result1 = ProcessTest(grod, script1);
         Assert.That(result1, Has.Count.EqualTo(1));
         Assert.That(result1.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
+    #endregion
+
+    #region @getmap
+
+    [Test]
+    public void Test_GetMap()
+    {
+        var key = "key";
+        var height = "2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var expectedValue1 = "0,0,0\\n0,0,0";
+        result = ProcessTest(grod, $"{GETMAP_TOKEN}{key})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_GetMap_Error_Undefined()
+    {
+        var key = "key";
+        result = ProcessTest(grod, $"{GETMAP_TOKEN}{key})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
+    #endregion
+
+    #region @getmapitem
+
+    [Test]
+    public void Test_GetMapItem()
+    {
+        var key = "key";
+        var height = "2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var y = 1;
+        var x = 2;
+        var expectedValue1 = "0";
+        result = ProcessTest(grod, $"{GETMAPITEM_TOKEN}{key},{y},{x})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+
+    [Test]
+    public void Test_GetMapItem_Error_OutOfBounds()
+    {
+        var key = "key";
+        var height = "2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var y = 5;
+        var x = 7;
+        result = ProcessTest(grod, $"{GETMAPITEM_TOKEN}{key},{y},{x})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
     }
 
     #endregion
@@ -4188,6 +4308,102 @@ public class DagsTokenTests
 
     #endregion
 
+    #region @setmap
+
+    [Test]
+    public void Test_SetMap()
+    {
+        var key = "key";
+        var height = "2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var value1 = "\"1,2,3\\n4,5,6\"";
+        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var expectedValue1 = "1,2,3\\n4,5,6";
+        result = ProcessTest(grod, $"{GETMAP_TOKEN}{key})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+    }
+
+    [Test]
+    public void Test_SetMap_Error_Rows()
+    {
+        var key = "key";
+        var height = "2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var value1 = "\"1,2,3\\n4,5,6\\n7,8,9\"";
+        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
+
+    [Test]
+    public void Test_SetMap_Error_Items()
+    {
+        var key = "key";
+        var height = "2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var value1 = "\"1,2,3\\n4,5\"";
+        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
+    #endregion
+
+    #region @setmapitem
+
+    [Test]
+    public void Test_SetMapItem()
+    {
+        var key = "key";
+        var height = "2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var value1 = "\"1,2,3\\n4,5,6\"";
+        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var value2 = "42";
+        var y = 1;
+        var x = 2;
+        result = ProcessTest(grod, $"{SETMAPITEM_TOKEN}{key},{y},{x},{value2})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var expectedValue2 = "42";
+        result = ProcessTest(grod, $"{GETMAPITEM_TOKEN}{key},{y},{x})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue2));
+    }
+
+    [Test]
+    public void Test_SetMapItem_Error()
+    {
+        var key = "key";
+        var height = "2";
+        var width = "3";
+        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var value1 = "\"1,2,3\\n4,5,6\"";
+        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
+        Assert.That(result, Has.Count.EqualTo(0));
+        var value2 = "42";
+        var y = 5;
+        var x = 10;
+        result = ProcessTest(grod, $"{SETMAPITEM_TOKEN}{key},{y},{x},{value2})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
+    }
+
+    #endregion
     #region @setoutchannel ###DONE###
 
     [Test]
