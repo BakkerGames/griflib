@@ -1374,7 +1374,7 @@ public class DagsTokenTests
 
         // each array line is a list with the key "{name}.row.{y}"
         var expectedValue3 = $"{NULL},{NULL},{NULL},{value}";
-        var script3 = $"{GET_TOKEN}{key}{ARRAY_ROW_CHAR}{y})";
+        var script3 = $"{GET_TOKEN}{key}{ARRAY_ROW_MIDFIX}{y})";
         result = ProcessTest(grod, script3);
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -4080,7 +4080,7 @@ public class DagsTokenTests
 
         // each array line is a list with the key "{name}.row.{y}"
         var expectedValue3 = $"{NULL},{NULL},{NULL},{value}";
-        var script3 = $"{GET_TOKEN}{key}{ARRAY_ROW_CHAR}{y})";
+        var script3 = $"{GET_TOKEN}{key}{ARRAY_ROW_MIDFIX}{y})";
         result = ProcessTest(grod, script3);
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);

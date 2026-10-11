@@ -190,6 +190,9 @@ public partial class Dags
                 case GETMAP_TOKEN:
                     Exec_GetMap(grod, script, p, result);
                     break;
+                case GETMAPITEM_TOKEN:
+                    Exec_GetMapItem(grod, script, p, result);
+                    break;
                 case GETVALUE_TOKEN:
                     Exec_GetValue(grod, script, p, result);
                     break;
@@ -324,6 +327,9 @@ public partial class Dags
                     break;
                 case SETMAP_TOKEN:
                     Exec_SetMap(grod, script, p, result);
+                    break;
+                case SETMAPITEM_TOKEN:
+                    Exec_SetMapItem(grod, script, p, result);
                     break;
                 case SETOUTCHANNEL_TOKEN:
                     Exec_SetOutChannel(grod, script, p, result);

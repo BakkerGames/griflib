@@ -201,10 +201,15 @@ public partial class Dags
         var width = GetNumberValue(p[2].Value);
         if (height <= 0 || width <= 0)
         {
-            throw new SystemException($"Map dimensions cannot be zero or negative: {key}: {height},{width}");
+            throw new SystemException($"Map dimensions must be positive: {key}: {height},{width}");
         }
-        grod.Set($"{key}.height", height);
-        grod.Set($"{key}.width", width);
+        var oldKeys = grod.Keys($"{key}{MAP_ROW_MIDFIX}", true, false);
+        foreach (var oldKey in oldKeys)
+        {
+            grod.Remove($"{key}{MAP_ROW_MIDFIX}{oldKey}", false);
+        }
+        grod.Set($"{key}{MAP_HEIGHT_SUFFIX}", height);
+        grod.Set($"{key}{MAP_WIDTH_SUFFIX}", width);
         var row = new StringBuilder();
         for (int x = 0; x < width; x++)
         {
@@ -213,7 +218,7 @@ public partial class Dags
         }
         for (int y = 0; y < height; y++)
         {
-            var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
+            var itemKey = $"{key}{MAP_ROW_MIDFIX}{y}";
             grod.Set(itemKey, row.ToString());
         }
     }
@@ -458,16 +463,57 @@ public partial class Dags
         CheckParameterCount(p, 1);
         if (string.IsNullOrWhiteSpace(p[0].Value))
         {
-            throw new SystemException($"{DEFMAP_TOKEN}): Map name cannot be blank");
+            throw new SystemException($"{GETMAP_TOKEN}): Map name cannot be blank");
         }
         var key = p[0].Value;
-        var height = grod.GetNumber($"{key}.height", true);
-        var width = grod.GetNumber($"{key}.width", true);
+        var height = grod.GetNumber($"{key}{MAP_HEIGHT_SUFFIX}", true);
+        var width = grod.GetNumber($"{key}{MAP_WIDTH_SUFFIX}", true);
+        if (height == 0 || width == 0)
+        {
+            throw new SystemException($"{GETMAP_TOKEN}): Map not defined: {key}");
+        }
+        var map = new StringBuilder();
         for (int y = 0; y < height; y++)
         {
-            var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
-            result.Add(new GrifMessage(MessageType.Internal, grod.Get(itemKey, true), y.ToString()));
+            var rowKey = $"{key}{MAP_ROW_MIDFIX}{y}";
+            var row = grod.Get(rowKey, true);
+            var len = row.Split(',').Length;
+            if (len != width)
+            {
+                throw new SystemException($"{GETMAP_TOKEN}): Map row has wrong number of items: {key}.{y} Width = {width}, Count = {len}");
+            }
+            if (y > 0)
+            {
+                map.Append(NL_CHAR);
+            }
+            map.Append(row);
         }
+        result.Add(new GrifMessage(MessageType.Internal, map.ToString()));
+    }
+
+    private static void Exec_GetMapItem(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterCount(p, 3);
+        if (string.IsNullOrWhiteSpace(p[0].Value))
+        {
+            throw new SystemException($"{GETMAPITEM_TOKEN}): Map name cannot be blank");
+        }
+        var key = p[0].Value;
+        var y = GetNumberValue(p[1].Value);
+        var x = GetNumberValue(p[2].Value);
+        var height = grod.GetNumber($"{key}{MAP_HEIGHT_SUFFIX}", true);
+        var width = grod.GetNumber($"{key}{MAP_WIDTH_SUFFIX}", true);
+        if (height == 0 || width == 0)
+        {
+            throw new SystemException($"{GETMAPITEM_TOKEN}): Map not defined: {key}");
+        }
+        if (y < 0 || y >= height || x < 0 || x >= width)
+        {
+            throw new SystemException($"{GETMAPITEM_TOKEN}): Index out of range: {y},{x} for {height},{width}");
+        }
+        var rowKey = $"{key}{MAP_ROW_MIDFIX}{y}";
+        var value = GetNumberValue(GetListItem(grod, script, rowKey, x));
+        result.Add(new GrifMessage(MessageType.Internal, value.ToString()));
     }
 
     private static void Exec_GetValue(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
@@ -1043,20 +1089,58 @@ public partial class Dags
 
     private static void Exec_SetMap(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        CheckParameterAtLeastOne(p);
+        CheckParameterCount(p, 2);
         if (string.IsNullOrWhiteSpace(p[0].Value))
         {
-            throw new SystemException($"{DEFMAP_TOKEN}): Map name cannot be blank");
+            throw new SystemException($"{SETMAP_TOKEN}): Map name cannot be blank");
         }
         var key = p[0].Value;
-        var height = grod.GetNumber($"{key}.height", true);
-        var width = grod.GetNumber($"{key}.width", true);
-        CheckParmeterCountBetween(p, height + 1, height + 1);
+        var height = grod.GetNumber($"{key}{MAP_HEIGHT_SUFFIX}", true);
+        var width = grod.GetNumber($"{key}{MAP_WIDTH_SUFFIX}", true);
+        if (height == 0 || width == 0)
+        {
+            throw new SystemException($"{SETMAP_TOKEN}): Map not defined: {key}");
+        }
+        var map = p[1].Value.Replace(NL_CHAR, "\n").Split('\n');
+        if (map.Length != height)
+        {
+            throw new SystemException($"{SETMAP_TOKEN}): Map has wrong number of rows: Height = {height}, Count = {map.Length}");
+        }
         for (int y = 0; y < height; y++)
         {
-            var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
-            grod.Set(itemKey, p[y + 1].Value);
+            var len = map[y].Split(',').Length;
+            if (len != width)
+            {
+                throw new SystemException($"{SETMAP_TOKEN}): Map row has wrong number of items: {key}.{y} Width = {width}, Count = {len}");
+            }
+            var rowKey = $"{key}{MAP_ROW_MIDFIX}{y}";
+            grod.Set(rowKey, map[y]);
         }
+    }
+
+    private static void Exec_SetMapItem(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterCount(p, 4);
+        if (string.IsNullOrWhiteSpace(p[0].Value))
+        {
+            throw new SystemException($"{SETMAPITEM_TOKEN}): Map name cannot be blank");
+        }
+        var key = p[0].Value;
+        var y = GetNumberValue(p[1].Value);
+        var x = GetNumberValue(p[2].Value);
+        var height = grod.GetNumber($"{key}{MAP_HEIGHT_SUFFIX}", true);
+        var width = grod.GetNumber($"{key}{MAP_WIDTH_SUFFIX}", true);
+        if (height == 0 || width == 0)
+        {
+            throw new SystemException($"{SETMAPITEM_TOKEN}): Map not defined: {key}");
+        }
+        if (y < 0 || y >= height || x < 0 || x >= width)
+        {
+            throw new SystemException($"{SETMAPITEM_TOKEN}): Index out of range: {y},{x} for {height},{width}");
+        }
+        var rowKey = $"{key}{MAP_ROW_MIDFIX}{y}";
+        var value = GetNumberValue(p[3].Value);
+        SetListItem(grod, script, rowKey, x, value.ToString());
     }
 
     private static void Exec_SetOutChannel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)

@@ -969,7 +969,7 @@ public partial class Dags
         {
             throw new SystemException("Key cannot be null or empty.");
         }
-        var list = grod.Keys($"{key}{ARRAY_ROW_CHAR}", true, true);
+        var list = grod.Keys($"{key}{ARRAY_ROW_MIDFIX}", true, true);
         foreach (var item in list)
         {
             SetGlobalOrLocal(grod, script, item, NULL);
@@ -1037,7 +1037,7 @@ public partial class Dags
         {
             throw new SystemException($"Array indexes cannot be negative: {key}: {y},{x}");
         }
-        var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
+        var itemKey = $"{key}{ARRAY_ROW_MIDFIX}{y}";
         return GetListItem(grod, script, itemKey, x);
     }
 
@@ -1054,7 +1054,7 @@ public partial class Dags
         {
             throw new SystemException($"Array indexes cannot be negative: {key}: {y},{x}");
         }
-        var itemKey = $"{key}{ARRAY_ROW_CHAR}{y}";
+        var itemKey = $"{key}{ARRAY_ROW_MIDFIX}{y}";
         SetListItem(grod, script, itemKey, x, value);
     }
 

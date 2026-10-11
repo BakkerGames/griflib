@@ -188,17 +188,24 @@ public class Grod(string? name = null, string? filePath = null, Grod? parent = n
     }
 
     /// <summary>
-    /// Removes the entry with the specified key from the current collection. Optionally removes the entry from parent
-    /// collections recursively.
+    /// Removes the entry with the specified key from the current collection.
+    /// Removes the entry from parent collections recursively or overrides any parent values with NULL.
     /// </summary>
     public void Remove(string key, bool recursive)
     {
         ValidateKey(key);
         _data.Remove(key);
         Changed = true;
-        if (recursive && Parent != null)
+        if (Parent != null)
         {
-            Parent.Remove(key, recursive);
+            if (recursive)
+            {
+                Parent.Remove(key, recursive);
+            }
+            else if (Parent.ContainsKey(key, true))
+            {
+                Set(key, NULL); // have to override parent value with "null"
+            }
         }
     }
 

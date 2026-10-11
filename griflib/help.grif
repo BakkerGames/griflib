@@ -33,6 +33,8 @@
 	Returns the current universal datetime using a valid .NET format pattern. Use quotes around the pattern. A timezone of "UTC" in returned in ExtraValue. For example, @datetime("MM/dd/yyyy HH:mm") might return "01/17/2020 15:23". The ExtraValue will always be "UTC".
 @debug(value)
 	This command is enabled if the value in "system.debug" = "true". Otherwise it is ignored. It outputs the value plus a newline. Surround the value with quotes if it is a literal.
+@defmap(key,height,width)
+	Defines a map structure of the specified height and width. Sets all values to "0". If the map already exists, it will be overwritten with overflow rows set to "null".
 @div(x,y)
 	Returns integer result of integer "x" divided by integer "y". Returns an error if either are not numeric or "y" equals zero.
 @divto(key,x)
@@ -85,6 +87,10 @@
 	Get the value sent from calling program sent in "#INCHANNEL;".
 @getlist(key,x)
 	Gets the value in list "key" at position "x". Returns "null" if "x" is beyond the end of the list. Throws an error if "x" is negative.
+@getmap(key)
+	Returns all the rows of the map structure "key" as a single string. Rows are separated by a newline ("\n", two separate characters) and items are separated by commas. Verifies the number of items per each row. Does not perform numeric validation on the items.
+@getmapitem(key,y,x)
+	Returns the item at (y,x) in the map structure. Throws an error if (y,x) is out of bounds or if the value is not numeric.
 @getvalue(key)
 	Gets the value for "key". If the value is a script, it is executed and the final value is returned.
 @golabel(x)
@@ -181,6 +187,10 @@
 	For a named GROD layer, sets "key" to "value". If the named layer does not exists, one is added under the current top layer. This is the way to change values on layers other than the top GROD layer. See "@set()".
 @setlist(listname,x,y)
 	Replaces the value at position "x" in list "listname" with the value "y". Pads with nulls if "x" is past the end of the list.
+@setmap(key,map)
+	Sets all the rows in the map structure "key" from the parameter "map" as one value. Rows are separated by a newline ("\n", either one or two characters) and items separated by commas. Validates that the number of rows matches the map height and that the number of items in each row matches the map width. Does not perform numeric validation on each item.
+@setmapitem(key,y,x,value)
+	Sets the item at (y,x) in the map structure "key" to "value". Throws an error if (y,x) is out of bounds or if the value is not numeric.
 @setoutchannel(x,y)
 	Sends a message with the value "x" to the calling program. It is up to the calling program to handle the message or ignore it. It can have a second parameter "y" which will send another value in the ExtraValue position, or it can be left off.
 @sub(x,y)

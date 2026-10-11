@@ -49,6 +49,7 @@ public partial class Dags
     public const string GETLAYER_TOKEN = "@getlayer(";
     public const string GETLIST_TOKEN = "@getlist(";
     public const string GETMAP_TOKEN = "@getmap(";
+    public const string GETMAPITEM_TOKEN = "@getmapitem(";
     public const string GETVALUE_TOKEN = "@getvalue(";
     public const string GE_TOKEN = "@ge(";
     public const string GOLABEL_TOKEN = "@golabel(";
@@ -99,6 +100,7 @@ public partial class Dags
     public const string SETLAYER_TOKEN = "@setlayer(";
     public const string SETLIST_TOKEN = "@setlist(";
     public const string SETMAP_TOKEN = "@setmap(";
+    public const string SETMAPITEM_TOKEN = "@setmapitem(";
     public const string SETOUTCHANNEL_TOKEN = "@setoutchannel(";
     public const string SUBSTRING_TOKEN = "@substring(";
     public const string SUBTO_TOKEN = "@subto(";
