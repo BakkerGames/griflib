@@ -1,6 +1,6 @@
 # GrifLib
 
-GrifLib is a C# library designed to be used for running games and handling game data.
+GrifLib is a C# library designed for running games and handling game data.
 
 ## Overview
 
@@ -38,7 +38,7 @@ GrifLib can be integrated into other applications to provide game support such a
 
 "GROD", or "Game Resource Overlay Dictionary", is the component of GrifLib for managing game data in memory. These consist of layered dictionary objects containing key/value pairs. Searching for a key starts at the top layer and proceeds through the layers until it is found. Modifications only happen to the top layer, so that top layer can be used to save/restore the current game state.
 
-"DAGS", or "Data Access Game Scripts", is the scripting language used in GrifLib for creating interactive fiction games. DAGS scripts consist of functions which all start with "@". They are stored in a GROD dictionary along with value items. DAGS has functions to directly access the GROD game data, to perform calculations and manipulations, and to output the results. It includes helper routines to validate scripts, format scripts, and colorize script tokens.
+"DAGS", or "Data Access Game Scripts", is the scripting language used in GrifLib for creating interactive fiction games. DAGS scripts consist of functions which all start with "@". They are stored in a GROD dictionary along with value items. DAGS has functions to directly access the GROD game data, to perform calculations and manipulations, and to output the results. It includes helper routines to validate scripts, format scripts, and colorize script tokens for use externally.
 
 "IO" is a class for reading and writing GRIF files to/from disk or stream. The input and output formats are plain text and can either be GRIF format or JSON object format. It can read GRIFSTACK files with lists of GRIF files to open in a specific order.
 
