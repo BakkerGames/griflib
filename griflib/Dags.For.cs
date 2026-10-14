@@ -1,4 +1,5 @@
-﻿using static GrifLib.Common;
+﻿using griflib.Models;
+using static GrifLib.Common;
 
 namespace GrifLib;
 

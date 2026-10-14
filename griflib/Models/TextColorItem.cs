@@ -1,4 +1,4 @@
-﻿namespace GrifLib;
+﻿namespace griflib.Models;
 
 /// <summary>
 /// Colors used for the various DAGS script elements. The actual colors are defined in an external color palette and looked up using these enum values.

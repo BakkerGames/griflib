@@ -1,4 +1,6 @@
-﻿namespace GrifLib;
+﻿using GrifLib;
+
+namespace griflib.Models;
 
 public class ScriptObj
 {

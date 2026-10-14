@@ -1,4 +1,5 @@
-﻿using static GrifLib.Common;
+﻿using griflib.Models;
+using static GrifLib.Common;
 using static GrifLib.Dags;
 using static GrifLib.IFParser;
 using static GrifLib.IO;
@@ -280,7 +281,7 @@ public class IFGame
                 OutputEvent?.Invoke(this, message);
                 break;
             default:
-                OutputEvent?.Invoke(this, new GrifMessage(MessageType.Text, $"Unsupported output message type: {message.Type}\\n", message.Value + message.ExtraValue));
+                OutputEvent?.Invoke(this, new GrifMessage(MessageType.Text, $"Unsupported output message type: {message.Type}\\n", message.Value + (message.ExtraValue?.ToString() ?? "")));
                 break;
         }
         return false;
@@ -328,11 +329,11 @@ public class IFGame
 
         if (message.Value.Equals(OUTCHANNEL_EXISTS_SAVE_NAME, OIC))
         {
-            if (message.ExtraValue == null)
+            if (message.ExtraValue == null || string.IsNullOrEmpty(message.ExtraValue.ToString()))
             {
                 throw new Exception("Save filename not specified.");
             }
-            var savefile = Path.Combine(_saveBasePath, message.ExtraValue + SAVE_EXTENSION);
+            var savefile = Path.Combine(_saveBasePath, message.ExtraValue.ToString() + SAVE_EXTENSION);
             exists = File.Exists(savefile);
             _overlayGrod.Set(INCHANNEL, exists ? "true" : "false");
             return false;
@@ -349,11 +350,11 @@ public class IFGame
 
         if (message.Value.Equals(OUTCHANNEL_SAVE_NAME, OIC))
         {
-            if (message.ExtraValue == null)
+            if (message.ExtraValue == null || string.IsNullOrEmpty(message.ExtraValue.ToString()))
             {
                 throw new Exception("Save filename not specified.");
             }
-            var savefile = Path.Combine(_saveBasePath, message.ExtraValue + SAVE_EXTENSION);
+            var savefile = Path.Combine(_saveBasePath, message.ExtraValue.ToString() + SAVE_EXTENSION);
             var itemList = _overlayGrod.Items(false, true);
             WriteGrif(savefile, itemList, true);
             _overlayGrod.Changed = false;
@@ -376,11 +377,11 @@ public class IFGame
 
         if (message.Value.Equals(OUTCHANNEL_RESTORE_NAME, OIC))
         {
-            if (message.ExtraValue == null)
+            if (message.ExtraValue == null || string.IsNullOrEmpty(message.ExtraValue.ToString()))
             {
                 throw new Exception("Save filename not specified.");
             }
-            var savefile = Path.Combine(_saveBasePath, message.ExtraValue + SAVE_EXTENSION);
+            var savefile = Path.Combine(_saveBasePath, message.ExtraValue.ToString() + SAVE_EXTENSION);
             if (!File.Exists(savefile))
             {
                 throw new FileNotFoundException(savefile);
@@ -421,11 +422,11 @@ public class IFGame
 
         if (message.Value.Equals(OUTCHANNEL_LOAD_LAYER, OIC))
         {
-            if (string.IsNullOrEmpty(message.ExtraValue))
+            if (message.ExtraValue == null || string.IsNullOrEmpty(message.ExtraValue.ToString()))
             {
                 throw new Exception("Grod layer name not specified.");
             }
-            var grodName = message.ExtraValue;
+            var grodName = message.ExtraValue?.ToString() ?? "";
             var tempGrod = _overlayGrod.GetGrod(grodName);
             if (tempGrod == null)
             {
@@ -451,11 +452,11 @@ public class IFGame
 
         if (message.Value.Equals(OUTCHANNEL_SAVE_LAYER, OIC))
         {
-            if (string.IsNullOrEmpty(message.ExtraValue))
+            if (message.ExtraValue == null || string.IsNullOrEmpty(message.ExtraValue.ToString()))
             {
                 throw new Exception("Grod name not specified.");
             }
-            var grodName = message.ExtraValue;
+            var grodName = message.ExtraValue?.ToString() ?? "";
             var tempGrod = _overlayGrod.GetGrod(grodName);
             if (tempGrod == null)
             {

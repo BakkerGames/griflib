@@ -1,4 +1,4 @@
-﻿namespace GrifLib;
+﻿namespace griflib.Models;
 
 /// <summary>
 /// Represents a key-value pair used to store or transfer data within a Grod collection.

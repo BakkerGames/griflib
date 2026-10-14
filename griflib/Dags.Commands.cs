@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using griflib.Models;
+using System.Globalization;
 using System.Text;
 using static GrifLib.Common;
 
@@ -472,23 +473,27 @@ public partial class Dags
         {
             throw new SystemException($"{GETMAP_TOKEN}): Map not defined: {key}");
         }
-        var map = new StringBuilder();
+        var map = new MapObj
+        {
+            Height = height,
+            Width = width,
+            Map = new long[height, width]
+        };
         for (int y = 0; y < height; y++)
         {
             var rowKey = $"{key}{MAP_ROW_MIDFIX}{y}";
             var row = grod.Get(rowKey, true);
-            var len = row.Split(',').Length;
-            if (len != width)
+            var items = row.Split(',');
+            if (items.Length != width)
             {
-                throw new SystemException($"{GETMAP_TOKEN}): Map row has wrong number of items: {key}.{y} Width = {width}, Count = {len}");
+                throw new SystemException($"{GETMAP_TOKEN}): Map row has wrong number of items: {key}.{y} Width = {width}, Count = {items.Length}");
             }
-            if (y > 0)
+            for (int x = 0; x < width; x++)
             {
-                map.Append(NL_CHAR);
+                map.Map[y, x] = long.Parse(items[x]);
             }
-            map.Append(row);
         }
-        result.Add(new GrifMessage(MessageType.Internal, map.ToString()));
+        result.Add(new GrifMessage(MessageType.Data, key, map));
     }
 
     private static void Exec_GetMapItem(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)

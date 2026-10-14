@@ -1,4 +1,5 @@
-﻿using GrifLib;
+﻿using griflib.Models;
+using GrifLib;
 using static GrifLib.Common;
 using static GrifLib.Dags;
 
@@ -646,7 +647,7 @@ public class DagsTokenTests
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
         Assert.That(result[0].Value, Has.Length.EqualTo(19)); // value will vary, length fixed
-        Assert.That(result[0].ExtraValue, Has.Length.EqualTo(6)); // value will vary, length fixed
+        Assert.That(result[0].ExtraValue?.ToString(), Has.Length.EqualTo(6)); // value will vary, length fixed
     }
 
     [Test]
@@ -657,7 +658,7 @@ public class DagsTokenTests
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
         Assert.That(result[0].Value, Has.Length.EqualTo(19)); // value will vary, length fixed
-        Assert.That(result[0].ExtraValue, Is.EqualTo("UTC"));
+        Assert.That(result[0].ExtraValue?.ToString(), Is.EqualTo("UTC"));
     }
 
     [Test]
@@ -668,7 +669,7 @@ public class DagsTokenTests
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
         Assert.That(result[0].Value, Has.Length.EqualTo(33)); // value will vary, length fixed
-        Assert.That(result[0].ExtraValue, Has.Length.EqualTo(6)); // value will vary, length fixed
+        Assert.That(result[0].ExtraValue?.ToString(), Has.Length.EqualTo(6)); // value will vary, length fixed
     }
 
     [Test]
@@ -680,7 +681,7 @@ public class DagsTokenTests
         Assert.That(result[0].Type, Is.EqualTo(MessageType.Text));
         Assert.That(result[0].Value, Has.Length.EqualTo(28)); // value will vary, length fixed
         Assert.That(result[0].Value[^1], Is.EqualTo('Z'));
-        Assert.That(result[0].ExtraValue, Is.EqualTo("UTC"));
+        Assert.That(result[0].ExtraValue?.ToString(), Is.EqualTo("UTC"));
     }
 
     #endregion

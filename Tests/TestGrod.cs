@@ -1,5 +1,5 @@
-﻿using GrifLib;
-using static GrifLib.Common;
+﻿using griflib.Models;
+using GrifLib;
 
 namespace Tests;
 
