@@ -43,6 +43,7 @@ public partial class Dags
                 if (IsScript(item.Value))
                 {
                     var script = CreateScript(item.Value);
+                    script.ExtraValue = item.ExtraValue;
                     ProcessScript(grod, script, result);
                     continue;
                 }
@@ -82,5 +83,14 @@ public partial class Dags
                 break;
             }
         } while (script.Index < script.Tokens.Length);
+    }
+
+    public static void ProcessData(Grod grod, GrifMessage item)
+    {
+        if (item.Value.StartsWith(SETMAP_TOKEN, OIC))
+        {
+
+        }
+        throw new NotImplementedException();
     }
 }

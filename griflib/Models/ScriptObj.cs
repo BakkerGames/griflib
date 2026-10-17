@@ -19,4 +19,6 @@ public class ScriptObj
     public bool BreakFlag { get; set; } = false;
 
     public bool ContinueFlag { get; set; } = false;
+
+    public object? ExtraValue { get; set; }
 }
