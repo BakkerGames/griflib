@@ -13,9 +13,9 @@ public partial class Dags
     /// <summary>
     /// Process a DAGS script.
     /// </summary>
-    public static List<GrifMessage> Process(Grod grod, string script)
+    public static List<GrifMessage> Process(Grod grod, string script, object? extraValue = null)
     {
-        List<GrifMessage> items = [new GrifMessage(MessageType.Text, script)];
+        List<GrifMessage> items = [new GrifMessage(MessageType.Text, script, extraValue)];
         return ProcessItems(grod, items);
     }
 

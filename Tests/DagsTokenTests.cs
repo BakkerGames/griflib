@@ -44,10 +44,10 @@ public class DagsTokenTests
         result.Clear();
     }
 
-    private static List<GrifMessage> ProcessTest(Grod grod, string script)
+    private static List<GrifMessage> ProcessTest(Grod grod, string script, object? extraValue = null)
     {
         Assert.DoesNotThrow(() => QuickValidate(script));
-        return Process(grod, script);
+        return Process(grod, script, extraValue);
     }
 
     #endregion
@@ -1706,18 +1706,23 @@ public class DagsTokenTests
     #region @getmap
 
     [Test]
-    public void Test_GetMap()
+    public void Test_GETMAP()
     {
         var key = "key";
-        var height = "2";
-        var width = "3";
+        var height = 2;
+        var width = 3;
         result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
         Assert.That(result, Has.Count.EqualTo(0));
-        var expectedValue1 = "0,0,0\\n0,0,0";
+        var expectedValue1 = new MapObj();
         result = ProcessTest(grod, $"{GETMAP_TOKEN}{key})");
         Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
-        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+        Assert.That(result.Any(x => x.Type == MessageType.Data), Is.True);
+        Assert.That(result[0].Value, Is.EqualTo(key));
+        Assert.That(result[0].ExtraValue, Is.Not.Null);
+        var map = (MapObj)result[0].ExtraValue;
+        Assert.That(map.Key, Is.EqualTo(key));
+        Assert.That(map.Height, Is.EqualTo(height));
+        Assert.That(map.Width, Is.EqualTo(width));
     }
 
     [Test]
@@ -4315,45 +4320,49 @@ public class DagsTokenTests
     public void Test_SetMap()
     {
         var key = "key";
-        var height = "2";
-        var width = "3";
+        var height = 2;
+        var width = 3;
         result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
         Assert.That(result, Has.Count.EqualTo(0));
-        var value1 = "\"1,2,3\\n4,5,6\"";
-        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
+        var map1 = new long[2, 3] { { 1, 2, 3 }, { 4, 5, 6 } };
+        var mapObj = new MapObj
+        {
+            Key = key,
+            Height = height,
+            Width = width,
+            Map = map1,
+        };
+        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key})", mapObj);
         Assert.That(result, Has.Count.EqualTo(0));
-        var expectedValue1 = "1,2,3\\n4,5,6";
         result = ProcessTest(grod, $"{GETMAP_TOKEN}{key})");
         Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
-        Assert.That(result[0].Value, Is.EqualTo(expectedValue1));
+        Assert.That(result.Any(x => x.Type == MessageType.Data), Is.True);
+        Assert.That(result[0].Value, Is.EqualTo(key));
+        Assert.That(result[0].ExtraValue, Is.Not.Null);
+        var resultMap = (MapObj)result[0].ExtraValue;
+        Assert.That(resultMap.Key, Is.EqualTo(key));
+        Assert.That(resultMap.Height, Is.EqualTo(height));
+        Assert.That(resultMap.Width, Is.EqualTo(width));
+        Assert.That(resultMap.Map, Is.EqualTo(map1));
     }
 
     [Test]
     public void Test_SetMap_Error_Rows()
     {
         var key = "key";
-        var height = "2";
-        var width = "3";
+        var height = 2;
+        var width = 3;
         result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
         Assert.That(result, Has.Count.EqualTo(0));
-        var value1 = "\"1,2,3\\n4,5,6\\n7,8,9\"";
-        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
-        Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
-    }
-
-
-    [Test]
-    public void Test_SetMap_Error_Items()
-    {
-        var key = "key";
-        var height = "2";
-        var width = "3";
-        result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
-        Assert.That(result, Has.Count.EqualTo(0));
-        var value1 = "\"1,2,3\\n4,5\"";
-        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
+        var map1 = new long[1, 3] { { 1, 2, 3 } };
+        var mapObj = new MapObj
+        {
+            Key = key,
+            Height = height,
+            Width = width,
+            Map = map1,
+        };
+        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key})", mapObj);
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.True);
     }
@@ -4366,12 +4375,19 @@ public class DagsTokenTests
     public void Test_SetMapItem()
     {
         var key = "key";
-        var height = "2";
-        var width = "3";
+        var height = 2;
+        var width = 3;
         result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
         Assert.That(result, Has.Count.EqualTo(0));
-        var value1 = "\"1,2,3\\n4,5,6\"";
-        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
+        var map1 = new long[2, 3] { { 1, 2, 3 }, { 4, 5, 6 } };
+        var mapObj = new MapObj
+        {
+            Key = key,
+            Height = height,
+            Width = width,
+            Map = map1,
+        };
+        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key})", mapObj);
         Assert.That(result, Has.Count.EqualTo(0));
         var value2 = "42";
         var y = 1;
@@ -4389,12 +4405,19 @@ public class DagsTokenTests
     public void Test_SetMapItem_Error()
     {
         var key = "key";
-        var height = "2";
-        var width = "3";
+        var height = 2;
+        var width = 3;
         result = ProcessTest(grod, $"{DEFMAP_TOKEN}{key},{height},{width})");
         Assert.That(result, Has.Count.EqualTo(0));
-        var value1 = "\"1,2,3\\n4,5,6\"";
-        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key},{value1})");
+        var map1 = new long[2, 3] { { 1, 2, 3 }, { 4, 5, 6 } };
+        var mapObj = new MapObj
+        {
+            Key = key,
+            Height = height,
+            Width = width,
+            Map = map1,
+        };
+        result = ProcessTest(grod, $"{SETMAP_TOKEN}{key})", mapObj);
         Assert.That(result, Has.Count.EqualTo(0));
         var value2 = "42";
         var y = 5;

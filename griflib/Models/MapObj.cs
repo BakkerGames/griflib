@@ -2,6 +2,8 @@
 
 public class MapObj
 {
+    public string? Key { get; set; }
+
     public long Height { get; set; }
 
     public long Width { get; set; }

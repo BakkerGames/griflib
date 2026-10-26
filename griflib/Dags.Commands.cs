@@ -475,6 +475,7 @@ public partial class Dags
         }
         var map = new MapObj
         {
+            Key = key,
             Height = height,
             Width = width,
             Map = new long[height, width]
