@@ -1094,32 +1094,41 @@ public partial class Dags
 
     private static void Exec_SetMap(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        CheckParameterCount(p, 2);
+        CheckParameterCount(p, 1);
         if (string.IsNullOrWhiteSpace(p[0].Value))
         {
             throw new SystemException($"{SETMAP_TOKEN}): Map name cannot be blank");
         }
         var key = p[0].Value;
+        if (script.ExtraValue == null)
+        {
+            throw new SystemException($"{SETMAP_TOKEN}{key}): Map data not supplied");
+        }
+        var map = (MapObj)script.ExtraValue;
         var height = grod.GetNumber($"{key}{MAP_HEIGHT_SUFFIX}", true);
         var width = grod.GetNumber($"{key}{MAP_WIDTH_SUFFIX}", true);
-        if (height == 0 || width == 0)
+        if (height == 0 && width == 0)
         {
-            throw new SystemException($"{SETMAP_TOKEN}): Map not defined: {key}");
+            height = map.Height;
+            width = map.Width;
+            grod.Set($"{key}{MAP_HEIGHT_SUFFIX}", map.Height);
+            grod.Set($"{key}{MAP_WIDTH_SUFFIX}", map.Width);
         }
-        var map = p[1].Value.Replace(NL_CHAR, "\n").Split('\n');
-        if (map.Length != height)
+        else if (height != map.Height || width != map.Width)
         {
-            throw new SystemException($"{SETMAP_TOKEN}): Map has wrong number of rows: Height = {height}, Count = {map.Length}");
+            throw new SystemException($"{SETMAP_TOKEN}{key}): Map height and width don't match defined");
         }
+        var line = new StringBuilder();
         for (int y = 0; y < height; y++)
         {
-            var len = map[y].Split(',').Length;
-            if (len != width)
+            line.Clear();
+            for (int x = 0; x < width; x++)
             {
-                throw new SystemException($"{SETMAP_TOKEN}): Map row has wrong number of items: {key}.{y} Width = {width}, Count = {len}");
+                if (x > 0) line.Append(',');
+                line.Append(map.Map[y, x]);
             }
             var rowKey = $"{key}{MAP_ROW_MIDFIX}{y}";
-            grod.Set(rowKey, map[y]);
+            grod.Set(rowKey, line.ToString());
         }
     }
 
