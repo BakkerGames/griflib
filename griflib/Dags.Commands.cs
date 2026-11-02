@@ -440,10 +440,7 @@ public partial class Dags
     private static void Exec_GetInChannel(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         var value = grod.Get(INCHANNEL, true);
-        if (!IsNull(value))
-        {
-            result.Add(new GrifMessage(MessageType.Internal, value));
-        }
+        result.Add(new GrifMessage(MessageType.Internal, value));
         grod.Remove(INCHANNEL, false); // Clear after reading
     }
 
