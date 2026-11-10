@@ -494,7 +494,7 @@ public partial class Dags
                 map.Map[y, x] = long.Parse(items[x]);
             }
         }
-        result.Add(new GrifMessage(MessageType.Data, key, map));
+        result.Add(new GrifMessage(MessageType.Data, "MapObj", map));
     }
 
     private static void Exec_GetMapItem(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
