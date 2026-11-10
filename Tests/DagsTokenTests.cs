@@ -1606,6 +1606,18 @@ public class DagsTokenTests
         Assert.That(result[0].Value, Is.EqualTo(expectedValue));
     }
 
+    [Test]
+    public void Test_GETINCHANNEL_NULL()
+    {
+        var value = "";
+        var expectedValue = "";
+        grod.Set(INCHANNEL, value);
+        result = ProcessTest(grod, $"{GETINCHANNEL_TOKEN}");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
     #endregion
 
     #region @getlayer ###DONE###
