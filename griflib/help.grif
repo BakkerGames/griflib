@@ -34,7 +34,7 @@
 @debug(value)
 	This command is enabled if the value in "system.debug" = "true". Otherwise it is ignored. It outputs the value plus a newline. Surround the value with quotes if it is a literal.
 @defmap(key,height,width)
-	Defines a map structure of the specified height and width. Sets all values to "0". If the map already exists, it will be overwritten with overflow rows set to "null".
+	Defines a map structure of the specified height and width. Sets all values to "0". If the map already exists, it will be overwritten.
 @div(x,y)
 	Returns integer result of integer "x" divided by integer "y". Returns an error if either are not numeric or "y" equals zero.
 @divto(key,x)
@@ -88,7 +88,7 @@
 @getlist(key,x)
 	Gets the value in list "key" at position "x". Returns "null" if "x" is beyond the end of the list. Throws an error if "x" is negative.
 @getmap(key)
-	Returns all the rows of the map structure "key" as a single string. Rows are separated by a newline ("\n", two separate characters) and items are separated by commas. Verifies the number of items per each row. Does not perform numeric validation on the items.
+	Returns all the rows of the map structure "key" as a single object in the ExtraValue as type "MapObj". Returns the "key", "height", and "width" and all data in "MapObj". All items are numeric.
 @getmapitem(key,y,x)
 	Returns the item at (y,x) in the map structure. Throws an error if (y,x) is out of bounds or if the value is not numeric.
 @getvalue(key)
@@ -101,6 +101,8 @@
 	Begins an "@if" block. The full format of an "@if" block is: "@if <conditions> @then <statements> [@elseif <conditions> @then <statements> ...] [@else <statements>] @endif". There can be any number of @elseif sections. "<conditions>" consist of one or more values or functions which return truthy or falsey values. Multiple conditions are connected with "@and" or "@or", and may start with "@not" to reverse the value. "<statements>" are a block of one or more "@" functions. "@if" may be nested within other "@if" <statement> blocks.
 @inlist(key,value)
 	Returns true/false if list "key" contains an item "value". Case is ignored. Same as "@listcontains".
+@indexof(x,y)
+	Returns the 0-based index of the first occurance of string "y" in string "x". Returns "-1" if not found.
 @insertatlist(listname,x,y)
 	Inserts the value "y" at position "x" in the list "listname", pushing all other values out by one. If position "x" is past the end of the list, extra null values are added to pad it out.
 @isbool(x)
@@ -167,6 +169,8 @@
 	Removes the item at position "x" from the list. Nothing happens if "x" is past the end of the list.
 @replace(x,y,z)
 	Finds the string "y" inside of string "x" and replaces it with string "z". Returns the result. If "y" occurs more than once, all are replaced.
+@replace(x,y,z,n)
+	Finds the string "y" inside of string "x" and replaces it with string "z". Returns the result. Replaces the first "n" occurances.
 @return
 	Exit the current script immediately, returning any results.
 @returnvalue(x)
@@ -187,8 +191,8 @@
 	For a named GROD layer, sets "key" to "value". If the named layer does not exists, one is added under the current top layer. This is the way to change values on layers other than the top GROD layer. See "@set()".
 @setlist(listname,x,y)
 	Replaces the value at position "x" in list "listname" with the value "y". Pads with nulls if "x" is past the end of the list.
-@setmap(key,map)
-	Sets all the rows in the map structure "key" from the parameter "map" as one value. Rows are separated by a newline ("\n", either one or two characters) and items separated by commas. The parameter "map" needs to be surrounded by quotes. Validates that the number of rows matches the map height and that the number of items in each row matches the map width. Does not perform numeric validation on each item.
+@setmap(key)
+	Sets all the rows in the map structure "key" from the parameter "map" as one value. The "map" parameter is sent in the ExtraValue object field in the command and is of type "MapObj". The height and width of the existing map structure "key" must either be zero or must match those in "map". All values in the map are numeric.
 @setmapitem(key,y,x,value)
 	Sets the item at (y,x) in the map structure "key" to "value". Throws an error if (y,x) is out of bounds or if the value is not numeric.
 @setoutchannel(x,y)

@@ -55,6 +55,7 @@ public partial class Dags
     public const string GOLABEL_TOKEN = "@golabel(";
     public const string GT_TOKEN = "@gt(";
     public const string IF_TOKEN = "@if";
+    public const string INDEXOF_TOKEN = "@indexof(";
     public const string INLIST_TOKEN = "@inlist(";
     public const string INSERTATLIST_TOKEN = "@insertatlist(";
     public const string ISBOOL_TOKEN = "@isbool(";

@@ -594,6 +594,17 @@ public partial class Dags
         result.AddRange(ProcessIf(grod, script));
     }
 
+    private static void Exec_IndexOf(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
+    {
+        CheckParameterCount(p, 2);
+        if (IsNull(p[0].Value) || IsNull(p[1].Value))
+        {
+            throw new SystemException("IndexOf parameters cannot be empty");
+        }
+        var index = p[0].Value.IndexOf(p[1].Value, OIC);
+        result.Add(new GrifMessage(MessageType.Internal, index.ToString()));
+    }
+
     private static void Exec_InsertAtList(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
         CheckParameterCount(p, 3);
@@ -955,16 +966,19 @@ public partial class Dags
         if (p.Count == 3)
         {
             result.Add(new GrifMessage(MessageType.Internal, p[0].Value.Replace(p[1].Value, p[2].Value, OIC)));
+            return;
         }
         // replace p[3] times
         var long1 = GetNumberValue(p[3].Value);
         var value = p[0].Value;
+        var start = 0;
         while (long1 > 0)
         {
-            var index = value.IndexOf(p[1].Value, OIC);
+            var index = value.IndexOf(p[1].Value, start, OIC);
             if (index < 0)
                 break;
             value = value[..index] + p[2].Value + value[(index + p[1].Value.Length)..];
+            start = index + p[2].Value.Length;
             long1--;
         }
         result.Add(new GrifMessage(MessageType.Internal, value));

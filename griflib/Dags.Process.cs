@@ -203,6 +203,9 @@ public partial class Dags
                 case GT_TOKEN:
                     Exec_GreaterThan(grod, script, p, result);
                     break;
+                case INDEXOF_TOKEN:
+                    Exec_IndexOf(grod, script, p, result);
+                    break;
                 case INLIST_TOKEN:
                     Exec_ListContains(grod, script, p, result);
                     break;

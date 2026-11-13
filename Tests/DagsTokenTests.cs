@@ -712,7 +712,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @defmap
+    #region @defmap ###DONE###
 
     [Test]
     public void Test_DefMap()
@@ -1715,7 +1715,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @getmap
+    #region @getmap ###DONE###
 
     [Test]
     public void Test_GETMAP()
@@ -1729,7 +1729,7 @@ public class DagsTokenTests
         result = ProcessTest(grod, $"{GETMAP_TOKEN}{key})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Data), Is.True);
-        Assert.That(result[0].Value, Is.EqualTo(key));
+        Assert.That(result[0].Value, Is.EqualTo(nameof(MapObj)));
         Assert.That(result[0].ExtraValue, Is.Not.Null);
         var map = (MapObj)result[0].ExtraValue;
         Assert.That(map.Key, Is.EqualTo(key));
@@ -2381,6 +2381,34 @@ public class DagsTokenTests
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue4));
+    }
+
+    #endregion
+
+    #region @indexof ###DONE###
+
+    [Test]
+    public void Test_IndexOf()
+    {
+        var baseValue = "abjkjasej23123lasdkf";
+        var searchValue = "123";
+        var expectedValue = "11";
+        result = ProcessTest(grod, $"{INDEXOF_TOKEN}{baseValue},{searchValue})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_IndexOf_NotFound()
+    {
+        var baseValue = "abjkjasej23123lasdkf";
+        var searchValue = "XYZ";
+        var expectedValue = "-1";
+        result = ProcessTest(grod, $"{INDEXOF_TOKEN}{baseValue},{searchValue})");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
     }
 
     #endregion
@@ -4067,7 +4095,7 @@ public class DagsTokenTests
         var replaceFrom = "d";
         var replaceTo = "x";
         var expectedValue = "abcxef";
-        result = ProcessTest(grod, $"{WRITE_TOKEN}{REPLACE_TOKEN}\"{value1}\",\"{replaceFrom}\",\"{replaceTo}\"))");
+        result = ProcessTest(grod, $"{REPLACE_TOKEN}\"{value1}\",\"{replaceFrom}\",\"{replaceTo}\")");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue));
@@ -4081,6 +4109,20 @@ public class DagsTokenTests
         var replaceTo = "ABC";
         var replaceCount = "1";
         var expectedValue = "String ABC with # values";
+        result = ProcessTest(grod, $"{WRITE_TOKEN}{REPLACE_TOKEN}\"{value}\",\"{replaceFrom}\",\"{replaceTo}\",{replaceCount}))");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_Replace_NoOverlap()
+    {
+        var value = "String 123232323 with 123 values";
+        var replaceFrom = "123";
+        var replaceTo = "231";
+        var replaceCount = "5";
+        var expectedValue = "String 231232323 with 231 values";
         result = ProcessTest(grod, $"{WRITE_TOKEN}{REPLACE_TOKEN}\"{value}\",\"{replaceFrom}\",\"{replaceTo}\",{replaceCount}))");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
@@ -4340,7 +4382,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @setmap
+    #region @setmap ###DONE###
 
     [Test]
     public void Test_SetMap()
@@ -4363,7 +4405,7 @@ public class DagsTokenTests
         result = ProcessTest(grod, $"{GETMAP_TOKEN}{key})");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Data), Is.True);
-        Assert.That(result[0].Value, Is.EqualTo(key));
+        Assert.That(result[0].Value, Is.EqualTo(nameof(MapObj)));
         Assert.That(result[0].ExtraValue, Is.Not.Null);
         var resultMap = (MapObj)result[0].ExtraValue;
         Assert.That(resultMap.Key, Is.EqualTo(key));
@@ -4395,7 +4437,7 @@ public class DagsTokenTests
 
     #endregion
 
-    #region @setmapitem
+    #region @setmapitem ###DONE###
 
     [Test]
     public void Test_SetMapItem()
@@ -4454,6 +4496,7 @@ public class DagsTokenTests
     }
 
     #endregion
+
     #region @setoutchannel ###DONE###
 
     [Test]
