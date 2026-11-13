@@ -4067,7 +4067,21 @@ public class DagsTokenTests
         var replaceFrom = "d";
         var replaceTo = "x";
         var expectedValue = "abcxef";
-        result = ProcessTest(grod, $"{WRITE_TOKEN}{REPLACE_TOKEN}{value1},{replaceFrom},{replaceTo}))");
+        result = ProcessTest(grod, $"{WRITE_TOKEN}{REPLACE_TOKEN}\"{value1}\",\"{replaceFrom}\",\"{replaceTo}\"))");
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
+        Assert.That(result[0].Value, Is.EqualTo(expectedValue));
+    }
+
+    [Test]
+    public void Test_Replace_Count()
+    {
+        var value = "String # with # values";
+        var replaceFrom = "#";
+        var replaceTo = "ABC";
+        var replaceCount = "1";
+        var expectedValue = "String ABC with # values";
+        result = ProcessTest(grod, $"{WRITE_TOKEN}{REPLACE_TOKEN}\"{value}\",\"{replaceFrom}\",\"{replaceTo}\",{replaceCount}))");
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result.Any(x => x.Type == MessageType.Error), Is.False);
         Assert.That(result[0].Value, Is.EqualTo(expectedValue));

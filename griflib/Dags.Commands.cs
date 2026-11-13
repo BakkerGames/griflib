@@ -951,8 +951,23 @@ public partial class Dags
 
     private static void Exec_Replace(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
     {
-        CheckParameterCount(p, 3);
-        result.Add(new GrifMessage(MessageType.Internal, p[0].Value.Replace(p[1].Value, p[2].Value, OIC)));
+        CheckParmeterCountBetween(p, 3, 4);
+        if (p.Count == 3)
+        {
+            result.Add(new GrifMessage(MessageType.Internal, p[0].Value.Replace(p[1].Value, p[2].Value, OIC)));
+        }
+        // replace p[3] times
+        var long1 = GetNumberValue(p[3].Value);
+        var value = p[0].Value;
+        while (long1 > 0)
+        {
+            var index = value.IndexOf(p[1].Value, OIC);
+            if (index < 0)
+                break;
+            value = value[..index] + p[2].Value + value[(index + p[1].Value.Length)..];
+            long1--;
+        }
+        result.Add(new GrifMessage(MessageType.Internal, value));
     }
 
     private static void Exec_Return(Grod grod, ScriptObj script, List<GrifMessage> p, List<GrifMessage> result)
